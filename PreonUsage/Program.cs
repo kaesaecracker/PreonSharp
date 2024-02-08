@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using PreonSharp;
-using PreonUsage;
+using PreonSharp.Loaders;
 
 var services = ConfigureServices();
 
@@ -36,7 +36,7 @@ ServiceProvider ConfigureServices()
         builder.SetMinimumLevel(LogLevel.Debug);
         builder.AddSimpleConsole(options =>
         {
-            options.SingleLine = false; 
+            options.SingleLine = false;
             options.TimestampFormat = "HH:mm:ss ";
         });
     });

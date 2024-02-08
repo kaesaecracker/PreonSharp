@@ -2,9 +2,8 @@ using System.Globalization;
 using System.IO;
 using CsvHelper;
 using CsvHelper.Configuration;
-using PreonSharp;
 
-namespace PreonUsage;
+namespace PreonSharp.Loaders;
 
 public static class EbiLoader
 {

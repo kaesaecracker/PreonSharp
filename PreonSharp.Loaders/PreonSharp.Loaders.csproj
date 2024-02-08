@@ -1,21 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <Import Project="../shared.props" />
-
+    
     <PropertyGroup>
-        <OutputType>Exe</OutputType>
+        <RootNamespace>PreonSharp.Loaders</RootNamespace>
     </PropertyGroup>
-
+    
     <ItemGroup>
-      <ProjectReference Include="..\PreonSharp.Loaders\PreonSharp.Loaders.csproj" />
       <ProjectReference Include="..\PreonSharp\PreonSharp.csproj" />
     </ItemGroup>
-
-
+    
     <ItemGroup>
-      <None Update="ebi-compounds.tsv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
+        <PackageReference Include="CsvHelper" Version="30.1.0" />
     </ItemGroup>
 
 </Project>

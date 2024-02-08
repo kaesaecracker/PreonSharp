@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+    <Import Project="../shared.props" />
+
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-        <ImplicitUsings>disable</ImplicitUsings>
-        <Nullable>enable</Nullable>
+        <RootNamespace>PreonSharp</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

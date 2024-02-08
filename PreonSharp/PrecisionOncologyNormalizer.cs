@@ -1,78 +1,13 @@
-﻿using System.Collections.Frozen;
-using Fastenshtein;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Fastenshtein;
 
 namespace PreonSharp;
 
-[Flags]
-public enum MatchType : byte
-{
-    Partial = 0b0001,
-    Exact = 0b0010,
-    Substring = 0b0100,
-    All = Partial | Exact | Substring,
-}
-
-public record class QueryOptions(
-    MatchType MatchType = MatchType.All,
-    decimal Threshold = 0.2m,
-    int NGrams = 1,
-    int Decimals = 3
-);
-
-public record class QueryResult(
-    MatchType Type,
-    IReadOnlyList<QueryResultEntry> Entries,
-    decimal? EditDistance = null);
-
-public record class QueryResultEntry(
-    string Name,
-    IReadOnlySet<string> Ids
-);
-
-public class PrecisionOncologyNormalizerBuilder(IServiceProvider services)
-{
-    private ILogger _logger = services.GetRequiredService<ILogger<PrecisionOncologyNormalizerBuilder>>();
-    private readonly Dictionary<string, HashSet<string>> _normalizedNames = new();
-
-    public PrecisionOncologyNormalizerBuilder Fit(string[] names, string[] ids)
-    {
-        if (names.Length != ids.Length)
-            throw new ArgumentException($"length of {nameof(names)} and {nameof(ids)} must be equal");
-
-        foreach (var (name, id) in names.Zip(ids))
-            Fit(name, id);
-
-        return this;
-    }
-
-    public PrecisionOncologyNormalizerBuilder Fit(string name, string id)
-    {
-        var transformedName = Helpers.TransformName(name);
-        _logger.LogTrace("fitting name {} to id {} with transformation {}", name, id, transformedName);
-        if (_normalizedNames.TryGetValue(transformedName, out var existingIds))
-            existingIds.Add(id);
-        else
-            _normalizedNames.Add(transformedName, [id]);
-        return this;
-    }
-
-    public PrecisionOncologyNormalizer Build()
-    {
-        var normalizerLogger = services.GetRequiredService<ILogger<PrecisionOncologyNormalizer>>();
-        var readOnlyNames = _normalizedNames
-            .Select(kvp => new KeyValuePair<string, IReadOnlySet<string>>(kvp.Key, kvp.Value.ToFrozenSet()))
-            .ToFrozenDictionary();
-        return new PrecisionOncologyNormalizer(readOnlyNames, normalizerLogger);
-    }
-}
-
-public class PrecisionOncologyNormalizer(
+internal class PrecisionOncologyNormalizer(
     IReadOnlyDictionary<string, IReadOnlySet<string>> normalizedNames,
-    ILogger<PrecisionOncologyNormalizer> logger)
+    ILogger<PrecisionOncologyNormalizer> logger) : IPrecisionOncologyNormalizer
 {
     public int NameCount => normalizedNames.Count;
-    
+
     public QueryResult? Query(string queryName, QueryOptions? options = null)
     {
         options ??= new QueryOptions();
