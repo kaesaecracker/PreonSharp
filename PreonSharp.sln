@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PreonSharp", "PreonSharp\PreonSharp.csproj", "{F3D29990-DA58-4693-BA4E-2AC8774FC839}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PreonUsage", "PreonUsage\PreonUsage.csproj", "{F1DF109E-7415-4107-A3BC-4E9B05FA6C50}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F3D29990-DA58-4693-BA4E-2AC8774FC839}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3D29990-DA58-4693-BA4E-2AC8774FC839}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3D29990-DA58-4693-BA4E-2AC8774FC839}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3D29990-DA58-4693-BA4E-2AC8774FC839}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1DF109E-7415-4107-A3BC-4E9B05FA6C50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1DF109E-7415-4107-A3BC-4E9B05FA6C50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1DF109E-7415-4107-A3BC-4E9B05FA6C50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1DF109E-7415-4107-A3BC-4E9B05FA6C50}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
