@@ -9,10 +9,7 @@ var services = ConfigureServices();
 var logger = services.GetRequiredService<ILogger<Program>>();
 logger.LogInformation("starting up");
 
-var normalizer = services.GetRequiredService<PrecisionOncologyNormalizerBuilder>()
-    .LoadEbi("ebi-compounds.tsv")
-    .Build();
-
+var normalizer = services.GetRequiredService<INormalizer>();
 logger.LogInformation("loaded {} names", normalizer.NameCount);
 
 string[] testQueries = ["test", "CAMDRONATEE", "CAMDRONATE", "COVID-19"];
@@ -41,7 +38,10 @@ ServiceProvider ConfigureServices()
         });
     });
 
-    serviceCollection.AddTransient<PrecisionOncologyNormalizerBuilder>();
+    serviceCollection.AddNormalizer(builder =>
+    {
+        builder.AddEbiCsv("ebi-compounds.tsv");
+    });
 
     return serviceCollection.BuildServiceProvider();
 }

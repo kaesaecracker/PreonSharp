@@ -1,6 +1,6 @@
 namespace PreonSharp;
 
-public interface IPrecisionOncologyNormalizer
+public interface INormalizer
 {
     int NameCount { get; }
     QueryResult? Query(string queryName, QueryOptions? options = null);

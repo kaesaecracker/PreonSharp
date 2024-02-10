@@ -1,17 +1,45 @@
-﻿using Fastenshtein;
+﻿using System.Collections.Frozen;
+using Fastenshtein;
 
-namespace PreonSharp;
+namespace PreonSharp.Internals;
 
-internal class PrecisionOncologyNormalizer(
-    IReadOnlyDictionary<string, IReadOnlySet<string>> normalizedNames,
-    ILogger<PrecisionOncologyNormalizer> logger) : IPrecisionOncologyNormalizer
+internal class Normalizer(
+    IEnumerable<IKnowledgeProvider> knowledgeProviders,
+    ILogger<Normalizer> logger,
+    INameTransformer nameTransformer)
+    : INormalizer
 {
-    public int NameCount => normalizedNames.Count;
+    private readonly ILogger _logger = logger;
+    private readonly INameTransformer _nameTransformer = nameTransformer;
+    private readonly FrozenDictionary<string, FrozenSet<string>> _normalizedNames = BuildNormalizedNames(knowledgeProviders, nameTransformer);
+
+    private static FrozenDictionary<string, FrozenSet<string>> BuildNormalizedNames(
+        IEnumerable<IKnowledgeProvider> knowledgeProviders, INameTransformer nameTransformer)
+    {
+        Dictionary<string, HashSet<string>> wipNames = new();
+        foreach (var provider in knowledgeProviders)
+        {
+            foreach (var (name, id) in provider.GetNameIdPairs())
+            {
+                var transformedName = nameTransformer.Transform(name);
+                if (wipNames.TryGetValue(transformedName, out var existingIds))
+                    existingIds.Add(id);
+                else
+                    wipNames.Add(transformedName, [id]);
+            }
+        }
+
+        return wipNames.ToFrozenDictionary(
+            kvp => kvp.Key,
+            kvp => kvp.Value.ToFrozenSet());
+    }
+
+    public int NameCount => _normalizedNames.Count;
 
     public QueryResult? Query(string queryName, QueryOptions? options = null)
     {
         options ??= new QueryOptions();
-        var transformedName = Helpers.TransformName(queryName);
+        var transformedName = _nameTransformer.Transform(queryName);
 
         if ((options.MatchType & MatchType.Exact) != 0)
         {
@@ -34,6 +62,7 @@ internal class PrecisionOncologyNormalizer(
                 return result;
         }
 
+        _logger.LogDebug("no result for {}", queryName);
         return null;
     }
 
@@ -42,7 +71,7 @@ internal class PrecisionOncologyNormalizer(
         var minDist = decimal.MaxValue;
         List<QueryResultEntry> minDistValues = new();
 
-        foreach (var (otherName, otherIds) in normalizedNames)
+        foreach (var (otherName, otherIds) in _normalizedNames)
         {
             var distance = Levenshtein.Distance(transformedName, otherName)
                            / (decimal)Math.Max(transformedName.Length, otherName.Length);
@@ -79,13 +108,13 @@ internal class PrecisionOncologyNormalizer(
         }
 
         var relevantSubstrings = substrings
-            .Select(Helpers.TransformName)
+            .Select(_nameTransformer.Transform)
             .Where(transformed => transformed.Length != 0);
 
         List<QueryResultEntry> matches = new();
         foreach (var transformed in relevantSubstrings)
         {
-            if (normalizedNames.TryGetValue(transformed, out var foundIds))
+            if (_normalizedNames.TryGetValue(transformed, out var foundIds))
                 matches.Add(new QueryResultEntry(transformed, foundIds));
         }
 
@@ -96,7 +125,7 @@ internal class PrecisionOncologyNormalizer(
 
     private QueryResult? FindExactMatch(string transformedName)
     {
-        if (!normalizedNames.TryGetValue(transformedName, out var foundIds))
+        if (!_normalizedNames.TryGetValue(transformedName, out var foundIds))
             return null;
 
         return new QueryResult(Type: MatchType.Exact, Entries:

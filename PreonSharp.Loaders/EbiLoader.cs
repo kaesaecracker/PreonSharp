@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using CsvHelper;
@@ -5,19 +6,17 @@ using CsvHelper.Configuration;
 
 namespace PreonSharp.Loaders;
 
-public static class EbiLoader
+internal class EbiCsvKnowledgeProvider(string path) : IKnowledgeProvider
 {
-    public static PrecisionOncologyNormalizerBuilder LoadEbi(
-        this PrecisionOncologyNormalizerBuilder builder,
-        string path)
+    private readonly CsvConfiguration _csvReaderConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
     {
-        var csvReaderConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
-        {
-            Delimiter = "\t",
-        };
+        Delimiter = "\t",
+    };
 
+    public IEnumerable<(string, string)> GetNameIdPairs()
+    {
         using var reader = new StreamReader(path);
-        using var csv = new CsvReader(reader, csvReaderConfig);
+        using var csv = new CsvReader(reader, _csvReaderConfig);
 
         int i = 0;
         csv.Read();
@@ -30,9 +29,7 @@ public static class EbiLoader
                 continue;
 
             var id = csv.GetField<string>("ChEMBL ID");
-            builder.Fit(name, id);
+            yield return (name, id);
         }
-
-        return builder;
     }
 }
