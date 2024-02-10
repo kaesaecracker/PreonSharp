@@ -5,12 +5,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace PreonSharp.Loaders;
 
-internal sealed class EbiTsvKnowledgeProvider(
-    [FromKeyedServices("EbiTsv")] IReaderConfiguration ebiTsv,
-    ILogger<EbiTsvKnowledgeProvider> logger,
+internal sealed class NcbiGeneTsvKnowledgeProvider(
+    [FromKeyedServices("NcbiTsv")] IReaderConfiguration ebiTsv,
+    ILogger<NcbiGeneTsvKnowledgeProvider> logger,
     string path) : IKnowledgeProvider
 {
-    public string SourceName => $"{nameof(EbiTsvKnowledgeProvider)} {path}";
+    public string SourceName => $"{nameof(NcbiGeneTsvKnowledgeProvider)} {path}";
 
     public IEnumerable<(string, string)> GetNameIdPairs()
     {
@@ -20,8 +20,8 @@ internal sealed class EbiTsvKnowledgeProvider(
 
         csv.Read();
         csv.ReadHeader();
-        var nameIndex = csv.GetFieldIndex("Name");
-        var idIndex = csv.GetFieldIndex("ChEMBL ID");
+        var nameIndex = csv.GetFieldIndex("description");
+        var idIndex = csv.GetFieldIndex("Symbol");
         while (csv.Read())
         {
             var name = csv.GetField(nameIndex);

@@ -10,6 +10,7 @@ public static class NormalizerServiceCollectionExtensions
         configure(new NormalizerBuilder(services));
         services.TryAddSingleton<INormalizer, Normalizer>();
         services.TryAddSingleton<INameTransformer, DefaultNameTransformer>();
+        services.TryAddSingleton<KnowledgeAggregator>();
         return services;
     }
 }

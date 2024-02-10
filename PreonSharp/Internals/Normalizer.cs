@@ -3,33 +3,20 @@ using Fastenshtein;
 
 namespace PreonSharp.Internals;
 
-internal class Normalizer(
-    IEnumerable<IKnowledgeProvider> knowledgeProviders,
-    ILogger<Normalizer> logger,
-    INameTransformer nameTransformer)
-    : INormalizer
+internal sealed class Normalizer : INormalizer
 {
-    private readonly FrozenDictionary<string, FrozenSet<string>> _normalizedNames = BuildNormalizedNames(knowledgeProviders, nameTransformer);
+    private readonly FrozenDictionary<string, FrozenSet<NamespacedId>> _normalizedNames;
+    private readonly ILogger<Normalizer> _logger;
+    private readonly INameTransformer _nameTransformer;
 
-    private static FrozenDictionary<string, FrozenSet<string>> BuildNormalizedNames(
-        IEnumerable<IKnowledgeProvider> knowledgeProviders, INameTransformer nameTransformer)
+    public Normalizer(KnowledgeAggregator knowledgeAggregator,
+        ILogger<Normalizer> logger,
+        INameTransformer nameTransformer)
     {
-        Dictionary<string, HashSet<string>> wipNames = new();
-        foreach (var provider in knowledgeProviders)
-        {
-            foreach (var (name, id) in provider.GetNameIdPairs())
-            {
-                var transformedName = nameTransformer.Transform(name);
-                if (wipNames.TryGetValue(transformedName, out var existingIds))
-                    existingIds.Add(id);
-                else
-                    wipNames.Add(transformedName, [id]);
-            }
-        }
-
-        return wipNames.ToFrozenDictionary(
-            kvp => kvp.Key,
-            kvp => kvp.Value.ToFrozenSet());
+        _logger = logger;
+        _nameTransformer = nameTransformer;
+        _normalizedNames = knowledgeAggregator.GetAggregatedKnowledge();
+        _logger.LogInformation("normalizer ready");
     }
 
     public int NameCount => _normalizedNames.Count;
@@ -37,7 +24,7 @@ internal class Normalizer(
     public QueryResult? Query(string queryName, QueryOptions? options = null)
     {
         options ??= new QueryOptions();
-        var transformedName = nameTransformer.Transform(queryName);
+        var transformedName = _nameTransformer.Transform(queryName);
 
         if ((options.MatchType & MatchType.Exact) != 0)
         {
@@ -60,7 +47,7 @@ internal class Normalizer(
                 return result;
         }
 
-        logger.LogDebug("no result for {}", queryName);
+        _logger.LogDebug("no result for {}", queryName);
         return null;
     }
 
@@ -69,9 +56,10 @@ internal class Normalizer(
         var minDist = decimal.MaxValue;
         List<QueryResultEntry> minDistValues = new();
 
+        var distanceObj = new Levenshtein(transformedName);
         foreach (var (otherName, otherIds) in _normalizedNames)
         {
-            var distance = Levenshtein.Distance(transformedName, otherName)
+            var distance = distanceObj.DistanceFrom(otherName)
                            / (decimal)Math.Max(transformedName.Length, otherName.Length);
             distance = Math.Round(distance, decimals);
 
@@ -98,7 +86,7 @@ internal class Normalizer(
     private QueryResult? FindSubstringMatch(string name, int nGrams)
     {
         var substrings = name.Split(" ").ToList();
-        for (int i = 2; i < nGrams + 1; i++)
+        for (var i = 2; i < nGrams + 1; i++)
         {
             var grams = Helpers.Ngrams(substrings, i)
                 .Select(grams => string.Join(" ", grams));
@@ -106,7 +94,7 @@ internal class Normalizer(
         }
 
         var relevantSubstrings = substrings
-            .Select(nameTransformer.Transform)
+            .Select(_nameTransformer.Transform)
             .Where(transformed => transformed.Length != 0);
 
         List<QueryResultEntry> matches = new();

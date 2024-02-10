@@ -7,5 +7,5 @@ public record class QueryResult(
 
 public record class QueryResultEntry(
     string Name,
-    IReadOnlySet<string> Ids
+    IReadOnlySet<NamespacedId> Ids
 );

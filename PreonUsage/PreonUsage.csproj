@@ -4,6 +4,8 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
+
+        <ServerGarbageCollection>true</ServerGarbageCollection>
     </PropertyGroup>
 
     <ItemGroup>
@@ -14,6 +16,7 @@
     <!-- Condition="'$(Configuration)' == 'Debug'"-->
     <ItemGroup>
         <None Update="ebi/*.tsv" CopyToOutputDirectory="PreserveNewest"/>
+        <None Update="ncbi/*.tsv" CopyToOutputDirectory="PreserveNewest"/>
     </ItemGroup>
 
 </Project>

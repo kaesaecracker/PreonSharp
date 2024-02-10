@@ -11,10 +11,11 @@ public static class NormalizerBuilderExtensions
         return builder;
     }
 
-    public static INormalizerBuilder AddSeries(this INormalizerBuilder builder, IEnumerable<string> names,
+    public static INormalizerBuilder AddSeries(this INormalizerBuilder builder, string kbName,
+        IEnumerable<string> names,
         IEnumerable<string> ids)
     {
-        builder.Services.AddSingleton<IKnowledgeProvider>(new SeriesKnowledge(names, ids));
+        builder.Services.AddSingleton<IKnowledgeProvider>(new SeriesKnowledge(kbName, names, ids));
         return builder;
     }
 }

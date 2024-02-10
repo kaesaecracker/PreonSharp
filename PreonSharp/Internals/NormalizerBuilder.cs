@@ -1,6 +1,6 @@
 namespace PreonSharp.Internals;
 
-internal class NormalizerBuilder(IServiceCollection services) : INormalizerBuilder
+internal sealed class NormalizerBuilder(IServiceCollection services) : INormalizerBuilder
 {
     public IServiceCollection Services { get; } = services;
 }
