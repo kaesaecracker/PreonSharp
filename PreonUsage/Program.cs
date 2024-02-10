@@ -32,9 +32,11 @@ internal sealed class Program
 
         var normalizer = _services.GetRequiredService<INormalizer>();
 
-        string[] testQueries = ["test", "CAMDRONATEE", "CAMDRONATE", "COVID-19"];
-        var allResults = testQueries.ToDictionary(s => s, s => normalizer.Query(s));
-        logger.LogInformation("results: {}", JsonSerializer.Serialize(allResults, _prettyPrint));
+        string[] testQueries = ["test", "CAMDRONATEE", "CAMDRONATE", "COVID-19", "root", "Sept7"];
+        var result =  testQueries.AsParallel()
+            .Select(s => (Name: s, Result: normalizer.Query(s)))
+            .ToDictionary(p => p.Name, p => p.Result);
+        logger.LogInformation("results: {}", JsonSerializer.Serialize(result, _prettyPrint));
     }
 
     private static ServiceProvider ConfigureServices()
@@ -50,16 +52,12 @@ internal sealed class Program
             });
         });
 
-    serviceCollection.AddNormalizer(builder =>
-    {
-        foreach (var path in Directory.GetFiles("ebi", "*.tsv"))
-            builder.AddEbiTsv(path);
-    });
         serviceCollection.AddNormalizer(builder =>
         {
             foreach (var path in Directory.GetFiles("ebi", "*.tsv"))
                 builder.AddEbiTsv(path);
 
+            builder.AddNcbiTaxonomy("ncbi/names.dmp");
             builder.AddNcbiGeneTsv("ncbi/gene_info.tsv");
         });
 

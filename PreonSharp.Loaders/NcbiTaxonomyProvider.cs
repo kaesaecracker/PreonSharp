@@ -5,23 +5,21 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace PreonSharp.Loaders;
 
-internal sealed class NcbiGeneTsvKnowledgeProvider(
-    [FromKeyedServices("NcbiGeneTsv")] IReaderConfiguration ebiTsv,
-    ILogger<NcbiGeneTsvKnowledgeProvider> logger,
+internal sealed class NcbiTaxonomyProvider(
+    [FromKeyedServices("NcbiTaxonomyTsv")] IReaderConfiguration readerConfig,
+    ILogger<NcbiTaxonomyProvider> logger,
     string path) : IKnowledgeProvider
 {
-    public string SourceName => $"{nameof(NcbiGeneTsvKnowledgeProvider)} {path}";
+    public string SourceName => $"{nameof(NcbiTaxonomyProvider)} {path}";
 
     public IEnumerable<(string, string)> GetNameIdPairs()
     {
         logger.LogInformation("loading file {}", path);
         using var reader = new StreamReader(path);
-        using var csv = new CsvReader(reader, ebiTsv);
+        using var csv = new CsvReader(reader, readerConfig);
 
-        csv.Read();
-        csv.ReadHeader();
-        var nameIndex = csv.GetFieldIndex("description");
-        var idIndex = csv.GetFieldIndex("Symbol");
+        var nameIndex = 1;
+        var idIndex = 0;
         while (csv.Read())
         {
             var name = csv.GetField(nameIndex);

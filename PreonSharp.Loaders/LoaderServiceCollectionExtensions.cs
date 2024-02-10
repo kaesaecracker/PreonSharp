@@ -24,18 +24,28 @@ public static class LoaderServiceCollectionExtensions
     {
         builder.Services.AddSingleton<IKnowledgeProvider>(sp =>
             ActivatorUtilities.CreateInstance<NcbiGeneTsvKnowledgeProvider>(sp, path));
-        TryAddNcbiTsv(builder);
-        return builder;
-    }
-
-    private static void TryAddNcbiTsv(INormalizerBuilder builder)
-    {
-        builder.Services.TryAddKeyedSingleton<IReaderConfiguration>("NcbiTsv",
-           (sp, _) => new CsvConfiguration(CultureInfo.InvariantCulture)
+        builder.Services.TryAddKeyedSingleton<IReaderConfiguration>("NcbiGeneTsv",
+            (_, _) => new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 Delimiter = "\t",
                 Quote = '\0',
-                BadDataFound = null,
+                Mode = CsvMode.NoEscape,
             });
+        return builder;
+    }
+
+    public static INormalizerBuilder AddNcbiTaxonomy(this INormalizerBuilder builder, string path)
+    {
+        builder.Services.AddSingleton<IKnowledgeProvider>(sp =>
+            ActivatorUtilities.CreateInstance<NcbiTaxonomyProvider>(sp, path));
+        builder.Services.TryAddKeyedSingleton<IReaderConfiguration>("NcbiTaxonomyTsv",
+            (_, _) => new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                Delimiter = "|",
+                HasHeaderRecord = false,
+                Quote = '\0',
+                Mode = CsvMode.NoEscape,
+            });
+        return builder;
     }
 }

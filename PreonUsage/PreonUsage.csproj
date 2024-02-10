@@ -17,6 +17,7 @@
     <ItemGroup>
         <None Update="ebi/*.tsv" CopyToOutputDirectory="PreserveNewest"/>
         <None Update="ncbi/*.tsv" CopyToOutputDirectory="PreserveNewest"/>
+        <None Update="ncbi/*.dmp" CopyToOutputDirectory="PreserveNewest"/>
     </ItemGroup>
 
 </Project>
