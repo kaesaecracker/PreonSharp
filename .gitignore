@@ -7,3 +7,5 @@ riderModule.iml
 *.csv
 *.gz
 *.zip
+*.xml
+*.XML

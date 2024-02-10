@@ -1,8 +1,11 @@
 ﻿using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Xml;
+using System.Xml.Serialization;
 using PreonSharp;
 using PreonSharp.Loaders;
+using PreonUsage.BioC;
 
 namespace PreonUsage;
 
@@ -30,10 +33,22 @@ internal sealed class Program
         var logger = _services.GetRequiredService<ILogger<Program>>();
         logger.LogInformation("starting up");
 
+        var serializer = new XmlSerializer(typeof(Collection));
+
+        var file = new FileInfo("/home/vinzenz/Repos/PreonSharp/PreonUsage/corpora/nlm_gene/17223997.BioC.XML");
+        var reader = XmlReader.Create(file.OpenRead(), new XmlReaderSettings()
+        {
+            DtdProcessing = DtdProcessing.Ignore,
+        });
+
+        var collection = (BioC.Collection)serializer.Deserialize(reader)!;
+
+
+
         var normalizer = _services.GetRequiredService<INormalizer>();
 
         string[] testQueries = ["test", "CAMDRONATEE", "CAMDRONATE", "COVID-19", "root", "Sept7"];
-        var result =  testQueries.AsParallel()
+        var result = testQueries.AsParallel()
             .Select(s => (Name: s, Result: normalizer.Query(s)))
             .ToDictionary(p => p.Name, p => p.Result);
         logger.LogInformation("results: {}", JsonSerializer.Serialize(result, _prettyPrint));
