@@ -1,21 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <Import Project="../shared.props" />
+    <Import Project="../shared.props"/>
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\PreonSharp.Loaders\PreonSharp.Loaders.csproj" />
-      <ProjectReference Include="..\PreonSharp\PreonSharp.csproj" />
+        <ProjectReference Include="..\PreonSharp.Loaders\PreonSharp.Loaders.csproj"/>
+        <ProjectReference Include="..\PreonSharp\PreonSharp.csproj"/>
     </ItemGroup>
 
-
+    <!-- Condition="'$(Configuration)' == 'Debug'"-->
     <ItemGroup>
-      <None Update="ebi-compounds.tsv">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
+        <None Update="ebi/*.tsv" CopyToOutputDirectory="PreserveNewest"/>
     </ItemGroup>
 
 </Project>

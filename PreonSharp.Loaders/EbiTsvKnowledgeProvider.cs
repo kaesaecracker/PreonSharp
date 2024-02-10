@@ -1,29 +1,26 @@
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using CsvHelper;
 using CsvHelper.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace PreonSharp.Loaders;
 
-internal class EbiCsvKnowledgeProvider(string path) : IKnowledgeProvider
+internal class EbiTsvKnowledgeProvider(
+    [FromKeyedServices("EbiTsv")] IReaderConfiguration ebiTsv,
+    ILogger<EbiTsvKnowledgeProvider> logger,
+    string path) : IKnowledgeProvider
 {
-    private readonly CsvConfiguration _csvReaderConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
-    {
-        Delimiter = "\t",
-    };
-
     public IEnumerable<(string, string)> GetNameIdPairs()
     {
+        logger.LogInformation("loading file {}", path);
         using var reader = new StreamReader(path);
-        using var csv = new CsvReader(reader, _csvReaderConfig);
+        using var csv = new CsvReader(reader, ebiTsv);
 
-        int i = 0;
         csv.Read();
         csv.ReadHeader();
         while (csv.Read())
         {
-            i++;
             var name = csv.GetField<string>("Name");
             if (string.IsNullOrWhiteSpace(name))
                 continue;

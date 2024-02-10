@@ -1,4 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
 using PreonSharp.Internals;
 
 namespace PreonSharp;

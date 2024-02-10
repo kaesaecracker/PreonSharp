@@ -1,5 +1,7 @@
-﻿using System.Text.Json;
+﻿using System.IO;
+using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using PreonSharp;
 using PreonSharp.Loaders;
@@ -12,8 +14,6 @@ logger.LogInformation("starting up");
 var normalizer = services.GetRequiredService<INormalizer>();
 logger.LogInformation("loaded {} names", normalizer.NameCount);
 
-string[] testQueries = ["test", "CAMDRONATEE", "CAMDRONATE", "COVID-19"];
-var allResults = testQueries.ToDictionary(s => s, s => normalizer.Query(s));
 
 var prettyPrint = new JsonSerializerOptions()
 {
@@ -21,11 +21,14 @@ var prettyPrint = new JsonSerializerOptions()
     WriteIndented = true,
 };
 prettyPrint.Converters.Add(new JsonStringEnumConverter());
+
+string[] testQueries = ["test", "CAMDRONATEE", "CAMDRONATE", "COVID-19"];
+var allResults = testQueries.ToDictionary(s => s, s => normalizer.Query(s));
 logger.LogInformation("results: {}", JsonSerializer.Serialize(allResults, prettyPrint));
 
 return;
 
-ServiceProvider ConfigureServices()
+static ServiceProvider ConfigureServices()
 {
     var serviceCollection = new ServiceCollection();
     serviceCollection.AddLogging(builder =>
@@ -40,7 +43,8 @@ ServiceProvider ConfigureServices()
 
     serviceCollection.AddNormalizer(builder =>
     {
-        builder.AddEbiCsv("ebi-compounds.tsv");
+        foreach (var path in Directory.GetFiles("ebi", "*.tsv"))
+            builder.AddEbiTsv(path);
     });
 
     return serviceCollection.BuildServiceProvider();

@@ -9,8 +9,6 @@ internal class Normalizer(
     INameTransformer nameTransformer)
     : INormalizer
 {
-    private readonly ILogger _logger = logger;
-    private readonly INameTransformer _nameTransformer = nameTransformer;
     private readonly FrozenDictionary<string, FrozenSet<string>> _normalizedNames = BuildNormalizedNames(knowledgeProviders, nameTransformer);
 
     private static FrozenDictionary<string, FrozenSet<string>> BuildNormalizedNames(
@@ -39,7 +37,7 @@ internal class Normalizer(
     public QueryResult? Query(string queryName, QueryOptions? options = null)
     {
         options ??= new QueryOptions();
-        var transformedName = _nameTransformer.Transform(queryName);
+        var transformedName = nameTransformer.Transform(queryName);
 
         if ((options.MatchType & MatchType.Exact) != 0)
         {
@@ -62,7 +60,7 @@ internal class Normalizer(
                 return result;
         }
 
-        _logger.LogDebug("no result for {}", queryName);
+        logger.LogDebug("no result for {}", queryName);
         return null;
     }
 
@@ -108,7 +106,7 @@ internal class Normalizer(
         }
 
         var relevantSubstrings = substrings
-            .Select(_nameTransformer.Transform)
+            .Select(nameTransformer.Transform)
             .Where(transformed => transformed.Length != 0);
 
         List<QueryResultEntry> matches = new();
