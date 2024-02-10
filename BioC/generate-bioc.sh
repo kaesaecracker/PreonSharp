@@ -3,11 +3,12 @@
 dotnet tool run xscgen \
     --netCore \
     --nullable \
-    --namespace="PreonUsage.BioC" \
+    --namespace="BioC" \
     --collectionType="System.Collections.Generic.List\`1" \
     --complexTypesForCollections=false \
     --compactTypeNames \
     --nullableReferenceAttributes \
     --separateFiles \
     --unionCommonType \
-    --namespaceHierarchy BioC.xsd
+    -o ..\
+    BioC.xsd

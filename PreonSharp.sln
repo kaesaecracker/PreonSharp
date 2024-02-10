@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PreonUsage", "PreonUsage\Pr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PreonSharp.Loaders", "PreonSharp.Loaders\PreonSharp.Loaders.csproj", "{0E7ADE47-F1AA-4978-8DAF-822723B0E2D8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BioC", "BioC\BioC.csproj", "{1A64F8E0-72CE-40EA-9B62-A72FAE966D44}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{0E7ADE47-F1AA-4978-8DAF-822723B0E2D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E7ADE47-F1AA-4978-8DAF-822723B0E2D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E7ADE47-F1AA-4978-8DAF-822723B0E2D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A64F8E0-72CE-40EA-9B62-A72FAE966D44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A64F8E0-72CE-40EA-9B62-A72FAE966D44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A64F8E0-72CE-40EA-9B62-A72FAE966D44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A64F8E0-72CE-40EA-9B62-A72FAE966D44}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
