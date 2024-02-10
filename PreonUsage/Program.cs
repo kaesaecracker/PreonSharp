@@ -54,6 +54,9 @@ internal sealed class Program
 
         serviceCollection.AddNormalizer(builder =>
         {
+            builder.AddExactMatchStrategy();
+            builder.AddLevenshteinMatchStrategy();
+
             foreach (var path in Directory.GetFiles("ebi", "*.tsv"))
                 builder.AddEbiTsv(path);
 

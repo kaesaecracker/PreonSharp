@@ -45,6 +45,7 @@ public static class LoaderServiceCollectionExtensions
                 HasHeaderRecord = false,
                 Quote = '\0',
                 Mode = CsvMode.NoEscape,
+                WhiteSpaceChars = [' ', '\t'],
             });
         return builder;
     }
