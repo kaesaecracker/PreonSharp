@@ -1,5 +1,4 @@
 using System.Globalization;
-using CsvHelper;
 using CsvHelper.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -20,33 +19,17 @@ public static class LoaderServiceCollectionExtensions
         return builder;
     }
 
-    public static INormalizerBuilder AddNcbiGeneTsv(this INormalizerBuilder builder, string path)
+    public static INormalizerBuilder AddNcbiGeneTsv(this INormalizerBuilder builder, Action<NcbiGeneTsvConfiguration> configure)
     {
-        builder.Services.AddSingleton<IKnowledgeProvider>(sp =>
-            ActivatorUtilities.CreateInstance<NcbiGeneTsvKnowledgeProvider>(sp, path));
-        builder.Services.TryAddKeyedSingleton<IReaderConfiguration>("NcbiGeneTsv",
-            (_, _) => new CsvConfiguration(CultureInfo.InvariantCulture)
-            {
-                Delimiter = "\t",
-                Quote = '\0',
-                Mode = CsvMode.NoEscape,
-            });
+        builder.Services.AddSingleton<IKnowledgeProvider,NcbiGeneTsvKnowledgeProvider>();
+        builder.Services.Configure(configure);
         return builder;
     }
 
-    public static INormalizerBuilder AddNcbiTaxonomy(this INormalizerBuilder builder, string path)
+    public static INormalizerBuilder AddNcbiTaxonomy(this INormalizerBuilder builder, Action<NcbiTaxonomyConfiguration> configure)
     {
-        builder.Services.AddSingleton<IKnowledgeProvider>(sp =>
-            ActivatorUtilities.CreateInstance<NcbiTaxonomyProvider>(sp, path));
-        builder.Services.TryAddKeyedSingleton<IReaderConfiguration>("NcbiTaxonomyTsv",
-            (_, _) => new CsvConfiguration(CultureInfo.InvariantCulture)
-            {
-                Delimiter = "|",
-                HasHeaderRecord = false,
-                Quote = '\0',
-                Mode = CsvMode.NoEscape,
-                WhiteSpaceChars = [' ', '\t'],
-            });
+        builder.Services.AddSingleton<IKnowledgeProvider,NcbiTaxonomyProvider >();
+        builder.Services.Configure(configure);
         return builder;
     }
 }

@@ -16,20 +16,20 @@ internal sealed class Normalizer : INormalizer
     {
         _logger = logger;
         _nameTransformer = nameTransformer;
-        _normalizedNames = knowledgeAggregator.GetAggregatedKnowledge();
+        _normalizedNames = knowledgeAggregator.GetAggregatedKnowledge().Result;
         _logger.LogInformation("normalizer ready");
         _matchStrategies = matchStrategies.OrderBy(s => s.Cost).ToArray();
     }
 
     public int NameCount => _normalizedNames.Count;
 
-    public QueryResult? Query(string queryName)
+    public async Task<QueryResult?> QueryAsync(string queryName)
     {
         var transformedName = _nameTransformer.Transform(queryName);
 
         foreach (var strategy in _matchStrategies)
         {
-            var result = strategy.FindMatch(transformedName, _normalizedNames);
+            var result = await strategy.FindMatchAsync(transformedName, _normalizedNames);
             if (result != null)
                 return result;
         }

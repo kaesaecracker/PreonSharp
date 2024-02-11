@@ -10,14 +10,14 @@ internal sealed class LevenshteinMatchStrategy(IOptions<LevenshteinMatchOptions>
 
     public int Cost => 1000;
 
-    public QueryResult? FindMatch(string transformedName,
+    public async Task<QueryResult?> FindMatchAsync(string transformedName,
         FrozenDictionary<string, FrozenSet<NamespacedId>> normalizedNames)
     {
         var minDist = decimal.MaxValue;
         List<QueryResultEntry> minDistValues = [];
 
         var distanceObj = new Levenshtein(transformedName);
-        foreach (var (otherName, otherIds) in normalizedNames)
+        await foreach (var (otherName, otherIds) in normalizedNames.ToAsyncEnumerable())
         {
             var distance = distanceObj.DistanceFrom(otherName)
                            / (decimal)Math.Max(transformedName.Length, otherName.Length);

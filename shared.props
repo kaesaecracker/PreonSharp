@@ -9,5 +9,6 @@
         <AnalysisMode>Recommended</AnalysisMode>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <WarningsNotAsErrors>CA1848</WarningsNotAsErrors>
+        <NoWarn>CA1805</NoWarn>
     </PropertyGroup>
 </Project>

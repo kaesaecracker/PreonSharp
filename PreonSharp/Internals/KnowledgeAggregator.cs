@@ -17,14 +17,14 @@ internal sealed class KnowledgeAggregator
         _nameTransformer = nameTransformer;
     }
 
-    public FrozenDictionary<string,FrozenSet<NamespacedId>> GetAggregatedKnowledge()
+    public async Task<FrozenDictionary<string, FrozenSet<NamespacedId>>> GetAggregatedKnowledge()
     {
         _logger.LogInformation("Aggregating knowledge from {} providers", _knowledgeProviders.Length);
         Dictionary<string, HashSet<NamespacedId>> wipNames = new();
         foreach (var provider in _knowledgeProviders)
         {
             var namespacedId = new NamespacedId(provider.SourceName, string.Empty);
-            foreach (var (name, id) in provider.GetNameIdPairs())
+            await foreach (var (name, id) in provider.GetNameIdPairs())
             {
                 var transformedName = _nameTransformer.Transform(name);
                 namespacedId = namespacedId with { Id = id };

@@ -1,5 +1,4 @@
 using System.IO;
-using CsvHelper;
 using CsvHelper.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,7 +11,7 @@ internal sealed class EbiTsvKnowledgeProvider(
 {
     public string SourceName => $"{nameof(EbiTsvKnowledgeProvider)} {path}";
 
-    public IEnumerable<(string, string)> GetNameIdPairs()
+    public async IAsyncEnumerable<(string, string)> GetNameIdPairs()
     {
         logger.LogInformation("loading file {}", path);
         using var reader = new StreamReader(path);
@@ -22,7 +21,7 @@ internal sealed class EbiTsvKnowledgeProvider(
         csv.ReadHeader();
         var nameIndex = csv.GetFieldIndex("Name");
         var idIndex = csv.GetFieldIndex("ChEMBL ID");
-        while (csv.Read())
+        while (await csv.ReadAsync())
         {
             var name = csv.GetField(nameIndex);
             if (string.IsNullOrWhiteSpace(name))

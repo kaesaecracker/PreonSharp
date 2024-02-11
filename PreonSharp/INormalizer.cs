@@ -2,5 +2,5 @@ namespace PreonSharp;
 
 public interface INormalizer
 {
-    QueryResult? Query(string queryName);
+    Task<QueryResult?> QueryAsync(string queryName);
 }

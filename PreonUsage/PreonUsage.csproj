@@ -19,7 +19,7 @@
         <None Update="ebi/*.tsv" CopyToOutputDirectory="PreserveNewest"/>
         <None Update="ncbi/*.tsv" CopyToOutputDirectory="PreserveNewest"/>
         <None Update="ncbi/*.dmp" CopyToOutputDirectory="PreserveNewest"/>
-        <None Update="corpora/nlm_geme/*.xml" CopyToOutputDirectory="PreserveNewest"/>
+        <None Update="corpora/nlm_gene/*.xml" CopyToOutputDirectory="PreserveNewest"/>
     </ItemGroup>
 
 </Project>
