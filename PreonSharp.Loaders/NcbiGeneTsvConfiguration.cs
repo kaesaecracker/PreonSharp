@@ -11,13 +11,13 @@ public class NcbiGeneTsvConfiguration
 
     public int IdColumn { get; set; } = 2;
 
-    public int TestingSubset { get; set; }
+    public int SkipRows { get; set; } = 1;
 
-    public CsvConfiguration CsvReaderConfiguration { get; } = new CsvConfiguration(CultureInfo.InvariantCulture)
+    public CsvConfiguration CsvReaderConfiguration { get; } = new(CultureInfo.InvariantCulture)
     {
         Delimiter = "\t",
         Quote = '\0',
         Mode = CsvMode.NoEscape,
-        WhiteSpaceChars = [' ', '\t'],
+        WhiteSpaceChars = [' '],
     };
 }

@@ -19,16 +19,18 @@ public static class LoaderServiceCollectionExtensions
         return builder;
     }
 
-    public static INormalizerBuilder AddNcbiGeneTsv(this INormalizerBuilder builder, Action<NcbiGeneTsvConfiguration> configure)
+    public static INormalizerBuilder AddNcbiGeneTsv(this INormalizerBuilder builder,
+        Action<NcbiGeneTsvConfiguration> configure)
     {
-        builder.Services.AddSingleton<IKnowledgeProvider,NcbiGeneTsvKnowledgeProvider>();
+        builder.Services.AddSingleton<IKnowledgeProvider, NcbiGeneTsvKnowledgeProvider>();
         builder.Services.Configure(configure);
         return builder;
     }
 
-    public static INormalizerBuilder AddNcbiTaxonomy(this INormalizerBuilder builder, Action<NcbiTaxonomyConfiguration> configure)
+    public static INormalizerBuilder AddNcbiTaxonomy(this INormalizerBuilder builder,
+        Action<NcbiTaxonomyConfiguration> configure)
     {
-        builder.Services.AddSingleton<IKnowledgeProvider,NcbiTaxonomyProvider >();
+        builder.Services.AddSingleton<IKnowledgeProvider, NcbiTaxonomyProvider>();
         builder.Services.Configure(configure);
         return builder;
     }

@@ -19,7 +19,8 @@ internal sealed class Program
             builder.AddSimpleConsole(options =>
             {
                 options.SingleLine = false;
-                options.TimestampFormat = "HH:mm:ss ";
+                options.TimestampFormat = "HH:mm:ss.ffff ";
+                options.IncludeScopes = true;
             });
         })
         .AddNormalizer(builder => builder
@@ -29,7 +30,7 @@ internal sealed class Program
             .AddNcbiGeneTsv(c =>
             {
                 c.TsvFile = "ncbi/gene_info.tsv";
-                c.TestingSubset = 10;
+                c.SkipRows = 10;
             }))
         .BuildServiceProvider();
 }

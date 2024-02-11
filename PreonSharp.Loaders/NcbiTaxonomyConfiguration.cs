@@ -5,7 +5,7 @@ namespace PreonSharp.Loaders;
 
 public class NcbiTaxonomyConfiguration
 {
-    public CsvConfiguration CsvReaderConfiguration { get; } = new CsvConfiguration(CultureInfo.InvariantCulture)
+    public CsvConfiguration CsvReaderConfiguration { get; } = new(CultureInfo.InvariantCulture)
     {
         Delimiter = "|",
         HasHeaderRecord = false,

@@ -1,46 +1,36 @@
-using System.IO;
-using Microsoft.Extensions.Options;
-
 namespace PreonSharp.Loaders;
 
 internal sealed class NcbiTaxonomyProvider : IKnowledgeProvider
 {
-    private readonly ILogger<NcbiTaxonomyProvider> _logger;
     private readonly NcbiTaxonomyConfiguration _config;
-    private readonly string _file;
+    private readonly ILogger<NcbiTaxonomyProvider> _logger;
 
     public NcbiTaxonomyProvider(ILogger<NcbiTaxonomyProvider> logger,
         IOptions<NcbiTaxonomyConfiguration> config)
     {
         _logger = logger;
         _config = config.Value;
-
-        if (!File.Exists(_config.NamesDmpFile))
-        {
-            throw new FileNotFoundException(
-                $"invalid {nameof(NcbiGeneTsvConfiguration.TsvFile)} configured",
-                _config.NamesDmpFile);
-        }
-
-        _file = _config.NamesDmpFile;
+        ArgumentNullException.ThrowIfNull(_config.NamesDmpFile);
     }
 
     public string SourceName => nameof(NcbiTaxonomyProvider);
 
     public async IAsyncEnumerable<(string, string)> GetNameIdPairs()
     {
-        _logger.LogInformation("loading file {}", _file);
-        using var reader = new StreamReader(_file);
-        using var csv = new CsvReader(reader, _config.CsvReaderConfiguration);
+        _logger.LogInformation("opening file {}", _config.NamesDmpFile);
+        await using var loader = new GenericCsvLoader(
+            _config.CsvReaderConfiguration,
+            [_config.NamesDmpNameColumn, _config.NamesDmpIdColumn],
+            _config.NamesDmpFile!
+        );
 
-        while (await csv.ReadAsync())
+        while (await loader.MoveNextAsync())
         {
-            var name = csv.GetField(_config.NamesDmpNameColumn);
-            if (string.IsNullOrWhiteSpace(name))
-                continue;
+            var row = loader.Current;
+            if (string.IsNullOrWhiteSpace(row[0]))
+                continue; // no name
 
-            var id = csv.GetField(_config.NamesDmpIdColumn);
-            yield return (name, id);
+            yield return (row[0], row[1]);
         }
     }
 }

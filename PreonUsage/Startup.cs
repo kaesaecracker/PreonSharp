@@ -48,11 +48,16 @@ internal sealed class Startup
             .Distinct()
             .ToAsyncEnumerable();
 
-        await foreach (var (text, expectedId) in result)
+        await Parallel.ForEachAsync(result, new ParallelOptions
         {
+            MaxDegreeOfParallelism = Math.Max(2, Environment.ProcessorCount / 4),
+        }, async (tuple, token) =>
+        {
+            var (text, expectedId) = tuple;
             var queryResult = await _normalizer.QueryAsync(text);
             _logger.LogInformation("{}: expected {} got {}", text, expectedId,
                 JsonSerializer.Serialize(queryResult, _prettyPrint));
-        }
+
+        });
     }
 }

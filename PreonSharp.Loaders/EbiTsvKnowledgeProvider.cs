@@ -17,7 +17,7 @@ internal sealed class EbiTsvKnowledgeProvider(
         using var reader = new StreamReader(path);
         using var csv = new CsvReader(reader, ebiTsv);
 
-        csv.Read();
+        await csv.ReadAsync();
         csv.ReadHeader();
         var nameIndex = csv.GetFieldIndex("Name");
         var idIndex = csv.GetFieldIndex("ChEMBL ID");

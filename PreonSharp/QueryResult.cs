@@ -5,7 +5,7 @@ public record class QueryResult(
     IReadOnlyList<QueryResultEntry> Entries,
     decimal? EditDistance = null);
 
-public record class QueryResultEntry(
+public record struct QueryResultEntry(
     string Name,
     IReadOnlySet<NamespacedId> Ids
 );
