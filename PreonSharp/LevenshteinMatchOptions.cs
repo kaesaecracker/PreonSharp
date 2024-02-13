@@ -1,11 +1,9 @@
 namespace PreonSharp;
 
-public record class LevenshteinMatchOptions(
-    decimal Threshold,
-    int Decimals
-)
+public class LevenshteinMatchOptions
 {
-    public LevenshteinMatchOptions() : this(0.2m, 3)
-    {
-    }
+    public decimal Threshold { get; init; } = 0.2m;
+    public int Decimals { get; init; } = 3;
+
+    public ParallelOptions ParallelOptions { get; set; } = new();
 };

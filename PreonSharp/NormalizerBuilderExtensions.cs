@@ -5,8 +5,8 @@ namespace PreonSharp;
 public static class NormalizerBuilderExtensions
 {
     public static INormalizerBuilder AddSeries(this INormalizerBuilder builder, string kbName,
-        IAsyncEnumerable<string> names,
-        IAsyncEnumerable<string> ids)
+        IEnumerable<string> names,
+        IEnumerable<string> ids)
     {
         builder.Services.AddSingleton<IKnowledgeProvider>(new SeriesKnowledge(kbName, names, ids));
         return builder;
@@ -30,7 +30,7 @@ public static class NormalizerBuilderExtensions
     {
         builder.AddMatchStrategy<LevenshteinMatchStrategy>();
         if (configure != null)
-            builder.Services.Configure<LevenshteinMatchOptions>(configure);
+            builder.Services.Configure(configure);
         return builder;
     }
 }

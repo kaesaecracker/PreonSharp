@@ -22,13 +22,13 @@ internal sealed class KnowledgeAggregator
 
     public Task<FrozenDictionary<string, FrozenSet<NamespacedId>>> GetAggregatedKnowledge() => _knowledgeTask;
 
-    private async Task AggregateFrom(IKnowledgeProvider provider,
+    private void AggregateFrom(IKnowledgeProvider provider,
         ConcurrentDictionary<string, ConcurrentBag<NamespacedId>> wipNames)
     {
-        await foreach (var nameIdPair in provider.GetNameIdPairs())
+        foreach (var (name, id) in provider.GetNameIdPairs())
         {
-            var transformedName = _nameTransformer.Transform(nameIdPair.Item1);
-            var namespacedId = new NamespacedId(string.Empty, nameIdPair.Item2);
+            var transformedName = _nameTransformer.Transform(name);
+            var namespacedId = new NamespacedId(string.Empty, id);
 
             wipNames.GetOrAdd(transformedName, _ => [])
                 .Add(namespacedId);
@@ -40,13 +40,12 @@ internal sealed class KnowledgeAggregator
         _logger.LogInformation("Aggregating knowledge from {} providers", _knowledgeProviders.Length);
         ConcurrentDictionary<string, ConcurrentBag<NamespacedId>> wipNames = new();
 
-        var done = false;
-        var buildTask = Task.WhenAll(_knowledgeProviders.Select(p => AggregateFrom(p, wipNames)))
-            .ContinueWith(_ => done = true);
+        var buildTasks = _knowledgeProviders.Select(p => Task.Run(() => AggregateFrom(p, wipNames)));
+        var buildDoneTask = Task.WhenAll(buildTasks);
 
         var nextOutput = 0;
         const int delta = 100000;
-        while (!done)
+        while (!buildDoneTask.IsCompleted)
         {
             await Task.Delay(10);
             var count = wipNames.Count;
@@ -57,8 +56,7 @@ internal sealed class KnowledgeAggregator
             nextOutput = count + delta;
         }
 
-        await buildTask;
-
+        await buildDoneTask;
         _logger.LogInformation("loaded {} names, freezing now", wipNames.Count);
         return wipNames.ToFrozenDictionary(
             kvp => kvp.Key,

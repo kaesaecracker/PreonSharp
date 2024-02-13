@@ -4,5 +4,5 @@ public interface IKnowledgeProvider
 {
     string SourceName { get; }
 
-    IAsyncEnumerable<(string, string)> GetNameIdPairs();
+    IEnumerable<(string, string)> GetNameIdPairs();
 }

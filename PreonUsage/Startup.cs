@@ -1,6 +1,8 @@
+using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Xml;
 using System.Xml.Serialization;
 using PreonSharp;
@@ -46,18 +48,17 @@ internal sealed class Startup
             .Where(tuple => tuple.NcbiId != null)
             .Select(tuple => (tuple.Text, NcbiIdentifier: string.Join(" ", tuple.NcbiId!)))
             .Distinct()
-            .ToAsyncEnumerable();
+            .Take(50);
 
         await Parallel.ForEachAsync(result, new ParallelOptions
         {
-            MaxDegreeOfParallelism = Math.Max(2, Environment.ProcessorCount / 4),
+            MaxDegreeOfParallelism = 1,//Math.Max(2, Environment.ProcessorCount / 4),
         }, async (tuple, token) =>
         {
             var (text, expectedId) = tuple;
-            var queryResult = await _normalizer.QueryAsync(text);
+            QueryResult? queryResult = await _normalizer.QueryAsync(text);
             _logger.LogInformation("{}: expected {} got {}", text, expectedId,
                 JsonSerializer.Serialize(queryResult, _prettyPrint));
-
         });
     }
 }
