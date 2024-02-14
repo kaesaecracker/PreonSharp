@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    
+    <Import Project="..\shared.props" />
+    
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>  
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+        <RootNamespace>PreonBenchmarks</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="BenchmarkDotNet" Version="0.13.12" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\PreonSharp.Levenshtein\PreonSharp.Levenshtein.csproj" />
+    </ItemGroup>
+
+</Project>

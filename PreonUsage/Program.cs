@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using PreonSharp;
 using PreonSharp.Loaders;
-using Levenshtein;
+using PreonSharp.Levenshtein;
 
 namespace PreonUsage;
 

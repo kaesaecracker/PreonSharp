@@ -1,6 +1,6 @@
-namespace Levenshtein;
+namespace PreonSharp.Levenshtein;
 
-internal sealed class UnweightedLevenshteinCosts : ILevenshteinCosts
+public sealed class UnweightedLevenshteinCosts : ILevenshteinCosts
 {
     public int GetInsertCost(char charToInsert) => 1;
     public int GetDeleteCost(char charToDelete) => 1;

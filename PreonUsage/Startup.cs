@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -29,7 +28,7 @@ internal sealed class Startup
 
     public async Task Run()
     {
-        var serializer = new XmlSerializer(typeof(BioC.Collection));
+        var serializer = new XmlSerializer(typeof(BioCXml.Collection));
         var xmlReaderSettings = new XmlReaderSettings()
         {
             DtdProcessing = DtdProcessing.Ignore,
@@ -38,7 +37,7 @@ internal sealed class Startup
         var result = Directory.GetFiles("corpora/nlm_gene", "*.XML")
             .Select(p => File.Open(p, new FileStreamOptions()))
             .Select(fs => XmlReader.Create(fs, xmlReaderSettings))
-            .Select(reader => (BioC.Collection)serializer.Deserialize(reader)!)
+            .Select(reader => (BioCXml.Collection)serializer.Deserialize(reader)!)
             .SelectMany(collection => collection.Document)
             .SelectMany(d => d.Passage)
             .SelectMany(p => p.Annotation)

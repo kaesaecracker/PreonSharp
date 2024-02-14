@@ -10,13 +10,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\BioC\BioC.csproj" />
-        <ProjectReference Include="..\Levenshtein\Levenshtein.csproj" />
+        <ProjectReference Include="..\BioCXml\BioCXml.csproj" />
+        <ProjectReference Include="..\PreonSharp.Levenshtein\PreonSharp.Levenshtein.csproj" />
         <ProjectReference Include="..\PreonSharp.Loaders\PreonSharp.Loaders.csproj"/>
         <ProjectReference Include="..\PreonSharp\PreonSharp.csproj"/>
     </ItemGroup>
 
-    <!-- Condition="'$(Configuration)' == 'Debug'"-->
     <ItemGroup>
         <None Update="ebi/*.tsv" CopyToOutputDirectory="PreserveNewest"/>
         <None Update="ncbi/*.tsv" CopyToOutputDirectory="PreserveNewest"/>
