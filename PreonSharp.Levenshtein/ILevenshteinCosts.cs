@@ -1,4 +1,4 @@
-namespace Levenshtein;
+namespace PreonSharp.Levenshtein;
 
 public interface ILevenshteinCosts
 {

@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using PreonSharp;
 
-namespace Levenshtein;
+namespace PreonSharp.Levenshtein;
 
 public static class LevenshteinServiceCollectionExtension
 {

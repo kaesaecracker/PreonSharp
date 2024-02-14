@@ -2,8 +2,4 @@
 
     <Import Project="../shared.props"/>
 
-    <PropertyGroup>
-        <RootNamespace>BioC</RootNamespace>
-    </PropertyGroup>
-
 </Project>

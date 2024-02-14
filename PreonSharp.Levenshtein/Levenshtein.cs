@@ -2,7 +2,7 @@ using System.Buffers;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
-namespace Levenshtein;
+namespace PreonSharp.Levenshtein;
 
 public sealed class Levenshtein(ArrayPool<int> pool, ILevenshteinCosts costFunctions)
 {

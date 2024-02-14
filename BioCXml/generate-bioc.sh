@@ -3,7 +3,7 @@
 dotnet tool run xscgen \
     --netCore \
     --nullable \
-    --namespace="BioC" \
+    --namespace="BioCXml" \
     --collectionType="System.Collections.Generic.List\`1" \
     --complexTypesForCollections=false \
     --compactTypeNames \

@@ -1,7 +1,7 @@
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
-namespace Levenshtein;
+namespace PreonSharp.Levenshtein;
 
 internal static class MathExtensions
 {

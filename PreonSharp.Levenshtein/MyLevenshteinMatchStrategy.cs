@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using PreonSharp;
 
-namespace Levenshtein;
+namespace PreonSharp.Levenshtein;
 
 public sealed class MyLevenshteinMatchStrategy(IOptions<LevenshteinMatchOptions> options, ILevenshteinCosts costFunctions) : IMatchStrategy
 {
