@@ -2,7 +2,7 @@ using System.Collections.Frozen;
 using Fastenshtein;
 using Microsoft.Extensions.Options;
 
-namespace PreonSharp.Internals;
+namespace PreonSharp.Fastenshtein;
 
 internal sealed class LevenshteinMatchStrategy(IOptions<LevenshteinMatchOptions> options) : IMatchStrategy
 {

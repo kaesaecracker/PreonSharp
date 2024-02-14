@@ -7,7 +7,10 @@ public static class NormalizerServiceCollectionExtensions
 {
     public static IServiceCollection AddNormalizer(this IServiceCollection services, Action<INormalizerBuilder> configure)
     {
-        configure(new NormalizerBuilder(services));
+        var builder = new NormalizerBuilder(services);
+        configure(builder);
+        builder.AddMatchStrategy<ExactMatchStrategy>();
+        
         services.TryAddSingleton<INormalizer, Normalizer>();
         services.TryAddSingleton<INameTransformer, DefaultNameTransformer>();
         services.TryAddSingleton<KnowledgeAggregator>();

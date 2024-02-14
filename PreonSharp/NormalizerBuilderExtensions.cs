@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using PreonSharp.Internals;
 
 namespace PreonSharp;
@@ -15,22 +16,7 @@ public static class NormalizerBuilderExtensions
     public static INormalizerBuilder AddMatchStrategy<T>(this INormalizerBuilder builder)
         where T : class, IMatchStrategy
     {
-        builder.Services.AddSingleton<IMatchStrategy, T>();
-        return builder;
-    }
-
-    public static INormalizerBuilder AddExactMatchStrategy(this INormalizerBuilder builder)
-    {
-        builder.AddMatchStrategy<ExactMatchStrategy>();
-        return builder;
-    }
-
-    public static INormalizerBuilder AddLevenshteinMatchStrategy(this INormalizerBuilder builder,
-        Action<LevenshteinMatchOptions>? configure = null)
-    {
-        builder.AddMatchStrategy<LevenshteinMatchStrategy>();
-        if (configure != null)
-            builder.Services.Configure(configure);
+        builder.Services.TryAddSingleton<IMatchStrategy, T>();
         return builder;
     }
 }

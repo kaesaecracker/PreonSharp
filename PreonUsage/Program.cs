@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using PreonSharp;
+using PreonSharp.Fastenshtein;
 using PreonSharp.Loaders;
 using PreonSharp.Levenshtein;
 
@@ -32,8 +33,8 @@ internal static class Program
 
         services.AddNormalizer(builder =>
         {
-            builder.AddExactMatchStrategy();
-            builder.AddLevenshteinMatchStrategy();
+            //builder.AddLevenshteinMatchStrategy();
+            builder.AddFastenshteinMatchStrategy();
 
             builder.AddSepFile(new SepFileSpec
             {
