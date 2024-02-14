@@ -18,7 +18,6 @@ public sealed class MyLevenshteinMatchStrategy(IOptions<LevenshteinMatchOptions>
         var minDist = decimal.MaxValue;
         List<QueryResultEntry> minDistValues = [];
 
-        var distanceObj = new Levenshtein();
         var lockObj = new object();
 
         await Parallel.ForEachAsync(normalizedNames, _options.ParallelOptions, (pair, token) =>
@@ -26,8 +25,8 @@ public sealed class MyLevenshteinMatchStrategy(IOptions<LevenshteinMatchOptions>
             var (otherName, otherIds) = pair;
 
             var distance = Math.Round(
-                distanceObj.CalculateDistance(transformedName, otherName)
-                / Math.Max(transformedName.Length, otherName.Length)
+                Levenshtein.CalculateDistance(transformedName, otherName)
+                / (decimal)Math.Max(transformedName.Length, otherName.Length)
                 , _options.Decimals);
 
             lock (lockObj)
