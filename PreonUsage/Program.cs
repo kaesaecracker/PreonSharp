@@ -33,7 +33,7 @@ internal static class Program
         services.AddNormalizer(builder =>
         {
             builder.AddExactMatchStrategy();
-            builder.AddMatchStrategy<MyLevenshteinMatchStrategy>();
+            builder.AddLevenshteinMatchStrategy();
 
             builder.AddSepFile(new SepFileSpec
             {

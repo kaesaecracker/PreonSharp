@@ -21,8 +21,6 @@ internal sealed class Normalizer : INormalizer
         _matchStrategies = matchStrategies.OrderBy(s => s.Cost).ToArray();
     }
 
-    public int NameCount => _normalizedNames.Count;
-
     public async Task<QueryResult?> QueryAsync(string queryName)
     {
         var transformedName = _nameTransformer.Transform(queryName);

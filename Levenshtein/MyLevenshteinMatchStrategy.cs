@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -7,9 +8,10 @@ using PreonSharp;
 
 namespace Levenshtein;
 
-public sealed class MyLevenshteinMatchStrategy(IOptions<LevenshteinMatchOptions> options) : IMatchStrategy
+public sealed class MyLevenshteinMatchStrategy(IOptions<LevenshteinMatchOptions> options, ILevenshteinCosts costFunctions) : IMatchStrategy
 {
     private readonly LevenshteinMatchOptions _options = options.Value;
+    
     public int Cost => 1000;
 
     public async Task<QueryResult?> FindMatchAsync(string transformedName,
@@ -18,6 +20,7 @@ public sealed class MyLevenshteinMatchStrategy(IOptions<LevenshteinMatchOptions>
         var minDist = decimal.MaxValue;
         List<QueryResultEntry> minDistValues = [];
 
+        var distObj = new Levenshtein(ArrayPool<int>.Shared, costFunctions);
         var lockObj = new object();
 
         await Parallel.ForEachAsync(normalizedNames, _options.ParallelOptions, (pair, token) =>
@@ -25,7 +28,7 @@ public sealed class MyLevenshteinMatchStrategy(IOptions<LevenshteinMatchOptions>
             var (otherName, otherIds) = pair;
 
             var distance = Math.Round(
-                Levenshtein.CalculateDistance(transformedName, otherName)
+                distObj.CalculateDistance(transformedName, otherName)
                 / (decimal)Math.Max(transformedName.Length, otherName.Length)
                 , _options.Decimals);
 
