@@ -25,10 +25,11 @@ internal sealed class KnowledgeAggregator
     private void AggregateFrom(IKnowledgeProvider provider,
         ConcurrentDictionary<string, ConcurrentBag<NamespacedId>> wipNames)
     {
+        var nameSpace = provider.SourceName;
         foreach (var (name, id) in provider.GetNameIdPairs())
         {
             var transformedName = _nameTransformer.Transform(name);
-            var namespacedId = new NamespacedId(string.Empty, id);
+            var namespacedId = new NamespacedId(nameSpace, id);
 
             wipNames.GetOrAdd(transformedName, _ => [])
                 .Add(namespacedId);
