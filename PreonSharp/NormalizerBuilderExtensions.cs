@@ -1,4 +1,3 @@
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using PreonSharp.Internals;
 
 namespace PreonSharp;
@@ -16,7 +15,7 @@ public static class NormalizerBuilderExtensions
     public static INormalizerBuilder AddMatchStrategy<T>(this INormalizerBuilder builder)
         where T : class, IMatchStrategy
     {
-        builder.Services.TryAddSingleton<IMatchStrategy, T>();
+        builder.Services.AddSingleton<IMatchStrategy, T>();
         return builder;
     }
 }

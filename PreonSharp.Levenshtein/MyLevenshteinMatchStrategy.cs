@@ -1,54 +1,40 @@
 using System;
-using System.Buffers;
 using System.Collections.Frozen;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
-using PreonSharp;
 
 namespace PreonSharp.Levenshtein;
 
-public sealed class MyLevenshteinMatchStrategy(IOptions<LevenshteinMatchOptions> options, ILevenshteinCosts costFunctions) : IMatchStrategy
+public sealed class MyLevenshteinMatchStrategy : IMatchStrategy
 {
-    private readonly LevenshteinMatchOptions _options = options.Value;
-    
     public int Cost => 1000;
 
-    public async Task<QueryResult?> FindMatchAsync(string transformedName,
+    public QueryResult? FindMatch(string transformedName,
         FrozenDictionary<string, FrozenSet<NamespacedId>> normalizedNames)
     {
         var minDist = decimal.MaxValue;
         List<QueryResultEntry> minDistValues = [];
 
-        var distObj = new Levenshtein(ArrayPool<int>.Shared, costFunctions);
-        var lockObj = new object();
+        var distObj = new LevenshteinSearch(transformedName);
 
-        await Parallel.ForEachAsync(normalizedNames, _options.ParallelOptions, (pair, token) =>
+        foreach (var pair in normalizedNames)
         {
             var (otherName, otherIds) = pair;
 
-            var distance = Math.Round(
-                distObj.CalculateDistance(transformedName, otherName)
-                / (decimal)Math.Max(transformedName.Length, otherName.Length)
-                , _options.Decimals);
+            var distance = distObj.DistanceFrom(otherName)
+                           / (decimal)Math.Max(transformedName.Length, otherName.Length);
 
-            lock (lockObj)
+            if (distance < minDist)
             {
-                if (distance < minDist)
-                {
-                    minDistValues.Clear();
-                    minDist = distance;
-                }
-
-                if (distance == minDist)
-                    minDistValues.Add(new QueryResultEntry(otherName, otherIds));
+                minDistValues.Clear();
+                minDist = distance;
             }
 
-            return ValueTask.CompletedTask;
-        });
+            if (distance == minDist)
+                minDistValues.Add(new QueryResultEntry(otherName, otherIds));
+        }
 
 
-        if (minDist > _options.Threshold)
+        if (minDist == decimal.MaxValue)
             return null;
 
         return new QueryResult(

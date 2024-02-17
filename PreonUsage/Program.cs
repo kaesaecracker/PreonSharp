@@ -1,6 +1,4 @@
-﻿using System.IO;
-using PreonSharp;
-using PreonSharp.Fastenshtein;
+﻿using PreonSharp;
 using PreonSharp.Loaders;
 using PreonSharp.Levenshtein;
 
@@ -33,8 +31,8 @@ internal static class Program
 
         services.AddNormalizer(builder =>
         {
-            //builder.AddLevenshteinMatchStrategy();
-            builder.AddFastenshteinMatchStrategy();
+            builder.AddLevenshteinMatchStrategy();
+            //builder.AddFastenshteinMatchStrategy();
 
             builder.AddSepFile(new SepFileSpec
             {
@@ -44,16 +42,7 @@ internal static class Program
                 NameColumnIndex = 1,
                 IdColumnIndex = 0,
             });
-
-            builder.AddSepFile(new SepFileSpec
-            {
-                FilePath = "ncbi/gene_info.tsv",
-                Separator = '\t',
-                HasHeader = true,
-                NameColumnIndex = 8,
-                IdColumnIndex = 2,
-            });
-
+            
             builder.AddSepFile(new SepFileSpec
             {
                 FilePath = "ncbi/gene_info.tsv",

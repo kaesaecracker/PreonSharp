@@ -6,5 +6,5 @@ public interface IMatchStrategy
 {
     int Cost { get; }
 
-    Task<QueryResult?> FindMatchAsync(string transformedName, FrozenDictionary<string, FrozenSet<NamespacedId>> normalizedNames);
+    QueryResult? FindMatch(string transformedName, FrozenDictionary<string, FrozenSet<NamespacedId>> normalizedNames);
 }

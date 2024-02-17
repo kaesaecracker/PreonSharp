@@ -18,6 +18,11 @@
 
     <ItemGroup>
       <ProjectReference Include="..\PreonSharp.Levenshtein\PreonSharp.Levenshtein.csproj" />
+      <ProjectReference Include="..\PreonTests\PreonTests.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="LevenshteinDistanceBenchmarks.cs" />
     </ItemGroup>
 
 </Project>

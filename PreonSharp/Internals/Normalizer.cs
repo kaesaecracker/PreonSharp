@@ -21,18 +21,18 @@ internal sealed class Normalizer : INormalizer
         _matchStrategies = matchStrategies.OrderBy(s => s.Cost).ToArray();
     }
 
-    public async Task<QueryResult?> QueryAsync(string queryName)
+    public Task<QueryResult?> QueryAsync(string queryName)
     {
         var transformedName = _nameTransformer.Transform(queryName);
 
         foreach (var strategy in _matchStrategies)
         {
-            var result = await strategy.FindMatchAsync(transformedName, _normalizedNames);
+            var result = strategy.FindMatch(transformedName, _normalizedNames);
             if (result != null)
-                return result;
+                return Task.FromResult<QueryResult?>(result);
         }
 
         _logger.LogDebug("no result for {}", queryName);
-        return null;
+        return Task.FromResult<QueryResult?>(null);
     }
 }

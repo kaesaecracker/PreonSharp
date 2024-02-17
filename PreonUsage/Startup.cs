@@ -46,7 +46,7 @@ internal sealed class Startup
             .Where(tuple => tuple.NcbiId != null)
             .Select(tuple => (tuple.Text, NcbiIdentifier: string.Join(" ", tuple.NcbiId!)))
             .Distinct()
-            .Take(50);
+            .Take(15);
 
         await Parallel.ForEachAsync(result, new ParallelOptions
         {
