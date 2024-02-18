@@ -1,4 +1,5 @@
-﻿using PreonSharp;
+﻿using System.IO;
+using PreonSharp;
 using PreonSharp.Loaders;
 using PreonSharp.Levenshtein;
 
@@ -42,8 +43,7 @@ internal static class Program
                 NameColumnIndex = 1,
                 IdColumnIndex = 0,
             });
-            
-            /*
+
             builder.AddSepFile(new SepFileSpec
             {
                 FilePath = "ncbi/gene_info.tsv",
@@ -52,7 +52,7 @@ internal static class Program
                 NameColumnIndex = 8,
                 IdColumnIndex = 2,
             });
-
+            
             foreach (var file in Directory.GetFiles("ebi", "*.tsv"))
             {
                 builder.AddSepFile(new SepFileSpec
@@ -64,7 +64,6 @@ internal static class Program
                     IdColumnIndex = 0,
                 });
             }
-            */
         });
 
         return services.BuildServiceProvider();
