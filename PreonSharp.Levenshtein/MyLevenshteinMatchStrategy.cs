@@ -13,7 +13,7 @@ public sealed class MyLevenshteinMatchStrategy : IMatchStrategy
         FrozenDictionary<string, FrozenSet<string>> normalizedNames,
         CancellationToken? token = null)
     {
-        var minDist = decimal.MaxValue;
+        var minDist = int.MaxValue;
         List<QueryResultEntry> minDistValues = [];
 
         var distObj = new LevenshteinSearch(transformedName);
@@ -23,9 +23,7 @@ public sealed class MyLevenshteinMatchStrategy : IMatchStrategy
             token?.ThrowIfCancellationRequested();
             var (otherName, otherIds) = pair;
 
-            var distance = distObj.DistanceFrom(otherName)
-                           / (decimal)Math.Max(transformedName.Length, otherName.Length);
-
+            var distance = distObj.DistanceFrom(otherName);
             if (distance < minDist)
             {
                 minDistValues.Clear();
@@ -36,13 +34,14 @@ public sealed class MyLevenshteinMatchStrategy : IMatchStrategy
                 minDistValues.Add(new QueryResultEntry(otherName, otherIds));
         }
 
-        if (minDist == decimal.MaxValue)
+        if (minDist == int.MaxValue)
             return null;
 
+        var relativeDistance = minDist / (decimal)transformedName.Length;
         return new QueryResult(
             Type: MatchType.Partial,
             FoundIds: minDistValues,
-            EditDistance: minDist
+            EditDistance: relativeDistance
         );
     }
 }

@@ -4,7 +4,11 @@ public record class QueryResult(
     MatchType Type,
     IReadOnlyList<QueryResultEntry> FoundIds,
     TimeSpan? ExecutionTime = null,
-    decimal? EditDistance = null);
+    decimal? EditDistance = null)
+
+{
+    public override string ToString() => QueryResultJsonSerializerContext.Serialize(this);
+}
 
 public record struct QueryResultEntry(
     string Name,

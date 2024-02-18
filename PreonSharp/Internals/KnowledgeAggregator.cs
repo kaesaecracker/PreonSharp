@@ -41,22 +41,28 @@ internal sealed class KnowledgeAggregator
         var buildTasks = _knowledgeProviders.Select(p => Task.Run(() => AggregateFrom(p, wipNames)));
         var buildDoneTask = Task.WhenAll(buildTasks);
 
+        var lastOutputTime = DateTime.Now;
         var nextOutput = 0;
         const int delta = 100000;
         while (!buildDoneTask.IsCompleted)
         {
             await Task.Delay(10);
             var count = wipNames.Count;
-            if (count <= nextOutput)
+
+            var now = DateTime.Now;
+            bool shouldPrint = count > nextOutput || now - lastOutputTime > TimeSpan.FromSeconds(1);
+            if (!shouldPrint)
                 continue;
 
             _logger.LogDebug("loaded {:n0} names so far", count);
             nextOutput = count + delta;
+            lastOutputTime = now;
         }
 
         await buildDoneTask;
-        
-        _logger.LogInformation("loaded {:n0} names, freezing now", wipNames.Count);
+
+        var idCount = wipNames.Sum(kvp => kvp.Value.Count);
+        _logger.LogInformation("loaded {:n0} names with {:n0} ids, freezing now", wipNames.Count, idCount);
         return wipNames.ToFrozenDictionary(
             kvp => kvp.Key,
             kvp => kvp.Value.ToFrozenSet());

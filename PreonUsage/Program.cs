@@ -10,14 +10,14 @@ internal static class Program
     public static async Task Main()
     {
         var services = ConfigureServices();
-        await services.GetRequiredService<Startup>().Run();
+        await services.GetRequiredService<QueryGenerator>().Run(new DirectoryInfo("corpora/nlm_gene"));
     }
 
     private static ServiceProvider ConfigureServices()
     {
         var services = new ServiceCollection();
 
-        services.AddSingleton<Startup>();
+        services.AddSingleton<QueryGenerator>();
 
         services.AddLogging(builder =>
         {
@@ -52,7 +52,7 @@ internal static class Program
                 NameColumnIndex = 8,
                 IdColumnIndex = 2,
             });
-            
+
             foreach (var file in Directory.GetFiles("ebi", "*.tsv"))
             {
                 builder.AddSepFile(new SepFileSpec
