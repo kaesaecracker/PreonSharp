@@ -1,14 +1,16 @@
 using System.Collections.Frozen;
+using System.Threading;
 using Fastenshtein;
 
 namespace PreonSharp.Fastenshtein;
 
-internal sealed class LevenshteinMatchStrategy: IMatchStrategy
+internal sealed class LevenshteinMatchStrategy : IMatchStrategy
 {
     public int Cost => 1000;
 
     public QueryResult? FindMatch(string transformedName,
-        FrozenDictionary<string, FrozenSet<NamespacedId>> normalizedNames)
+        FrozenDictionary<string, FrozenSet<NamespacedId>> normalizedNames,
+        CancellationToken? token = null)
     {
         var minDist = decimal.MaxValue;
         List<QueryResultEntry> minDistValues = [];
@@ -16,6 +18,8 @@ internal sealed class LevenshteinMatchStrategy: IMatchStrategy
         var distanceObj = new Levenshtein(transformedName);
         foreach (var (otherName, otherIds) in normalizedNames)
         {
+            token?.ThrowIfCancellationRequested();
+            
             var distance = distanceObj.DistanceFrom(otherName)
                            / (decimal)Math.Max(transformedName.Length, otherName.Length);
 
