@@ -8,13 +8,13 @@ internal sealed class ExactMatchStrategy : IMatchStrategy
 
     public QueryResult? FindMatch(
         string transformedName,
-        FrozenDictionary<string, FrozenSet<NamespacedId>> normalizedNames,
+        FrozenDictionary<string, FrozenSet<string>> normalizedNames,
         CancellationToken? token = null)
     {
         if (!normalizedNames.TryGetValue(transformedName, out var foundIds))
             return null;
 
-        return new QueryResult(Type: MatchType.Exact, Entries:
+        return new QueryResult(Type: MatchType.Exact, FoundIds:
         [
             new QueryResultEntry(transformedName, foundIds)
         ]);

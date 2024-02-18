@@ -17,7 +17,7 @@ public class UnitTest1
     {
         var n = TestHelpers.BuildTestEnvironment(builder =>
             {
-                builder.AddSeries("test", new[] { "abcdef" }, new[] { "id001" });
+                builder.AddSeries(new[] { "abcdef" }, new[] { "id001" });
             })
             .GetRequiredService<INormalizer>();
         

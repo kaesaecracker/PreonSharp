@@ -2,10 +2,11 @@ namespace PreonSharp;
 
 public record class QueryResult(
     MatchType Type,
-    IReadOnlyList<QueryResultEntry> Entries,
+    IReadOnlyList<QueryResultEntry> FoundIds,
+    TimeSpan? ExecutionTime = null,
     decimal? EditDistance = null);
 
 public record struct QueryResultEntry(
     string Name,
-    IReadOnlySet<NamespacedId> Ids
+    IReadOnlySet<string> Ids
 );

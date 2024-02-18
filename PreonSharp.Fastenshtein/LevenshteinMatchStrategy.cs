@@ -9,7 +9,7 @@ internal sealed class LevenshteinMatchStrategy : IMatchStrategy
     public int Cost => 1000;
 
     public QueryResult? FindMatch(string transformedName,
-        FrozenDictionary<string, FrozenSet<NamespacedId>> normalizedNames,
+        FrozenDictionary<string, FrozenSet<string>> normalizedNames,
         CancellationToken? token = null)
     {
         var minDist = decimal.MaxValue;
@@ -38,7 +38,7 @@ internal sealed class LevenshteinMatchStrategy : IMatchStrategy
 
         return new QueryResult(
             Type: MatchType.Partial,
-            Entries: minDistValues,
+            FoundIds: minDistValues,
             EditDistance: minDist
         );
     }

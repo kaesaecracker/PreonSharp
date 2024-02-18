@@ -8,7 +8,7 @@ internal sealed class KnowledgeAggregator
     private readonly IKnowledgeProvider[] _knowledgeProviders;
     private readonly ILogger<KnowledgeAggregator> _logger;
     private readonly INameTransformer _nameTransformer;
-    private readonly Task<FrozenDictionary<string, FrozenSet<NamespacedId>>> _knowledgeTask;
+    private readonly Task<FrozenDictionary<string, FrozenSet<string>>> _knowledgeTask;
 
     public KnowledgeAggregator(IEnumerable<IKnowledgeProvider> knowledgeProviders,
         ILogger<KnowledgeAggregator> logger,
@@ -20,26 +20,23 @@ internal sealed class KnowledgeAggregator
         _knowledgeTask = BuildKnowledge();
     }
 
-    public Task<FrozenDictionary<string, FrozenSet<NamespacedId>>> GetAggregatedKnowledge() => _knowledgeTask;
+    public Task<FrozenDictionary<string, FrozenSet<string>>> GetAggregatedKnowledge() => _knowledgeTask;
 
     private void AggregateFrom(IKnowledgeProvider provider,
-        ConcurrentDictionary<string, ConcurrentBag<NamespacedId>> wipNames)
+        ConcurrentDictionary<string, ConcurrentBag<string>> wipNames)
     {
-        var nameSpace = provider.SourceName;
         foreach (var (name, id) in provider.GetNameIdPairs())
         {
             var transformedName = _nameTransformer.Transform(name);
-            var namespacedId = new NamespacedId(nameSpace, id);
-
             wipNames.GetOrAdd(transformedName, _ => [])
-                .Add(namespacedId);
+                .Add(id);
         }
     }
 
-    private async Task<FrozenDictionary<string, FrozenSet<NamespacedId>>> BuildKnowledge()
+    private async Task<FrozenDictionary<string, FrozenSet<string>>> BuildKnowledge()
     {
         _logger.LogInformation("Aggregating knowledge from {} providers", _knowledgeProviders.Length);
-        ConcurrentDictionary<string, ConcurrentBag<NamespacedId>> wipNames = new();
+        ConcurrentDictionary<string, ConcurrentBag<string>> wipNames = new();
 
         var buildTasks = _knowledgeProviders.Select(p => Task.Run(() => AggregateFrom(p, wipNames)));
         var buildDoneTask = Task.WhenAll(buildTasks);
@@ -53,12 +50,13 @@ internal sealed class KnowledgeAggregator
             if (count <= nextOutput)
                 continue;
 
-            _logger.LogDebug("loaded {} names so far", count);
+            _logger.LogDebug("loaded {:n0} names so far", count);
             nextOutput = count + delta;
         }
 
         await buildDoneTask;
-        _logger.LogInformation("loaded {} names, freezing now", wipNames.Count);
+        
+        _logger.LogInformation("loaded {:n0} names, freezing now", wipNames.Count);
         return wipNames.ToFrozenDictionary(
             kvp => kvp.Key,
             kvp => kvp.Value.ToFrozenSet());

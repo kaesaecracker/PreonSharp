@@ -6,5 +6,5 @@ public interface IMatchStrategy
 {
     int Cost { get; }
 
-    QueryResult? FindMatch(string transformedName, FrozenDictionary<string, FrozenSet<NamespacedId>> normalizedNames, CancellationToken? token = null);
+    QueryResult? FindMatch(string transformedName, FrozenDictionary<string, FrozenSet<string>> normalizedNames, CancellationToken? token = null);
 }

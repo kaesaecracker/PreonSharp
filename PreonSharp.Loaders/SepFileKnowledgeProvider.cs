@@ -9,8 +9,6 @@ public class SepFileKnowledgeProvider(SepFileSpec spec, ILogger<SepFileKnowledge
 {
     private readonly ILogger _logger = logger;
 
-    public string SourceName => nameof(SepFileKnowledgeProvider);
-
     public IEnumerable<(string, string)> GetNameIdPairs()
     {
         _logger.LogInformation("opening file {}", spec.FilePath);
