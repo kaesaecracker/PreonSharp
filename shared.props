@@ -4,6 +4,10 @@
         <ImplicitUsings>disable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
+    
+    <PropertyGroup>
+        <IsAotCompatible>true</IsAotCompatible>
+    </PropertyGroup>
 
     <PropertyGroup>
         <AnalysisMode>Recommended</AnalysisMode>

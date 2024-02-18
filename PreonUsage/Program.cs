@@ -43,6 +43,7 @@ internal static class Program
                 IdColumnIndex = 0,
             });
             
+            /*
             builder.AddSepFile(new SepFileSpec
             {
                 FilePath = "ncbi/gene_info.tsv",
@@ -63,6 +64,7 @@ internal static class Program
                     IdColumnIndex = 0,
                 });
             }
+            */
         });
 
         return services.BuildServiceProvider();

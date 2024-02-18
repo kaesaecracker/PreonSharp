@@ -2,7 +2,7 @@ using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Xml;
-using System.Xml.Serialization;
+using BioCXml;
 using PreonSharp;
 
 namespace PreonUsage;
@@ -20,7 +20,7 @@ internal sealed class Startup
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             WriteIndented = true,
         };
-        _prettyPrint.Converters.Add(new JsonStringEnumConverter());
+        _prettyPrint.Converters.Add(new JsonStringEnumConverter<PreonSharp.MatchType>());
 
         _logger = logger;
         _normalizer = normalizer;
@@ -28,7 +28,6 @@ internal sealed class Startup
 
     public async Task Run()
     {
-        var serializer = new XmlSerializer(typeof(BioCXml.Collection));
         var xmlReaderSettings = new XmlReaderSettings()
         {
             DtdProcessing = DtdProcessing.Ignore,
@@ -37,7 +36,7 @@ internal sealed class Startup
         var result = Directory.GetFiles("corpora/nlm_gene", "*.XML")
             .Select(p => File.Open(p, new FileStreamOptions()))
             .Select(fs => XmlReader.Create(fs, xmlReaderSettings))
-            .Select(reader => (BioCXml.Collection)serializer.Deserialize(reader)!)
+            .Select(reader => BioCXmlSerializerProvider.Deserialize(reader)!)
             .SelectMany(collection => collection.Document)
             .SelectMany(d => d.Passage)
             .SelectMany(p => p.Annotation)
@@ -50,13 +49,15 @@ internal sealed class Startup
 
         await Parallel.ForEachAsync(result, new ParallelOptions
         {
-            MaxDegreeOfParallelism = 1,//Math.Max(2, Environment.ProcessorCount / 4),
+            MaxDegreeOfParallelism = 1, //Math.Max(2, Environment.ProcessorCount / 4),
         }, async (tuple, token) =>
         {
             var (text, expectedId) = tuple;
-            QueryResult? queryResult = await _normalizer.QueryAsync(text);
-            _logger.LogInformation("{}: expected {} got {}", text, expectedId,
-                JsonSerializer.Serialize(queryResult, _prettyPrint));
+            var queryResult = await _normalizer.QueryAsync(text);
+            var str = queryResult != null
+                ? JsonSerializer.Serialize(queryResult, QueryResultJsonSerializerContext.Default.QueryResult)
+                : null;
+            _logger.LogInformation("{}: expected {} got {}", text, expectedId, str);
         });
     }
 }

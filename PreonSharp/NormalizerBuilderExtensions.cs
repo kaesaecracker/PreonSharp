@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using PreonSharp.Internals;
 
 namespace PreonSharp;
@@ -12,7 +13,7 @@ public static class NormalizerBuilderExtensions
         return builder;
     }
 
-    public static INormalizerBuilder AddMatchStrategy<T>(this INormalizerBuilder builder)
+    public static INormalizerBuilder AddMatchStrategy<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(this INormalizerBuilder builder)
         where T : class, IMatchStrategy
     {
         builder.Services.AddSingleton<IMatchStrategy, T>();

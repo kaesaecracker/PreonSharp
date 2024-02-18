@@ -5,10 +5,13 @@ dotnet tool run xscgen \
     --nullable \
     --namespace="BioCXml" \
     --collectionType="System.Collections.Generic.List\`1" \
-    --complexTypesForCollections=false \
+    --collectionSettersMode=Init \
+    --complexTypesForCollections=False \
     --compactTypeNames \
     --nullableReferenceAttributes \
     --separateFiles \
-    --unionCommonType \
+    --interface=False \
+    --codeTypeReferenceOptions=GenericTypeParameter \
     -o ..\
+    -v \
     BioC.xsd

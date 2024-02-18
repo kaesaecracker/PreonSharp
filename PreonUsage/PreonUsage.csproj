@@ -6,7 +6,11 @@
         <OutputType>Exe</OutputType>
         <PlatformTarget>x64</PlatformTarget>
         <ServerGarbageCollection>true</ServerGarbageCollection>
+    </PropertyGroup>
+    
+    <PropertyGroup>
         <RunAOTCompilation>true</RunAOTCompilation>
+        <JsonSerializerIsReflectionEnabledByDefault>false</JsonSerializerIsReflectionEnabledByDefault>
     </PropertyGroup>
 
     <ItemGroup>

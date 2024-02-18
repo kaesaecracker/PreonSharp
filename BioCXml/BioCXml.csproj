@@ -1,5 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <Import Project="../shared.props"/>
+    
+    <ItemGroup>
+        <PackageReference Include="Microsoft.XmlSerializer.Generator" Version="1.0.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <DotNetCliToolReference Include="Microsoft.XmlSerializer.Generator" Version="1.0.0"/>
+    </ItemGroup>
 
 </Project>

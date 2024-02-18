@@ -14,7 +14,10 @@ public class SortByLevenshteinBenchmark
         "airplane",
         "supercalifragilisticexpialidocious",
         "all your benchmark are belong to us",
-        "i \u2665\ufe0f unicode"
+        "i \u2665\ufe0f unicode",
+        "",
+        "test",
+        "rindfleischetikettierungsüberwachungsaufgabenübertragungsgesetz",
     ];
 
     private const string SearchTerm = "banana plane";

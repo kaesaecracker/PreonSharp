@@ -33,7 +33,6 @@ public sealed class MyLevenshteinMatchStrategy : IMatchStrategy
                 minDistValues.Add(new QueryResultEntry(otherName, otherIds));
         }
 
-
         if (minDist == decimal.MaxValue)
             return null;
 
