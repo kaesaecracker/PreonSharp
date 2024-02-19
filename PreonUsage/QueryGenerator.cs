@@ -14,11 +14,22 @@ internal sealed class QueryGenerator(
         var tasks = directory
             .GetFiles("*.XML")
             .Select(LoadCorpus)
+            .SelectMany(c => c.Document)
+            .SelectMany(d => d.Passage)
             .SelectMany(ExtractAnnotations)
-            .SelectMany(a => ExtractNameIdPairs(a.Text, a.Infon))
+            .SelectMany(ExtractNameIdPairs)
             .Distinct()
-            .Select(GenerateTestCaseTask);
-        await Task.WhenAll(tasks);
+            .Select(GenerateTestCaseTask)
+            .ToList();
+        
+        var allDoneTask =  Task.WhenAll(tasks);
+        while (!allDoneTask.IsCompleted)
+        {
+            logger.LogDebug("waiting for {} tasks", tasks.Where(t => !t.IsCompleted).Count());
+            await Task.Delay(1000);
+        }
+
+        await allDoneTask;
     }
 
     private async Task GenerateTestCaseTask((string Text, string Id) tuple)
@@ -36,24 +47,24 @@ internal sealed class QueryGenerator(
         return BioCXmlSerializerProvider.Deserialize(reader);
     }
 
-    private static IEnumerable<Annotation> ExtractAnnotations(Collection collection)
+    private static IEnumerable<Annotation> ExtractAnnotations(Passage passage)
     {
-        // TODO: there are more annotations on other objects
-        return collection.Document
-            .SelectMany(d => d.Passage)
-            .SelectMany(p => p.Annotation);
+        foreach (var annotation in passage.Annotation)
+            yield return annotation;
+        foreach (var annotation in passage.Sentence.SelectMany(s => s.Annotation))
+            yield return annotation;
     }
 
-    private static IEnumerable<(string Text, string Id)> ExtractNameIdPairs(string text, List<Infon> infons)
+    private static IEnumerable<(string Text, string Id)> ExtractNameIdPairs(Annotation a)
     {
-        if (string.IsNullOrWhiteSpace(text))
+        if (string.IsNullOrWhiteSpace(a.Text))
             yield break;
 
-        var ids = infons
+        var ids = a.Infon
             .Where(i => i.Key == "NCBI Gene identifier")
             .Select(i => i.Text.Aggregate((a, b) => a + b));
 
         foreach (var id in ids)
-            yield return (text, id);
+            yield return (a.Text, id);
     }
 }

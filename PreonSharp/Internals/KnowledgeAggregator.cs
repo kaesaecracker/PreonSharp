@@ -6,7 +6,7 @@ namespace PreonSharp.Internals;
 internal sealed class KnowledgeAggregator
 {
     private readonly IKnowledgeProvider[] _knowledgeProviders;
-    private readonly ILogger<KnowledgeAggregator> _logger;
+    private readonly ILogger _logger;
     private readonly INameTransformer _nameTransformer;
     private readonly Task<FrozenDictionary<string, FrozenSet<string>>> _knowledgeTask;
 
@@ -25,12 +25,15 @@ internal sealed class KnowledgeAggregator
     private void AggregateFrom(IKnowledgeProvider provider,
         ConcurrentDictionary<string, ConcurrentBag<string>> wipNames)
     {
+        _logger.LogInformation("starting read from {}", provider);
         foreach (var (name, id) in provider.GetNameIdPairs())
         {
             var transformedName = _nameTransformer.Transform(name);
             wipNames.GetOrAdd(transformedName, _ => [])
                 .Add(id);
         }
+        
+        _logger.LogInformation("done read from {}", provider);
     }
 
     private async Task<FrozenDictionary<string, FrozenSet<string>>> BuildKnowledge()
