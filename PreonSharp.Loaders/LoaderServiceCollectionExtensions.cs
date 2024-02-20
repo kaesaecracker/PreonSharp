@@ -9,4 +9,9 @@ public static class LoaderServiceCollectionExtensions
         builder.Services.AddSingleton<IKnowledgeProvider>(sp =>
             ActivatorUtilities.CreateInstance<SepFileKnowledgeProvider>(sp, spec));
     }
+
+    public static void AddSepFiles(this INormalizerBuilder builder)
+    {
+        builder.Services.AddSingleton<IKnowledgeProviderFactory, SepFilesKnowledgeProviderFactory>();
+    }
 }

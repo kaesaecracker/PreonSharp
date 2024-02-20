@@ -22,16 +22,11 @@ public static class Configure
         builder.Services.AddNormalizer(normalizerBuilder =>
         {
             normalizerBuilder.AddLevenshteinMatchStrategy();
-
-            normalizerBuilder.AddSepFile(new SepFileSpec
-            {
-                FilePath = "data/ncbi/names.dmp",
-                Separator = '|',
-                HasHeader = false,
-                NameColumnIndex = 1,
-                IdColumnIndex = 0
-            });
+            normalizerBuilder.AddSepFiles();
         });
+
+        builder.Services.Configure<SepFilesConfiguration>(
+            builder.Configuration.GetSection("SepFiles"));
 
         return builder.Build();
     }

@@ -10,11 +10,16 @@ internal sealed class KnowledgeAggregator
     private readonly INameTransformer _nameTransformer;
     private readonly Task<FrozenDictionary<string, FrozenSet<string>>> _knowledgeTask;
 
-    public KnowledgeAggregator(IEnumerable<IKnowledgeProvider> knowledgeProviders,
+    public KnowledgeAggregator(
+        IEnumerable<IKnowledgeProvider> knowledgeProviders,
+        IEnumerable<IKnowledgeProviderFactory> providerFactories,
         ILogger<KnowledgeAggregator> logger,
         INameTransformer nameTransformer)
     {
-        _knowledgeProviders = knowledgeProviders.ToArray();
+        _knowledgeProviders = providerFactories
+            .SelectMany(f => f.GetKnowledgeProviders())
+            .Concat(knowledgeProviders)
+            .ToArray();
         _logger = logger;
         _nameTransformer = nameTransformer;
         _knowledgeTask = BuildKnowledge();

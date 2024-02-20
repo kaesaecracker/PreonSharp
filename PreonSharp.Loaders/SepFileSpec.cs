@@ -2,15 +2,15 @@ namespace PreonSharp.Loaders;
 
 public class SepFileSpec
 {
-    public required string FilePath { get; init; }
+    public string? FilePath { get; set; }
 
-    public required char Separator { get; init; }
+    public char? Separator { get; set; }
 
-    public required int NameColumnIndex { get; init; }
+    public int? NameColumnIndex { get; set; }
 
-    public required int IdColumnIndex { get; init; }
+    public int? IdColumnIndex { get; set; } 
 
-    public bool HasHeader { get; init; } = true;
+    public bool HasHeader { get; set; } = true;
 
-    public bool Unquote { get; init; } = false;
+    public bool Unquote { get; set; }
 }
