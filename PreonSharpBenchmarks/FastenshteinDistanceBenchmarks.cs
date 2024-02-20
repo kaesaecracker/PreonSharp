@@ -1,7 +1,7 @@
 using BenchmarkDotNet.Engines;
 using Fastenshtein;
 
-namespace PreonBenchmarks;
+namespace PreonSharpBenchmarks;
 
 public class FastenshteinDistanceBenchmarks
 {

@@ -6,7 +6,6 @@
         <OutputType>Exe</OutputType>
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
-        <RootNamespace>PreonBenchmarks</RootNamespace>
 
         <NoWarn>CA1822</NoWarn>
     </PropertyGroup>

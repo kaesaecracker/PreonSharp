@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BioCXml", "BioCXml\BioCXml.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PreonSharp.Levenshtein", "PreonSharp.Levenshtein\PreonSharp.Levenshtein.csproj", "{4ACB7F89-0C05-4145-B547-BB9EC7F8DBCF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PreonBenchmarks", "PreonBenchmarks\PreonBenchmarks.csproj", "{1EC62752-2DFE-4521-8EDA-6C2F776430BD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PreonSharpBenchmarks", "PreonSharpBenchmarks\PreonSharpBenchmarks.csproj", "{1EC62752-2DFE-4521-8EDA-6C2F776430BD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PreonSharp.Fastenshtein", "PreonSharp.Fastenshtein\PreonSharp.Fastenshtein.csproj", "{04B76B7D-D0E2-47F7-A650-B128191C6380}"
 EndProject

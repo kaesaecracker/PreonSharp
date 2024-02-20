@@ -1,6 +1,6 @@
 using PreonSharpTests;
 
-namespace PreonBenchmarks;
+namespace PreonSharpBenchmarks;
 
 public class InitBenchmarks
 {

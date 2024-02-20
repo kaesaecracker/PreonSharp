@@ -1,7 +1,7 @@
 using Fastenshtein;
 using PreonSharp.Levenshtein;
 
-namespace PreonBenchmarks;
+namespace PreonSharpBenchmarks;
 
 public class SortByLevenshteinBenchmark
 {
