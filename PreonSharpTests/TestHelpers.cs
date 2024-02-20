@@ -2,7 +2,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace PreonTests;
+namespace PreonSharpTests;
 
 public static class TestHelpers
 {

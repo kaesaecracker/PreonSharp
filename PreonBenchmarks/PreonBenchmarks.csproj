@@ -1,28 +1,28 @@
 <Project Sdk="Microsoft.NET.Sdk">
-    
-    <Import Project="..\shared.props" />
-    
+
+    <Import Project="..\shared.props"/>
+
     <PropertyGroup>
-        <OutputType>Exe</OutputType>  
+        <OutputType>Exe</OutputType>
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
         <RootNamespace>PreonBenchmarks</RootNamespace>
-        
+
         <NoWarn>CA1822</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="BenchmarkDotNet" Version="0.13.12" />
-        <PackageReference Include="Fastenshtein" Version="1.0.0.8" />
+        <PackageReference Include="BenchmarkDotNet" Version="0.13.12"/>
+        <PackageReference Include="Fastenshtein" Version="1.0.0.8"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\PreonSharp.Levenshtein\PreonSharp.Levenshtein.csproj" />
-      <ProjectReference Include="..\PreonTests\PreonTests.csproj" />
+        <ProjectReference Include="..\PreonSharp.Levenshtein\PreonSharp.Levenshtein.csproj"/>
+        <ProjectReference Include="..\PreonSharpTests\PreonSharpTests.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Remove="LevenshteinDistanceBenchmarks.cs" />
+        <Compile Remove="LevenshteinDistanceBenchmarks.cs"/>
     </ItemGroup>
 
 </Project>

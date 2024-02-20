@@ -1,4 +1,4 @@
-namespace PreonTests;
+namespace PreonSharpTests;
 
 public class UnitTest1
 {

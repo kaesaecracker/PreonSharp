@@ -1,3 +1,5 @@
+using PreonSharpTests;
+
 namespace PreonBenchmarks;
 
 public class InitBenchmarks

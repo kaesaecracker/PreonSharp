@@ -7,7 +7,10 @@ public record class QueryResult(
     decimal? EditDistance = null)
 
 {
-    public override string ToString() => QueryResultJsonSerializerContext.Serialize(this);
+    public override string ToString()
+    {
+        return QueryResultJsonSerializerContext.Serialize(this);
+    }
 }
 
 public record struct QueryResultEntry(
