@@ -1,9 +1,12 @@
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Xml;
 using BioCXml;
-using PreonSharp;
+using Microsoft.Extensions.Logging;
 
-namespace PreonUsage;
+namespace Preon.WebApi;
 
 internal sealed class QueryGenerator(
     ILogger<QueryGenerator> logger,

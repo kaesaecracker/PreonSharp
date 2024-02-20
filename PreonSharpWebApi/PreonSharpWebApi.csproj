@@ -9,6 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\BioCXml\BioCXml.csproj" />
         <ProjectReference Include="..\PreonSharp.Levenshtein\PreonSharp.Levenshtein.csproj"/>
         <ProjectReference Include="..\PreonSharp.Loaders\PreonSharp.Loaders.csproj"/>
         <ProjectReference Include="..\PreonSharp\PreonSharp.csproj"/>

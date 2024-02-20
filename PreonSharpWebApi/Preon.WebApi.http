@@ -1,6 +1,13 @@
 @Preon.WebApi_HostAddress = http://localhost:3002
 
-GET {{Preon.WebApi_HostAddress}}/preon?text=gh1
+GET {{Preon.WebApi_HostAddress}}/preon
+    ?s=gh1
+Accept: application/json
+
+###
+
+GET {{Preon.WebApi_HostAddress}}/preon
+    ?s=test
 Accept: application/json
 
 ###
