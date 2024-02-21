@@ -76,4 +76,9 @@ public sealed class SepFileKnowledgeProvider : IKnowledgeProvider
 
         csvReader.Dispose();
     }
+
+    public override string ToString()
+    {
+        return $"{nameof(SepFileKnowledgeProvider)} ({_filePath})";
+    }
 }

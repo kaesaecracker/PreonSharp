@@ -1,6 +1,6 @@
 namespace PreonSharp.Loaders;
 
-public class SepFileSpec
+public record class SepFileSpec
 {
     public string? FilePath { get; set; }
 
