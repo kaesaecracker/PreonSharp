@@ -24,11 +24,11 @@ internal sealed class QueryGenerator(
             .Distinct()
             .Select(GenerateTestCaseTask)
             .ToList();
-        
-        var allDoneTask =  Task.WhenAll(tasks);
+
+        var allDoneTask = Task.WhenAll(tasks);
         while (!allDoneTask.IsCompleted)
         {
-            logger.LogDebug("waiting for {} tasks", tasks.Where(t => !t.IsCompleted).Count());
+            logger.LogDebug("waiting for {} tasks", tasks.Count(t => !t.IsCompleted));
             await Task.Delay(1000);
         }
 
@@ -65,7 +65,7 @@ internal sealed class QueryGenerator(
 
         var ids = a.Infon
             .Where(i => i.Key == "NCBI Gene identifier")
-            .Select(i => i.Text.Aggregate((a, b) => a + b));
+            .Select(i => string.Join(string.Empty, i.Text));
 
         foreach (var id in ids)
             yield return (a.Text, id);

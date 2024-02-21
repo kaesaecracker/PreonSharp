@@ -13,7 +13,6 @@
     <PropertyGroup>
         <AnalysisMode>Recommended</AnalysisMode>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <WarningsNotAsErrors>CA1848</WarningsNotAsErrors>
-        <NoWarn>CA1805</NoWarn>
+        <NoWarn>CA1805,CA1848</NoWarn>
     </PropertyGroup>
 </Project>

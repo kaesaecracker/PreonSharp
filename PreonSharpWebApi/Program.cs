@@ -16,12 +16,9 @@ internal static class Program
 
         var normalizer = app.Services.GetRequiredService<INormalizer>();
 
-        var preonApi = app.MapGroup("/preon")
-            .WithOpenApi();
-        preonApi.MapGet("/", (string s) => normalizer.QueryAsync(s))
-            .WithOpenApi();
-        preonApi.MapGet("/wait", normalizer.WaitForInitializationAsync)
-            .WithOpenApi();
+        var preonApi = app.MapGroup("/preon");
+        preonApi.MapGet("/", (string s) => normalizer.QueryAsync(s));
+        preonApi.MapGet("/wait", normalizer.WaitForInitializationAsync);
 
         app.Run();
     }
@@ -36,30 +33,26 @@ internal static class Program
             .AddJsonFile("appsettings.json")
             .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true);
 
-        builder.Logging.AddSimpleConsole(options =>
-        {
-            options.SingleLine = false;
-            options.TimestampFormat = "HH:mm:ss.ffff ";
-            options.IncludeScopes = true;
-        });
+        builder.Logging
+            .AddSimpleConsole(options =>
+            {
+                options.SingleLine = false;
+                options.TimestampFormat = "HH:mm:ss.ffff ";
+                options.IncludeScopes = true;
+            });
 
-        builder.Services.AddHttpLogging(_ => { });
-        builder.Services.ConfigureHttpJsonOptions(options =>
-        {
-            options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
-        });
-
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
-
-        builder.Services.AddNormalizer(normalizerBuilder =>
-        {
-            normalizerBuilder.AddLevenshteinMatchStrategy();
-            normalizerBuilder.AddSepFiles();
-        });
-
-        builder.Services.Configure<SepFilesConfiguration>(
-            builder.Configuration.GetSection("SepFiles"));
+        builder.Services
+            .AddHttpLogging(_ => { })
+            .ConfigureHttpJsonOptions(options =>
+            {
+                options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
+            })
+            .AddNormalizer(normalizerBuilder =>
+            {
+                normalizerBuilder.AddLevenshteinMatchStrategy();
+                normalizerBuilder.AddSepFiles();
+            })
+            .Configure<SepFilesConfiguration>(builder.Configuration.GetSection("SepFiles"));
 
         return builder.Build();
     }
