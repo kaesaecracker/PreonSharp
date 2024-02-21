@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Preon.WebApi;
+namespace PreonSharpWebApi;
 
 [JsonSourceGenerationOptions]
 [JsonSerializable(typeof(QueryResult))]

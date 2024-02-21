@@ -6,7 +6,7 @@ using System.Xml;
 using BioCXml;
 using Microsoft.Extensions.Logging;
 
-namespace Preon.WebApi;
+namespace PreonSharpWebApi;
 
 internal sealed class QueryGenerator(
     ILogger<QueryGenerator> logger,

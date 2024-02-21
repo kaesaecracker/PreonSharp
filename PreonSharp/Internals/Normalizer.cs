@@ -1,32 +1,45 @@
 ﻿using System.Collections.Frozen;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using Microsoft.Extensions.Hosting;
 
 namespace PreonSharp.Internals;
 
-internal sealed class Normalizer : INormalizer
+internal sealed class Normalizer : BackgroundService, INormalizer
 {
-    private readonly FrozenDictionary<string, FrozenSet<string>> _normalizedNames;
+    private FrozenDictionary<string, FrozenSet<string>>? _normalizedNames;
+    private readonly KnowledgeAggregator _knowledgeAggregator;
     private readonly ILogger<Normalizer> _logger;
     private readonly INameTransformer _nameTransformer;
     private readonly IMatchStrategy[] _matchStrategies;
+    private readonly TaskCompletionSource _initialisationCompletionSource = new();
 
     public Normalizer(KnowledgeAggregator knowledgeAggregator,
         ILogger<Normalizer> logger,
         INameTransformer nameTransformer,
         IEnumerable<IMatchStrategy> matchStrategies)
     {
+        _knowledgeAggregator = knowledgeAggregator;
         _logger = logger;
         _nameTransformer = nameTransformer;
-        _normalizedNames = knowledgeAggregator.GetAggregatedKnowledge().Result;
-        _logger.LogInformation("normalizer ready");
         _matchStrategies = matchStrategies.OrderBy(s => s.Cost).ToArray();
     }
 
-    public Task<QueryResult> QueryAsync(string queryName, CancellationToken? token = null) => Task.Run(() =>
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var stopWatch = Stopwatch.StartNew();
+        _normalizedNames = await _knowledgeAggregator.BuildKnowledge();
+        _initialisationCompletionSource.SetResult();
+        _logger.LogInformation($"{nameof(Normalizer)} ready for queries");
+    }
 
+    public Task WaitForInitializationAsync() => _initialisationCompletionSource.Task;
+
+    public async Task<QueryResult> QueryAsync(string queryName, CancellationToken? token = null)
+    {
+        await _initialisationCompletionSource.Task;
+        Trace.Assert(_normalizedNames != null);
+
+        var stopWatch = Stopwatch.StartNew();
         var transformedName = _nameTransformer.Transform(queryName);
 
         foreach (var strategy in _matchStrategies)
@@ -35,11 +48,10 @@ internal sealed class Normalizer : INormalizer
 
             var result = strategy.FindMatch(transformedName, _normalizedNames, token);
             if (result != null)
-                return Task.FromResult(result with { ExecutionTime = stopWatch.Elapsed });
+                return result with { ExecutionTime = stopWatch.Elapsed };
         }
 
         _logger.LogDebug("no result for {}", queryName);
-        return Task.FromResult(
-            new QueryResult(MatchType.None, ReadOnlyCollection<QueryResultEntry>.Empty, stopWatch.Elapsed));
-    });
+        return new QueryResult(MatchType.None, ReadOnlyCollection<QueryResultEntry>.Empty, stopWatch.Elapsed);
+    }
 }

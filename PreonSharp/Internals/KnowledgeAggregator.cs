@@ -8,7 +8,6 @@ internal sealed class KnowledgeAggregator
     private readonly IKnowledgeProvider[] _knowledgeProviders;
     private readonly ILogger _logger;
     private readonly INameTransformer _nameTransformer;
-    private readonly Task<FrozenDictionary<string, FrozenSet<string>>> _knowledgeTask;
 
     public KnowledgeAggregator(
         IEnumerable<IKnowledgeProvider> knowledgeProviders,
@@ -22,10 +21,7 @@ internal sealed class KnowledgeAggregator
             .ToArray();
         _logger = logger;
         _nameTransformer = nameTransformer;
-        _knowledgeTask = BuildKnowledge();
     }
-
-    public Task<FrozenDictionary<string, FrozenSet<string>>> GetAggregatedKnowledge() => _knowledgeTask;
 
     private void AggregateFrom(IKnowledgeProvider provider,
         ConcurrentDictionary<string, ConcurrentBag<string>> wipNames)
@@ -37,11 +33,11 @@ internal sealed class KnowledgeAggregator
             wipNames.GetOrAdd(transformedName, _ => [])
                 .Add(id);
         }
-        
+
         _logger.LogInformation("done read from {}", provider);
     }
 
-    private async Task<FrozenDictionary<string, FrozenSet<string>>> BuildKnowledge()
+    public async Task<FrozenDictionary<string, FrozenSet<string>>> BuildKnowledge()
     {
         _logger.LogInformation("Aggregating knowledge from {} providers", _knowledgeProviders.Length);
         ConcurrentDictionary<string, ConcurrentBag<string>> wipNames = new();
