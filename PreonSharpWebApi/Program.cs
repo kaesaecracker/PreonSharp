@@ -27,6 +27,12 @@ internal static class Program
     {
         var builder = WebApplication.CreateSlimBuilder(args);
 
+        builder.Configuration
+            .AddCommandLine(args)
+            .AddEnvironmentVariables()
+            .AddJsonFile("appsettings.json")
+            .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true);
+        
         builder.Logging.AddSimpleConsole(options =>
         {
             options.SingleLine = false;

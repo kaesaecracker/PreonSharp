@@ -12,5 +12,5 @@ public record class SepFileSpec
 
     public bool HasHeader { get; set; } = true;
 
-    public bool Unquote { get; set; }
+    public bool Unquote { get; set; } = true;
 }
