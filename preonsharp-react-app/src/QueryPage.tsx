@@ -1,15 +1,17 @@
-import {useState} from 'react';
-import {Alert} from '@mui/material';
+import { useState } from 'react';
+import { Alert } from '@mui/material';
 
 import ResultsView from './ResultsView';
 import Page from './components/Page';
-import Section from './components/Section';
+import { QueryWithServerResponse, QueryServerResponse } from './types';
 import SearchBox from "./SearchBox";
 
 import './QueryPage.css';
+import React from 'react';
+import Section from './components/Section';
 
 function QueryPage(props: { userName: string, password: string }) {
-  const [responseData, setResponseData] = useState(null);
+  const [responseDatas, setResponseDatas] = useState<QueryWithServerResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const fetchData = async (text: string) => {
@@ -27,18 +29,22 @@ function QueryPage(props: { userName: string, password: string }) {
       return;
     }
 
-    const jsonData = await response.json();
-    setResponseData(jsonData);
+    const jsonData = await response.json() as QueryServerResponse;
+    setResponseDatas([
+      { response: jsonData, query: text, id: responseDatas.length },
+      ...responseDatas,
+    ]);
     setError(null); // Zurücksetzen des Fehlerzustands, wenn die Anfrage erfolgreich war
   };
 
   return <Page>
-    <SearchBox onSearch={fetchData}/>
-
+    <SearchBox onSearch={fetchData} />
     {error && (<Alert severity='error'>{error}</Alert>)}
-
     <Section>
-      <ResultsView data={responseData}/>
+      {
+        responseDatas.map((props) =>
+          <ResultsView key={props.id} {...props} />)
+      }
     </Section>
   </Page>;
 }
