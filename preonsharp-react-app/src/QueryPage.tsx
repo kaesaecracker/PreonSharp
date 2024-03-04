@@ -3,13 +3,13 @@ import {Alert} from '@mui/material';
 
 import ResultsView from './ResultsView';
 import Page from './components/Page';
-import Section from './components/Section';
+import { QueryWithServerResponse, QueryServerResponse } from './types';
 import SearchBox from "./SearchBox";
 
 import './QueryPage.css';
 
 function QueryPage(props: { userName: string, password: string }) {
-  const [responseData, setResponseData] = useState(null);
+  const [responseDatas, setResponseDatas] = useState<QueryWithServerResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const fetchData = async (text: string) => {
@@ -27,8 +27,8 @@ function QueryPage(props: { userName: string, password: string }) {
       return;
     }
 
-    const jsonData = await response.json();
-    setResponseData(jsonData);
+    const jsonData = await response.json() as QueryServerResponse;
+    setResponseDatas([{ response: jsonData, query: text }].concat(responseDatas));
     setError(null); // Zurücksetzen des Fehlerzustands, wenn die Anfrage erfolgreich war
   };
 
@@ -36,10 +36,7 @@ function QueryPage(props: { userName: string, password: string }) {
     <SearchBox onSearch={fetchData}/>
 
     {error && (<Alert severity='error'>{error}</Alert>)}
-
-    <Section>
-      <ResultsView data={responseData}/>
-    </Section>
+    {responseDatas.map((props) => <ResultsView {...props}/>)}
   </Page>;
 }
 
