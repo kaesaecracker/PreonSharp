@@ -1,0 +1,6 @@
+.LoginDialog-Content {
+    gap: 16px;
+    display: flex;
+    flex-direction: column;
+    padding-top: 8px !important;
+}
