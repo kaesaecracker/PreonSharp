@@ -1,0 +1,7 @@
+.LoginDialog-Content {
+  gap: 16px;
+  display: flex;
+  flex-direction: column;
+  /* remove removal of top padding so outline does not clip */
+  padding-top: 8px !important;
+}
