@@ -1,6 +1,5 @@
 import { KeyboardEvent, useState } from 'react';
-import { Button } from '@mui/material-next';
-import { TextField } from '@mui/material';
+import { TextField, Button } from '@mui/material';
 
 import ResultsView from './ResultsView';
 import Page from './Page';
@@ -12,8 +11,6 @@ function QueryPage(props: { userName: string, password: string }) {
   const [inputValue, setInputValue] = useState('');
   const [responseData, setResponseData] = useState(null);
   const [error, setError] = useState(null);
-
-  const elevation = 1;
 
   const fetchData = async () => {
     try {
@@ -38,32 +35,30 @@ function QueryPage(props: { userName: string, password: string }) {
   };
 
   const onKeyDown = (event: KeyboardEvent) => {
-    if (event.key == 'Enter') {
+    if (event.key === 'Enter') {
       fetchData();
     }
   };
 
   return <Page>
-    <Section>
-      <div className="request-field-button-container">
-        <TextField
-          required
-          label="request"
-          type='text'
-          value={inputValue}
-          onChange={(event: any) => setInputValue(event.target.value)}
-          className="query-input"
-          onKeyDown={onKeyDown}
-        />
-        <Button onClick={fetchData} className="query-button">
-          send
-        </Button>
-      </div>
-    </Section>
+    <div className="request-field-button-container">
+      <TextField
+        required
+        label="request"
+        type='text'
+        value={inputValue}
+        onChange={(event: any) => setInputValue(event.target.value)}
+        className="query-input"
+        onKeyDown={onKeyDown}
+      />
+      <Button onClick={fetchData} variant='outlined'>
+        send
+      </Button>
+    </div>
 
     <Section>
+      {error && (<p>Error: {error}</p>)}
       <ResultsView data={responseData} />
-      <p>Error: {error}</p>
     </Section>
   </Page >;
 }

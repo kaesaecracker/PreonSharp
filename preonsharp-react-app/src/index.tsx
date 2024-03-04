@@ -6,7 +6,6 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
 import ReactDOM from 'react-dom/client';
-import { CssVarsProvider } from '@mui/material-next';
 import { useState, ReactNode, StrictMode } from 'react';
 import { AppBar, Button, Toolbar, Typography } from '@mui/material';
 
@@ -43,7 +42,7 @@ function AppFrame(props: any) {
   pages.set('query', (<QueryPage userName={userName} password={password} />));
 
   return <>
-    <AppBar position="static">
+    <AppBar position="static" elevation={0}>
       <Toolbar>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           preon#
@@ -63,9 +62,7 @@ function AppFrame(props: any) {
 
 root.render(
   <StrictMode>
-    <CssVarsProvider>
-      <AppFrame />
-    </CssVarsProvider>
+    <AppFrame />
   </StrictMode>
 );
 

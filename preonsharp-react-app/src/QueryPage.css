@@ -11,15 +11,10 @@
 
 .request-field-button-container {
   display: flex;
-  align-items: center;
   flex-direction: row;
+  gap: 8px;
 }
 
 .query-input {
   flex: 1;
-  margin-right: 15px;
-}
-
-.query-button {
-  margin-left: auto;
 }

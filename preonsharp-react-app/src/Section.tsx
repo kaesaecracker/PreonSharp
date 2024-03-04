@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 import './Section.css';
 
 function Section(props: { children: ReactNode }) {
-    return <Paper className='Section' elevation={8}>
+    return <Paper className='Section' variant="outlined">
         {props.children}
     </Paper>;
 }
