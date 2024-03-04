@@ -1,13 +1,10 @@
 import { DataGrid } from '@mui/x-data-grid';
-import Section from './Section';
 import { QueryWithServerResponse } from './types';
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
 import React from 'react';
 
 function ResultsView(props: QueryWithServerResponse) {
   const [expanded, setExpanded] = React.useState(true);
-
-  /* */
 
   return <Accordion
     expanded={expanded}

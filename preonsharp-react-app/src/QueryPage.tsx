@@ -8,7 +8,7 @@ import SearchBox from "./SearchBox";
 
 import './QueryPage.css';
 import React from 'react';
-import Section from './Section';
+import Section from './components/Section';
 
 function QueryPage(props: { userName: string, password: string }) {
   const [responseDatas, setResponseDatas] = useState<QueryWithServerResponse[]>([]);
