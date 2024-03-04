@@ -12,11 +12,12 @@ function LoginDialog(props: {
 }) {
     const closeDialog = () => props.setOpen(false);
 
-    return <Dialog open={props.open} onClose={closeDialog} className='LoginDialog'>
+    return <Dialog open={props.open} onClose={closeDialog}>
         <DialogTitle>Login</DialogTitle>
         <DialogContent className='LoginDialog-Content'>
             <TextField required fullWidth
-                       label="user name"
+                       variant="outlined"
+                       label="user"
                        type='text'
                        value={props.userName}
                        onChange={(event: any) => {
@@ -24,6 +25,7 @@ function LoginDialog(props: {
                        }}
             />
             <TextField required fullWidth
+                       variant="outlined"
                        label="password"
                        type='password'
                        value={props.password}
