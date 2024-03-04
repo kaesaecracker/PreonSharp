@@ -13,7 +13,7 @@ function ResultsView(props: QueryWithServerResponse) {
       <p>result for query: {props.query} </p>
     </AccordionSummary>
     <AccordionDetails>
-      <p>full seach time: {props.response.executionTime}</p>
+      <p>full search time: {props.response.executionTime}</p>
       <DataGrid
         rows={props.response.foundIds}
         columns={[

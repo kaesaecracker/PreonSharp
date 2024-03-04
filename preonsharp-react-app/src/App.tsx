@@ -9,7 +9,7 @@ import QueryPage from "./QueryPage";
 import LoginDialog from "./LoginDialog";
 import MainAppBar from "./MainAppBar";
 
-export default function App(props: any) {
+export default function App() {
   const [loginOpen, setLoginOpen] = useState(false);
   const [userName, setUserName] = useStoredState('userName', '');
   const [password, setUserPassword] = useStoredState('userPassword', '');
@@ -19,13 +19,6 @@ export default function App(props: any) {
   const pages = new Map<string, ReactNode>();
   pages.set('home', (<HomePage onStartClick={() => setCurrentPage('query')}/>));
   pages.set('query', (<QueryPage userName={userName} password={password}/>));
-
-  const handleChange = (
-    event: React.MouseEvent<HTMLElement>,
-    newColorScheme: string,
-  ) => {
-    setColorScheme(newColorScheme);
-  };
 
   return <ThemeProvider theme={colorScheme === 'light' ? lightTheme : darkTheme}>
     <CssBaseline/>

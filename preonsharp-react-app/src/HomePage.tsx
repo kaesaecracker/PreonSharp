@@ -1,5 +1,4 @@
-
-import { Typography, Button } from '@mui/material';
+import {Button, Typography} from '@mui/material';
 import Page from './components/Page';
 import Section from './components/Section';
 
