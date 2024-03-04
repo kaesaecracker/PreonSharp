@@ -2,8 +2,8 @@ import {useState} from 'react';
 import {Alert} from '@mui/material';
 
 import ResultsView from './ResultsView';
-import Page from './Page';
-import Section from './Section';
+import Page from './components/Page';
+import Section from './components/Section';
 import SearchBox from "./SearchBox";
 
 import './QueryPage.css';
@@ -31,7 +31,6 @@ function QueryPage(props: { userName: string, password: string }) {
     setResponseData(jsonData);
     setError(null); // Zurücksetzen des Fehlerzustands, wenn die Anfrage erfolgreich war
   };
-
 
   return <Page>
     <SearchBox onSearch={fetchData}/>

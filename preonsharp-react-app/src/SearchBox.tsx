@@ -2,6 +2,8 @@ import {ChangeEvent, KeyboardEvent, useState} from "react";
 import {Button, TextField} from "@mui/material";
 
 import './SearchBox.css';
+import SearchIcon from '@mui/icons-material/Search';
+
 
 function SearchBox(props: { onSearch: (queryText: string) => void }) {
   const [inputValue, setInputValue] = useState('');
@@ -22,7 +24,7 @@ function SearchBox(props: { onSearch: (queryText: string) => void }) {
                onKeyDown={onKeyDown}
     />
     <Button onClick={() => props.onSearch(inputValue)} variant='outlined'>
-      send
+      <SearchIcon/>
     </Button>
   </div>
 }

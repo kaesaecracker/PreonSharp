@@ -1,7 +1,7 @@
 
 import { Typography, Button } from '@mui/material';
-import Page from './Page';
-import Section from './Section';
+import Page from './components/Page';
+import Section from './components/Section';
 
 function HomePage(props: { onStartClick: () => void }) {
     return <Page>
