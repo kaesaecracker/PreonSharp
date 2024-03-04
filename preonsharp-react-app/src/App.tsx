@@ -1,21 +1,20 @@
 import {
   AppBar,
-  Button,
   ToggleButton,
   ToggleButtonGroup,
   Toolbar,
   Typography,
   ThemeProvider,
-  CssBaseline
+  CssBaseline, IconButton
 } from "@mui/material";
 import React, {ReactNode, useState} from "react";
 
 import HomePage from "./HomePage";
 import QueryPage from "./QueryPage";
-import SearchBox from "./SearchBox";
 import LoginDialog from "./LoginDialog";
 import useStoredState from "./useStoredState";
 import themes, {dark} from "./themes";
+import AccountIcon from '@mui/icons-material/AccountCircleOutlined';
 
 export default function App(props: any) {
   const [loginOpen, setLoginOpen] = useState(false);
@@ -55,7 +54,10 @@ export default function App(props: any) {
             <ToggleButton value="light">light</ToggleButton>
             <ToggleButton value="dark">dark</ToggleButton>
           </ToggleButtonGroup>
-          <Button onClick={() => setLoginOpen(true)} color="inherit">Login</Button>
+
+          <IconButton aria-label='login' onClick={() => setLoginOpen(true)}>
+            <AccountIcon/>
+          </IconButton>
         </Toolbar>
       </AppBar>
 
