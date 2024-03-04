@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { KeyboardEvent, useState } from 'react';
 import { Button } from '@mui/material-next';
 import { TextField } from '@mui/material';
 
@@ -37,6 +37,12 @@ function QueryPage(props: { userName: string, password: string }) {
     }
   };
 
+  const onKeyDown = (event: KeyboardEvent) => {
+    if (event.key == 'Enter') {
+      fetchData();
+    }
+  };
+
   return <Page>
     <Section>
       <div className="request-field-button-container">
@@ -47,6 +53,7 @@ function QueryPage(props: { userName: string, password: string }) {
           value={inputValue}
           onChange={(event: any) => setInputValue(event.target.value)}
           className="query-input"
+          onKeyDown={onKeyDown}
         />
         <Button onClick={fetchData} className="query-button">
           send
