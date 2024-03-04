@@ -6,29 +6,29 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
 import ReactDOM from 'react-dom/client';
-import { useState, ReactNode, StrictMode } from 'react';
-import { AppBar, Button, Toolbar, Typography, ToggleButtonGroup, ToggleButton } from '@mui/material';
+import {useState, ReactNode, StrictMode} from 'react';
+import {AppBar, Button, Toolbar, Typography, ToggleButtonGroup, ToggleButton} from '@mui/material';
 import React from 'react';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import {ThemeProvider, createTheme} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
 import HomePage from './HomePage';
 import QueryPage from './QueryPage';
 import LoginDialog from './LoginDialog'
 
-// primary: '#0294EE',
-// secondary: '#D69F32',
-
-
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
+    primary: {main: '#0294EE'},
+    secondary: {main: '#D69F32'}
   },
 });
 
 const lightTheme = createTheme({
   palette: {
     mode: 'light',
+    primary: {main: '#0294EE'},
+    secondary: {main: '#D69F32'}
   },
 });
 
@@ -50,10 +50,10 @@ function AppFrame(props: any) {
   const [currentPage, setCurrentPage] = useState('home');
 
   const pages = new Map<string, ReactNode>();
-  pages.set('home', (<HomePage onStartClick={() => setCurrentPage('query')} />));
-  pages.set('query', (<QueryPage userName={userName} password={password} />));
+  pages.set('home', (<HomePage onStartClick={() => setCurrentPage('query')}/>));
+  pages.set('query', (<QueryPage userName={userName} password={password}/>));
 
-  const [colorScheme, setColorScheme] = useStoredState('colorScheme', 'light');
+  const [colorScheme, setColorScheme] = useStoredState('colorScheme', 'dark');
 
   const handleChange = (
     event: React.MouseEvent<HTMLElement>,
@@ -66,10 +66,10 @@ function AppFrame(props: any) {
 
   return <>
     <ThemeProvider theme={theme}>
-      <CssBaseline />
+      <CssBaseline/>
       <AppBar position="static" elevation={0}>
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
             preon#
           </Typography>
           <ToggleButtonGroup
@@ -89,7 +89,7 @@ function AppFrame(props: any) {
       <LoginDialog
         open={loginOpen} setOpen={setLoginOpen}
         password={password} setPassword={setUserPassword}
-        userName={userName} setUserName={setUserName} />
+        userName={userName} setUserName={setUserName}/>
 
       {pages.get(currentPage) || pages.get('home')}
     </ThemeProvider>
@@ -102,7 +102,7 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <StrictMode>
-    <AppFrame />
+    <AppFrame/>
   </StrictMode>
 );
 
