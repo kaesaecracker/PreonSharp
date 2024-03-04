@@ -39,21 +39,22 @@ function QueryPage(props: { userName: string, password: string }) {
 
   return <Page>
     <Section>
-      <h3>Search</h3>
-      <TextField
-        required
-        label="request"
-        type='text'
-        value={inputValue}
-        onChange={(event: any) => setInputValue(event.target.value)}
-      />
-      <Button onClick={fetchData}>
-        search
-      </Button>
+      <div className="request-field-button-container">
+        <TextField
+          required
+          label="request"
+          type='text'
+          value={inputValue}
+          onChange={(event: any) => setInputValue(event.target.value)}
+          className="query-input"
+        />
+        <Button onClick={fetchData} className="query-button">
+          send
+        </Button>
+      </div>
     </Section>
 
     <Section>
-      <h3>Results</h3>
       <ResultsView data={responseData} />
       <p>Error: {error}</p>
     </Section>
