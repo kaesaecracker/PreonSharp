@@ -1,6 +1,5 @@
-import { useState } from 'react';
-import { Button } from '@mui/material-next';
-import { TextField } from '@mui/material';
+import { KeyboardEvent, useState } from 'react';
+import { TextField, Button, Alert } from '@mui/material';
 
 import ResultsView from './ResultsView';
 import Page from './Page';
@@ -11,24 +10,22 @@ import './QueryPage.css';
 function QueryPage(props: { userName: string, password: string }) {
   const [inputValue, setInputValue] = useState('');
   const [responseData, setResponseData] = useState(null);
-  const [error, setError] = useState(null);
-
-  const elevation = 1;
+  const [error, setError] = useState<string | null>(null);
 
   const fetchData = async () => {
     try {
       const controller = new AbortController()
       console.log('Anfrage senden mit Wert:', inputValue);
       const response = await fetch(`https://preon-api.services.zerforschen.plus/preon?s=${inputValue}`, {
-        //mode: 'no-cors',
         signal: controller.signal,
         headers: new Headers({
           "Authorization": `Basic ${btoa(`${props.userName}:${props.password}`)}`
         }),
       });
-      if (!response.ok) {
-        throw new Error('Fehler beim Abrufen der Daten');
-      }
+
+      if (!response.ok) 
+        throw new Error('server did not respond with success code');
+      
       const jsonData = await response.json();
       setResponseData(jsonData);
       setError(null); // Zurücksetzen des Fehlerzustands, wenn die Anfrage erfolgreich war
@@ -37,25 +34,32 @@ function QueryPage(props: { userName: string, password: string }) {
     }
   };
 
+  const onKeyDown = (event: KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      fetchData();
+    }
+  };
+
   return <Page>
-    <Section>
-      <h3>Search</h3>
+    <div className="request-field-button-container">
       <TextField
         required
         label="request"
         type='text'
         value={inputValue}
         onChange={(event: any) => setInputValue(event.target.value)}
+        className="query-input"
+        onKeyDown={onKeyDown}
       />
-      <Button onClick={fetchData}>
-        search
+      <Button onClick={fetchData} variant='outlined'>
+        send
       </Button>
-    </Section>
+    </div>
+
+    {error && (<Alert severity='error'>{error}</Alert>)}
 
     <Section>
-      <h3>Results</h3>
       <ResultsView data={responseData} />
-      <p>Error: {error}</p>
     </Section>
   </Page >;
 }
