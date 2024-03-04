@@ -1,5 +1,5 @@
 import { KeyboardEvent, useState } from 'react';
-import { TextField, Button } from '@mui/material';
+import { TextField, Button, Alert } from '@mui/material';
 
 import ResultsView from './ResultsView';
 import Page from './Page';
@@ -10,22 +10,22 @@ import './QueryPage.css';
 function QueryPage(props: { userName: string, password: string }) {
   const [inputValue, setInputValue] = useState('');
   const [responseData, setResponseData] = useState(null);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchData = async () => {
     try {
       const controller = new AbortController()
       console.log('Anfrage senden mit Wert:', inputValue);
       const response = await fetch(`https://preon-api.services.zerforschen.plus/preon?s=${inputValue}`, {
-        //mode: 'no-cors',
         signal: controller.signal,
         headers: new Headers({
           "Authorization": `Basic ${btoa(`${props.userName}:${props.password}`)}`
         }),
       });
-      if (!response.ok) {
-        throw new Error('Fehler beim Abrufen der Daten');
-      }
+
+      if (!response.ok) 
+        throw new Error('server did not respond with success code');
+      
       const jsonData = await response.json();
       setResponseData(jsonData);
       setError(null); // Zurücksetzen des Fehlerzustands, wenn die Anfrage erfolgreich war
@@ -56,8 +56,9 @@ function QueryPage(props: { userName: string, password: string }) {
       </Button>
     </div>
 
+    {error && (<Alert severity='error'>{error}</Alert>)}
+
     <Section>
-      {error && (<p>Error: {error}</p>)}
       <ResultsView data={responseData} />
     </Section>
   </Page >;
