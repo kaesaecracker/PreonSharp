@@ -1,5 +1,7 @@
 using System.Globalization;
 using System.IO;
+using System.Threading.Channels;
+using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
 
@@ -41,7 +43,8 @@ public sealed class SepFileKnowledgeProvider : IKnowledgeProvider
         _unquote = spec.Unquote;
     }
 
-    public IEnumerable<(string, string)> GetNameIdPairs()
+
+    public async Task WriteKnowledgeTo(ChannelWriter<KnowledgeDataPoint> outChannel)
     {
         _logger.LogInformation("opening file {}", _filePath);
         var csvReaderConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
@@ -54,16 +57,11 @@ public sealed class SepFileKnowledgeProvider : IKnowledgeProvider
         var csvReader = new CsvReader(new StreamReader(_filePath), csvReaderConfig);
         if (_hasHeader)
         {
-            csvReader.Read();
+            await csvReader.ReadAsync();
             csvReader.ReadHeader();
         }
 
-        return StreamRead(csvReader);
-    }
-
-    private IEnumerable<(string, string)> StreamRead(CsvReader csvReader)
-    {
-        while (csvReader.Read())
+        while (await csvReader.ReadAsync())
         {
             var name = csvReader[_nameColumnIndex];
             if (string.IsNullOrWhiteSpace(name))
@@ -71,10 +69,11 @@ public sealed class SepFileKnowledgeProvider : IKnowledgeProvider
 
             name = name.Trim();
             var id = csvReader[_idColumnIndex].Trim();
-            yield return (name, id);
+            await outChannel.WriteAsync(new KnowledgeDataPoint(id, name, _filePath));
         }
 
         csvReader.Dispose();
+        _logger.LogDebug("Done writing knowledge from {} to channel", this);
     }
 
     public override string ToString()

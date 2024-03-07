@@ -27,9 +27,10 @@ internal sealed class Normalizer : BackgroundService, INormalizer
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        var sw = Stopwatch.StartNew();
         _normalizedNames = await _knowledgeAggregator.BuildKnowledge();
         _initialisationCompletionSource.SetResult();
-        _logger.LogInformation($"{nameof(Normalizer)} ready for queries");
+        _logger.LogInformation($"{nameof(Normalizer)} ready for queries after {{}}", sw.Elapsed);
     }
 
     public Task WaitForInitializationAsync() => _initialisationCompletionSource.Task;
