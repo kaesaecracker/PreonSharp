@@ -31,5 +31,5 @@ export default function App() {
       userName={userName} setUserName={setUserName}/>
 
     {pages.get(currentPage) || pages.get('home')}
-  </ThemeProvider>
+  </ThemeProvider>;
 }

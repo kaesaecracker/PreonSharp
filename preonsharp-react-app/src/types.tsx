@@ -7,7 +7,6 @@ export type QueryServerResponse = {
 };
 
 export type QueryWithServerResponse = {
-  id: number;
   query: string;
   response: QueryServerResponse;
 };
