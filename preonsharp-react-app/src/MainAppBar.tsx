@@ -1,4 +1,3 @@
-import React from "react";
 import {AppBar, IconButton, Toolbar, Typography} from "@mui/material";
 import AccountIcon from "@mui/icons-material/AccountCircleOutlined";
 

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import {useState} from 'react';
 import {Button, Paper} from "@mui/material";
 
 import QueryResultView from './QueryResultView';
@@ -52,8 +52,9 @@ async function onSearch(
       newErrors.delete(text);
       return newErrors;
     });
-  } catch (e: any) {
-    setErrors(errors => new Map(errors).set(text, e.toString()));
+  } catch (e) {
+    const message = e instanceof Error ? e.message : String(e);
+    setErrors(errors => new Map(errors).set(text, message));
   } finally {
     setRunningQueries(prevState => {
       const newState = new Set(prevState);

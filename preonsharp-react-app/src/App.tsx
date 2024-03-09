@@ -1,5 +1,5 @@
 import {CssBaseline, ThemeProvider} from "@mui/material";
-import React, {ReactNode, useState} from "react";
+import {ReactNode, useState} from "react";
 
 import {darkTheme, lightTheme} from "./themes";
 import useStoredState from "./useStoredState";

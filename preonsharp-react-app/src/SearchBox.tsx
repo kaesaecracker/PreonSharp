@@ -4,7 +4,6 @@ import {Button, TextField} from "@mui/material";
 import './SearchBox.css';
 import SearchIcon from '@mui/icons-material/Search';
 
-
 function SearchBox(props: { onSearch: (queryText: string) => void }) {
   const [inputValue, setInputValue] = useState('');
 

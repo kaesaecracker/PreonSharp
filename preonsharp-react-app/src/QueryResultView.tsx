@@ -1,7 +1,7 @@
 import {DataGrid} from '@mui/x-data-grid';
 import {QueryServerResponse} from './types';
 import {Accordion, AccordionDetails, AccordionSummary, Alert, AlertTitle, LinearProgress} from '@mui/material';
-import React from 'react';
+import {useState} from "react";
 
 export default function QueryResultView(props: {
   query: string;
@@ -9,11 +9,11 @@ export default function QueryResultView(props: {
   error?: string;
   running: boolean;
 }) {
-  const [expanded, setExpanded] = React.useState(true);
+  const [expanded, setExpanded] = useState(true);
 
   return <Accordion variant="outlined"
     expanded={expanded}
-    onChange={(event, newExpanded) => setExpanded(newExpanded)}>
+    onChange={(_event, newExpanded) => setExpanded(newExpanded)}>
     <AccordionSummary>
       Query: "{props.query}"
     </AccordionSummary>
