@@ -36,28 +36,14 @@ async function onSearch(
 ) {
   text = text.trim();
 
-  setResponseOrder(responseOrder => {
-    let newResponseOrder = [...responseOrder];
-    if (responseOrder.indexOf(text) >= 0)
-      newResponseOrder.splice(responseOrder.indexOf(text), 1);
-    newResponseOrder.splice(0, 0, text);
-    return newResponseOrder;
-  });
+  setResponseOrder(responseOrder => [text, ...responseOrder.filter(t => t !== text)]);
 
   try {
-    setRunningQueries(prevState => {
-      const newState = new Set(prevState);
-      newState.add(text);
-      return newState;
-    })
+    setRunningQueries(set => new Set(set).add(text));
 
     const response = await fetchData(text, userName, password);
 
-    setResponses(responses => {
-      const newResponses = new Map(responses);
-      newResponses.set(text, response);
-      return newResponses;
-    });
+    setResponses(responses => new Map(responses).set(text, response));
     setErrors(errors => {
       if (!errors.has(text))
         return errors;
@@ -67,17 +53,13 @@ async function onSearch(
       return newErrors;
     });
   } catch (e: any) {
-    setErrors(errors => {
-      const newErrors = new Map(errors);
-      newErrors.set(text, e.toString());
-      return newErrors;
-    });
+    setErrors(errors => new Map(errors).set(text, e.toString()));
   } finally {
     setRunningQueries(prevState => {
       const newState = new Set(prevState);
       newState.delete(text);
       return newState;
-    })
+    });
   }
 }
 
@@ -86,6 +68,13 @@ function QueryPage(props: { userName: string, password: string }) {
   const [responseOrder, setResponseOrder] = useState<string[]>(() => []);
   const [errors, setErrors] = useState(() => new Map<string, string>());
   const [runningQueries, setRunningQueries] = useState<Set<string>>(() => new Set<string>());
+
+  const clear = () => {
+    setResponses(new Map());
+    setResponseOrder([]);
+    setErrors(new Map());
+    setRunningQueries(new Set());
+  };
 
   return <Page>
     <SearchBox
@@ -103,13 +92,7 @@ function QueryPage(props: { userName: string, password: string }) {
         }
       }}>torture test</Button>
 
-      <Button onClick={() => {
-        // TODO: keep running queries
-        setResponses(new Map());
-        setResponseOrder([]);
-        setErrors(new Map());
-        setRunningQueries(new Set());
-      }}>clear</Button>
+      <Button onClick={clear}>clear</Button>
     </Paper>
 
     <div style={{

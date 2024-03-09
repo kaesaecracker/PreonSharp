@@ -1,11 +1,11 @@
-import { ReactNode } from 'react';
+import {ReactNode} from 'react';
 
-import './Page.css'
+import './Page.css';
 
 function Page(props: { children: ReactNode }) {
   return <main className='Page'>
     {props.children}
-  </main>
+  </main>;
 }
 
 export default Page;
