@@ -15,13 +15,13 @@ function SearchBox(props: { onSearch: (queryText: string) => void }) {
   };
 
   return <div className="SearchBox">
-    <TextField required
-               label="request"
-               type='text'
-               value={inputValue}
-               onChange={(event: ChangeEvent<HTMLInputElement>) => setInputValue(event.target.value)}
-               className="query-input"
-               onKeyDown={onKeyDown}
+    <TextField
+      label="request"
+      type='text'
+      value={inputValue}
+      onChange={(event: ChangeEvent<HTMLInputElement>) => setInputValue(event.target.value)}
+      className="query-input"
+      onKeyDown={onKeyDown}
     />
     <Button onClick={() => props.onSearch(inputValue)} variant='outlined'>
       <SearchIcon/>
