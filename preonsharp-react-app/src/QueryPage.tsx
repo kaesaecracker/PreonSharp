@@ -9,6 +9,7 @@ import SearchBox from "./SearchBox";
 import './QueryPage.css';
 import React from 'react';
 import Section from './components/Section';
+import RunningQueryView from "./RunningQueryView";
 
 
 async function fetchData(
@@ -16,8 +17,7 @@ async function fetchData(
   userName: string,
   password: string,
   setError: (value: string | null) => void,
-  setResponses: (value: (prevState: Map<string, QueryServerResponse>) => Map<string, QueryServerResponse>) => void,
-  setResponseOrder: (value: (prevState: string[]) => string[]) => void
+  setResponses: (value: (prevState: Map<string, QueryServerResponse>) => Map<string, QueryServerResponse>) => void
 ) {
   console.log('Anfrage senden mit Wert:', text);
   try {
@@ -39,10 +39,6 @@ async function fetchData(
       newResponses.set(text, jsonData);
       return newResponses;
     });
-    setResponseOrder(responseOrder => [
-      text,
-      ...responseOrder
-    ])
     setError(null); // Zurücksetzen des Fehlerzustands, wenn die Anfrage erfolgreich war
   } catch (e: any) {
     setError(e.toString());
@@ -66,7 +62,8 @@ function QueryPage(props: { userName: string, password: string }) {
       return;
     }
 
-    await fetchData(text, props.userName, props.password, setError, setResponses, setResponseOrder);
+    setResponseOrder(responseOrder => [text, ...responseOrder]);
+    await fetchData(text, props.userName, props.password, setError, setResponses);
   };
 
   return <Page>
@@ -76,8 +73,13 @@ function QueryPage(props: { userName: string, password: string }) {
 
     <Section>
       {
-        responseOrder.map((text) =>
-          <ResultsView key={text} query={text} response={responses.get(text)!}/>)
+        responseOrder.map((text) => {
+          let response = responses.get(text);
+          if (response === undefined)
+            return <RunningQueryView key={text} query={text}/>;
+
+          return <ResultsView key={text} query={text} response={response}/>;
+        })
       }
     </Section>
   </Page>;
