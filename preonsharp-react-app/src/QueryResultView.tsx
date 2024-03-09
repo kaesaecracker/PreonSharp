@@ -31,6 +31,7 @@ export default function QueryResultView(props: {
         props.response && <>
           <p>full search time: {props.response.executionTime}</p>
           <DataGrid
+            getRowHeight={() => 'auto'}
             rows={props.response.foundIds}
             columns={[
               {field: 'name', headerName: 'Name', flex: 1, maxWidth: 200},
