@@ -1,6 +1,6 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 
-import './LoginDialog.css'
+import './LoginDialog.css';
 
 function LoginDialog(props: {
   open: boolean,
@@ -37,7 +37,7 @@ function LoginDialog(props: {
     <DialogActions>
       <Button onClick={closeDialog}>Done</Button>
     </DialogActions>
-  </Dialog>
+  </Dialog>;
 }
 
 export default LoginDialog;

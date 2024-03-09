@@ -26,7 +26,7 @@ function SearchBox(props: { onSearch: (queryText: string) => void }) {
     <Button onClick={() => props.onSearch(inputValue)} variant='outlined'>
       <SearchIcon/>
     </Button>
-  </div>
+  </div>;
 }
 
 export default SearchBox;

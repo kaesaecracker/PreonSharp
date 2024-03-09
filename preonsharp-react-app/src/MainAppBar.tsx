@@ -15,7 +15,7 @@ function DarkModeSwitcher(props: {
     </IconButton>
     : <IconButton aria-label='light mode' onClick={() => props.setColorScheme('light')}>
       <LightModeIcon/>
-    </IconButton>
+    </IconButton>;
 }
 
 export default function MainAppBar(props: {
@@ -36,5 +36,5 @@ export default function MainAppBar(props: {
         <AccountIcon/>
       </IconButton>
     </Toolbar>
-  </AppBar>
+  </AppBar>;
 }
