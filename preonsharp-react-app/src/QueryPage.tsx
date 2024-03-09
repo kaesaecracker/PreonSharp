@@ -1,84 +1,105 @@
-import {useState} from 'react';
-import {Alert} from '@mui/material';
-
-import ResultsView from './ResultsView';
+import React, {useState} from 'react';
+import QueryResultView from './QueryResultView';
 import Page from './components/Page';
 import {QueryServerResponse} from './types';
 import SearchBox from "./SearchBox";
+import Section from './components/Section';
 
 import './QueryPage.css';
-import React from 'react';
-import Section from './components/Section';
-import RunningQueryView from "./RunningQueryView";
-
 
 async function fetchData(
   text: string,
   userName: string,
+  password: string
+): Promise<QueryServerResponse> {
+  const response = await fetch(`https://preon-api.services.zerforschen.plus/preon?s=${text}`, {
+    headers: new Headers({
+      "Authorization": `Basic ${btoa(`${userName}:${password}`)}`
+    }),
+  });
+
+  if (!response.ok)
+    throw new Error('server did not respond with success code');
+
+  return await response.json() as QueryServerResponse;
+}
+
+async function onSearch(
+  text: string,
+  userName: string,
   password: string,
-  setError: (value: string | null) => void,
-  setResponses: (value: (prevState: Map<string, QueryServerResponse>) => Map<string, QueryServerResponse>) => void
+  setResponseOrder: (value: (prevState: string[]) => string[]) => void,
+  setRunningQueries: (value: (prevState: Set<string>) => Set<string>) => void,
+  setResponses: (value: (revState: Map<string, QueryServerResponse>) => Map<string, QueryServerResponse>) => void,
+  setErrors: (value: (prevState: Map<string, string>) => Map<string, string>) => void
 ) {
-  console.log('Anfrage senden mit Wert:', text);
+  text = text.trim();
+
+  setResponseOrder(responseOrder => {
+    let newResponseOrder = [...responseOrder];
+    if (responseOrder.indexOf(text) >= 0)
+      newResponseOrder.splice(responseOrder.indexOf(text), 1);
+    newResponseOrder.splice(0, 0, text);
+    return newResponseOrder;
+  });
+
   try {
-    const response = await fetch(`https://preon-api.services.zerforschen.plus/preon?s=${text}`, {
-      headers: new Headers({
-        "Authorization": `Basic ${btoa(`${userName}:${password}`)}`
-      }),
-    });
+    setRunningQueries(prevState => {
+      const newState = new Set(prevState);
+      newState.add(text);
+      return newState;
+    })
 
-    if (!response.ok) {
-      setError('server did not respond with success code');
-      return;
-    }
-
-    const jsonData = await response.json() as QueryServerResponse;
+    const response = await fetchData(text, userName, password);
 
     setResponses(responses => {
       const newResponses = new Map(responses);
-      newResponses.set(text, jsonData);
+      newResponses.set(text, response);
       return newResponses;
     });
-    setError(null); // Zurücksetzen des Fehlerzustands, wenn die Anfrage erfolgreich war
+    setErrors(errors => {
+      if (!errors.has(text))
+        return errors;
+
+      const newErrors = new Map(errors);
+      newErrors.delete(text);
+      return newErrors;
+    });
   } catch (e: any) {
-    setError(e.toString());
+    setErrors(errors => {
+      const newErrors = new Map(errors);
+      newErrors.set(text, e.toString());
+      return newErrors;
+    });
+  } finally {
+    setRunningQueries(prevState => {
+      const newState = new Set(prevState);
+      newState.delete(text);
+      return newState;
+    })
   }
 }
 
 function QueryPage(props: { userName: string, password: string }) {
   const [responses, setResponses] = useState(() => new Map<string, QueryServerResponse>());
   const [responseOrder, setResponseOrder] = useState<string[]>(() => []);
-  const [error, setError] = useState<string | null>(null);
-
-  const onSearch = async (text: string) => {
-    let jsonData = responses.get(text);
-    if (jsonData !== undefined) {
-      setResponseOrder(responseOrder => {
-        let newResponseOrder = [...responseOrder];
-        newResponseOrder.splice(responseOrder.indexOf(text), 1);
-        newResponseOrder.splice(0, 0, text);
-        return newResponseOrder;
-      });
-      return;
-    }
-
-    setResponseOrder(responseOrder => [text, ...responseOrder]);
-    await fetchData(text, props.userName, props.password, setError, setResponses);
-  };
+  const [errors, setErrors] = useState(() => new Map<string, string>());
+  const [runningQueries, setRunningQueries] = useState<Set<string>>(() => new Set<string>());
 
   return <Page>
-    <SearchBox onSearch={onSearch}/>
-
-    {error && (<Alert severity='error'>{error}</Alert>)}
+    <SearchBox
+      onSearch={async text => await onSearch(text, props.userName, props.password, setResponseOrder, setRunningQueries, setResponses, setErrors)}/>
 
     <Section>
       {
         responseOrder.map((text) => {
-          let response = responses.get(text);
-          if (response === undefined)
-            return <RunningQueryView key={text} query={text}/>;
-
-          return <ResultsView key={text} query={text} response={response}/>;
+          return <QueryResultView
+            key={text}
+            query={text}
+            response={responses.get(text)}
+            error={errors.get(text)}
+            running={runningQueries.has(text)}
+          />;
         })
       }
     </Section>
