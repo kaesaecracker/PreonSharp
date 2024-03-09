@@ -1,5 +1,5 @@
-import { Paper } from "@mui/material";
-import { ReactNode } from "react";
+import {Paper} from "@mui/material";
+import {ReactNode} from "react";
 
 import './Section.css';
 

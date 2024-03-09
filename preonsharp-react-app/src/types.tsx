@@ -5,8 +5,3 @@ export type QueryServerResponse = {
     ids: string[];
   }[];
 };
-
-export type QueryWithServerResponse = {
-  query: string;
-  response: QueryServerResponse;
-};

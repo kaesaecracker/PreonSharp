@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
+import {Button, Paper} from "@mui/material";
+
 import QueryResultView from './QueryResultView';
 import Page from './components/Page';
 import {QueryServerResponse} from './types';
 import SearchBox from "./SearchBox";
-import Section from './components/Section';
 
 import './QueryPage.css';
 
@@ -90,7 +91,31 @@ function QueryPage(props: { userName: string, password: string }) {
     <SearchBox
       onSearch={async text => await onSearch(text, props.userName, props.password, setResponseOrder, setRunningQueries, setResponses, setErrors)}/>
 
-    <Section>
+    <Paper variant="outlined" sx={{
+      display: 'flex',
+      flexDirection: 'row',
+      padding: '10px',
+      gap: '20px'
+    }}>
+      <Button onClick={() => {
+        for (let i = 0; i < 20; i++) {
+          onSearch(`test${i}`, props.userName, props.password, setResponseOrder, setRunningQueries, setResponses, setErrors);
+        }
+      }}>torture test</Button>
+
+      <Button onClick={() => {
+        // TODO: keep running queries
+        setResponses(new Map());
+        setResponseOrder([]);
+        setErrors(new Map());
+        setRunningQueries(new Set());
+      }}>clear</Button>
+    </Paper>
+
+    <div style={{
+      display: "flex",
+      flexDirection: "column"
+    }}>
       {
         responseOrder.map((text) => {
           return <QueryResultView
@@ -102,7 +127,7 @@ function QueryPage(props: { userName: string, password: string }) {
           />;
         })
       }
-    </Section>
+    </div>
   </Page>;
 }
 

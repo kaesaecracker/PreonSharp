@@ -11,7 +11,7 @@ export default function QueryResultView(props: {
 }) {
   const [expanded, setExpanded] = React.useState(true);
 
-  return <Accordion
+  return <Accordion variant="outlined"
     expanded={expanded}
     onChange={(event, newExpanded) => setExpanded(newExpanded)}>
     <AccordionSummary>
