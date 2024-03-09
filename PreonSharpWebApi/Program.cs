@@ -13,6 +13,9 @@ internal static class Program
     {
         var app = BuildWebApp(args);
         app.UseHttpLogging();
+        app.UseCors();
+
+        app.MapGet("/ping", () => "pong");
 
         var normalizer = app.Services.GetRequiredService<INormalizer>();
 
@@ -42,11 +45,18 @@ internal static class Program
             });
 
         builder.Services
+            .AddCors(options => options.AddDefaultPolicy(policyBuilder =>
+            {
+                policyBuilder.AllowAnyOrigin();
+                policyBuilder.AllowAnyHeader();
+            }))
             .AddHttpLogging(_ => { })
             .ConfigureHttpJsonOptions(options =>
             {
                 options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
-            })
+            });
+
+        builder.Services
             .AddNormalizer(normalizerBuilder =>
             {
                 normalizerBuilder.AddLevenshteinMatchStrategy();

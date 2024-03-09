@@ -1,6 +1,8 @@
+using System.Threading.Channels;
+
 namespace PreonSharp;
 
 public interface IKnowledgeProvider
 {
-    IEnumerable<(string, string)> GetNameIdPairs();
+    public Task WriteKnowledgeTo(ChannelWriter<KnowledgeDataPoint> outChannel);
 }

@@ -11,3 +11,11 @@ GET {{Preon.WebApi_HostAddress}}/preon
 Accept: application/json
 
 ###
+
+GET {{Preon.WebApi_HostAddress}}/ping
+Accept: application/json
+
+###
+
+GET {{Preon.WebApi_HostAddress}}/preon/wait
+Accept: application/json
