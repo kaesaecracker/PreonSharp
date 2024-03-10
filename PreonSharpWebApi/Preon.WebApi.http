@@ -1,4 +1,4 @@
-@Preon.WebApi_HostAddress = http://localhost:3002
+@Preon.WebApi_HostAddress = http://vinzenz-pc2:8544
 
 GET {{Preon.WebApi_HostAddress}}/preon
     ?s=gh1

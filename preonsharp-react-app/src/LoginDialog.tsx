@@ -1,6 +1,7 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
 
 import './LoginDialog.css';
+import * as React from "react";
 
 function LoginDialog(props: {
   open: boolean,
@@ -20,7 +21,7 @@ function LoginDialog(props: {
         label="user"
         type='text'
         value={props.userName}
-        onChange={(event: any) => {
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
           props.setUserName(event.target.value);
         }}
       />
@@ -29,7 +30,7 @@ function LoginDialog(props: {
         label="password"
         type='password'
         value={props.password}
-        onChange={(event: any) => {
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
           props.setPassword(event.target.value);
         }}
       />

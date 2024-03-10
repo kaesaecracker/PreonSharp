@@ -14,4 +14,4 @@ export const lightTheme: Theme = createTheme({
     primary: {main: '#0294EE'},
     secondary: {main: '#D69F32'}
   },
-})
+});
