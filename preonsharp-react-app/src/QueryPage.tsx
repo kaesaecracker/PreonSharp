@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {Button, Paper} from "@mui/material";
+import {Button, Typography} from "@mui/material";
 
 import QueryResultView from './QueryResultView';
 import Page from './components/Page';
@@ -7,12 +7,16 @@ import {QueryServerResponse} from './types';
 import SearchBox from "./SearchBox";
 
 import './QueryPage.css';
+import Section from "./components/Section.tsx";
 
 async function fetchData(
   text: string,
   userName: string,
   password: string
 ): Promise<QueryServerResponse> {
+  if (!userName || !password)
+    throw new Error('no user credentials provided, check settings');
+
   const response = await fetch(`https://preon-api.services.zerforschen.plus/preon?s=${text}`, {
     headers: new Headers({
       "Authorization": `Basic ${btoa(`${userName}:${password}`)}`
@@ -64,6 +68,14 @@ async function onSearch(
   }
 }
 
+function WelcomeSection() {
+  return <Section direction='column'>
+    <Typography variant="h6" component="div" sx={{flexGrow: 1}}>welcome to preon#</Typography>
+    <p>this is a tool for entity linking.</p>
+    <p>use the search bar to get started!</p>
+  </Section>;
+}
+
 function QueryPage(props: { userName: string, password: string }) {
   const [responses, setResponses] = useState(() => new Map<string, QueryServerResponse>());
   const [responseOrder, setResponseOrder] = useState<string[]>(() => []);
@@ -81,12 +93,7 @@ function QueryPage(props: { userName: string, password: string }) {
     <SearchBox
       onSearch={async text => await onSearch(text, props.userName, props.password, setResponseOrder, setRunningQueries, setResponses, setErrors)}/>
 
-    <Paper variant="outlined" sx={{
-      display: 'flex',
-      flexDirection: 'row',
-      padding: '10px',
-      gap: '20px'
-    }}>
+    <Section direction='row'>
       <Button onClick={() => {
         for (let i = 0; i < 20; i++) {
           onSearch(`test${i}`, props.userName, props.password, setResponseOrder, setRunningQueries, setResponses, setErrors);
@@ -94,7 +101,9 @@ function QueryPage(props: { userName: string, password: string }) {
       }}>torture test</Button>
 
       <Button onClick={clear}>clear</Button>
-    </Paper>
+    </Section>
+
+    {responseOrder.length == 0 && <WelcomeSection/>}
 
     <div style={{
       display: "flex",
