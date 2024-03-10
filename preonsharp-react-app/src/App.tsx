@@ -4,7 +4,7 @@ import {useState} from "react";
 import {darkTheme, lightTheme} from "./themes";
 import useStoredState from "./useStoredState";
 
-import QueryPage from "./QueryPage";
+import MainPage from "./MainPage.tsx";
 import LoginDialog from "./LoginDialog";
 import MainAppBar from "./MainAppBar";
 
@@ -24,6 +24,6 @@ export default function App() {
       password={password} setPassword={setUserPassword}
       userName={userName} setUserName={setUserName}/>
 
-    <QueryPage userName={userName} password={password}/>
+    <MainPage userName={userName} password={password}/>
   </ThemeProvider>;
 }

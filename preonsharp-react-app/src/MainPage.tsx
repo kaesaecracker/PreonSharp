@@ -76,7 +76,7 @@ function WelcomeSection() {
   </Section>;
 }
 
-function QueryPage(props: { userName: string, password: string }) {
+function MainPage(props: { userName: string, password: string }) {
   const [responses, setResponses] = useState(() => new Map<string, QueryServerResponse>());
   const [responseOrder, setResponseOrder] = useState<string[]>(() => []);
   const [errors, setErrors] = useState(() => new Map<string, string>());
@@ -124,4 +124,4 @@ function QueryPage(props: { userName: string, password: string }) {
   </Page>;
 }
 
-export default QueryPage;
+export default MainPage;
