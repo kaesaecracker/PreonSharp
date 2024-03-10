@@ -1,4 +1,4 @@
-import { CssBaseline, ThemeProvider } from "@mui/material";
+import { CssBaseline, ThemeProvider, useMediaQuery } from "@mui/material";
 import { useState } from "react";
 
 import { darkTheme, lightTheme } from "./themes";
@@ -36,14 +36,26 @@ export default function App() {
   const [password, setUserPassword] = useStoredState('userPassword', '');
   const [colorScheme, setColorScheme] = useStoredState('colorScheme', 'dark');
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const isMultiColumn = useMediaQuery('(min-width: 600px)')
 
-  return <ThemeProvider theme={colorScheme === 'light' ? lightTheme : darkTheme}>
+  const theme = colorScheme === 'light' ? lightTheme : darkTheme;
+
+  return <ThemeProvider theme={theme}>
     <CssBaseline />
+
     <div style={{
       display: "flex",
       flexDirection: 'row'
     }}>
-      <div style={{ flexGrow: 2 }}>
+
+      <div style={{
+        flexGrow: 1,
+        width: !settingsOpen
+          ? "100%"
+          : isMultiColumn
+            ? "66%"
+            : '0'
+      }}>
         <MainAppBar
           openLogin={() => setLoginOpen(true)}
           setColorScheme={setColorScheme}
@@ -58,8 +70,19 @@ export default function App() {
         <MainPage userName={userName} password={password} />
       </div>
 
-      {settingsOpen && <SettingsPage onClose={() => setSettingsOpen(false)} />}
+      <div style={{
+        flexGrow: 0,
+        transition: 'width 2s ease-in',
+        width: !settingsOpen
+          ? '0'
+          : isMultiColumn
+            ? '33%'
+            : '100%',
+      }}>
+        <SettingsPage onClose={() => setSettingsOpen(false)} />
+      </div>
 
     </div>
+
   </ThemeProvider>;
 }
