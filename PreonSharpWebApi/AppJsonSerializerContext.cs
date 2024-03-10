@@ -3,7 +3,7 @@ using Loaders.Ncbi;
 
 namespace PreonSharpWebApi;
 
-[JsonSourceGenerationOptions]
+[JsonSourceGenerationOptions(UseStringEnumConverter = true)]
 [JsonSerializable(typeof(QueryResult))]
 [JsonConverter(typeof(JsonStringEnumConverter<MatchType>))]
 [JsonSerializable(typeof(MatchType))]

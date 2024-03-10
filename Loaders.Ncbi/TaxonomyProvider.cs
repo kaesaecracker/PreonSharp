@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -48,7 +47,10 @@ public sealed class TaxonomyProvider : IHostedLifecycleService
             return result;
         return null;
     }
-    
+
+    public IEnumerable<TaxonomyEntity> All => _entities?.Values
+                                              ?? throw new InvalidOperationException("not initialized");
+
     private static Dictionary<ulong, ulong> LoadNodes(string dmpFile)
     {
         using var csvReader = new CsvReader(
@@ -67,14 +69,15 @@ public sealed class TaxonomyProvider : IHostedLifecycleService
             var parent = csvReader.GetField<ulong>(1);
             if (id == parent)
                 continue;
-            
+
             result[id] = parent;
         }
 
         return result;
     }
 
-    private static FrozenDictionary<ulong, TaxonomyEntity> LoadEntities(string dmpFile, Dictionary<ulong, ulong> hierarchy)
+    private static FrozenDictionary<ulong, TaxonomyEntity> LoadEntities(string dmpFile,
+        Dictionary<ulong, ulong> hierarchy)
     {
         using var csvReader = new CsvReader(
             new StreamReader(dmpFile),
@@ -98,7 +101,7 @@ public sealed class TaxonomyProvider : IHostedLifecycleService
                     parent = foundParent;
                 else
                     parent = null;
-                
+
                 var entity = new TaxonomyEntity(currentId, names.ToFrozenSet(), parent);
                 entities.Add(entity);
                 names.Clear();
@@ -109,7 +112,7 @@ public sealed class TaxonomyProvider : IHostedLifecycleService
             if (string.IsNullOrWhiteSpace(name))
                 name = csvReader[1];
             name = name.Trim();
-                
+
             names.Add(new TaxonomyTag(csvReader[3].Trim(), name));
         }
 

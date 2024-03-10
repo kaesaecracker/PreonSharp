@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Threading;
@@ -40,8 +39,7 @@ public sealed class MyLevenshteinMatchStrategy : IMatchStrategy
         var relativeDistance = minDist / (decimal)transformedName.Length;
         return new QueryResult(
             Type: MatchType.Partial,
-            FoundIds: minDistValues,
-            EditDistance: relativeDistance
+            Results: minDistValues
         );
     }
 }

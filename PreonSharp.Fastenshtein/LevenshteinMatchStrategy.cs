@@ -38,8 +38,7 @@ internal sealed class LevenshteinMatchStrategy : IMatchStrategy
 
         return new QueryResult(
             Type: MatchType.Partial,
-            FoundIds: minDistValues,
-            EditDistance: minDist
+            Results: minDistValues
         );
     }
 }

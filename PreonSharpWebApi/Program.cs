@@ -69,15 +69,15 @@ internal static class Program
             });
 
         builder.Services
+            .AddNcbiTaxonomy()
+            .Configure<NcbiConfiguration>(builder.Configuration.GetSection("Ncbi"))
             .AddNormalizer(normalizerBuilder =>
             {
                 normalizerBuilder.AddLevenshteinMatchStrategy();
                 normalizerBuilder.AddSepFiles();
+                normalizerBuilder.AddNcbiTaxonomyKnowledge();
             })
-            .Configure<SepFilesConfiguration>(builder.Configuration.GetSection("SepFiles"))
-            .AddSingleton<TaxonomyProvider>()
-            .Configure<NcbiConfiguration>(builder.Configuration.GetSection("Ncbi"))
-            .AddHostedService(sp => sp.GetRequiredService<TaxonomyProvider>());
+            .Configure<SepFilesConfiguration>(builder.Configuration.GetSection("SepFiles"));
 
         return builder.Build();
     }

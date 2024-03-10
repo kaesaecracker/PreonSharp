@@ -14,7 +14,7 @@ Accept: application/json
 ###
 
 GET {{Preon.WebApi_HostAddress}}/preon/query
-    ?s=test
+    ?s=root
 Accept: application/json
 
 ###
