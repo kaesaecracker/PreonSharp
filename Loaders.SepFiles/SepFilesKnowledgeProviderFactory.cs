@@ -14,5 +14,5 @@ internal sealed class SepFilesKnowledgeProviderFactory(
     private readonly Func<SepFileSpec, SepFileKnowledgeProvider> _activator =
         s => ActivatorUtilities.CreateInstance<SepFileKnowledgeProvider>(serviceProvider, s);
 
-    public IEnumerable<IKnowledgeProvider> GetKnowledgeProviders() => _specs.Select(_activator);
+    public IEnumerable<IKnowledgeProvider> BuildConfiguredKnowledgeProviders() => _specs.Select(_activator);
 }
