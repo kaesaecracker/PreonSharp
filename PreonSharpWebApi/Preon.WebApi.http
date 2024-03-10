@@ -1,14 +1,4 @@
-@Preon.WebApi_HostAddress = http://vinzenz-pc2:8544
-
-GET {{Preon.WebApi_HostAddress}}/preon
-    ?s=gh1
-Accept: application/json
-
-###
-
-GET {{Preon.WebApi_HostAddress}}/preon
-    ?s=test
-Accept: application/json
+@Preon.WebApi_HostAddress = http://localhost:8544
 
 ###
 
@@ -17,5 +7,30 @@ Accept: application/json
 
 ###
 
+GET {{Preon.WebApi_HostAddress}}/preon/query
+    ?s=gh1
+Accept: application/json
+
+###
+
+GET {{Preon.WebApi_HostAddress}}/preon/query
+    ?s=test
+Accept: application/json
+
+###
+
 GET {{Preon.WebApi_HostAddress}}/preon/wait
 Accept: application/json
+
+###
+
+GET {{Preon.WebApi_HostAddress}}/taxonomy/1
+Accept: application/json
+
+###
+
+GET {{Preon.WebApi_HostAddress}}/taxonomy/254
+Accept: application/json
+
+
+

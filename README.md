@@ -20,3 +20,5 @@ Auxiliary:
 ## Data sources
 
 See https://github.com/sg-wbi/belb
+
+ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz

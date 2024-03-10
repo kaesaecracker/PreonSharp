@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PreonSharpTests", "PreonSha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PreonSharpWebApi", "PreonSharpWebApi\PreonSharpWebApi.csproj", "{A8D504AF-7965-4BD9-890F-466B7961296E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loaders.Ncbi", "Loaders.Ncbi\Loaders.Ncbi.csproj", "{776212F0-65D5-4337-94A5-A931331163CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,5 +56,9 @@ Global
 		{A8D504AF-7965-4BD9-890F-466B7961296E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A8D504AF-7965-4BD9-890F-466B7961296E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A8D504AF-7965-4BD9-890F-466B7961296E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{776212F0-65D5-4337-94A5-A931331163CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{776212F0-65D5-4337-94A5-A931331163CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{776212F0-65D5-4337-94A5-A931331163CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{776212F0-65D5-4337-94A5-A931331163CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
