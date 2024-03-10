@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PreonSharp", "PreonSharp\PreonSharp.csproj", "{F3D29990-DA58-4693-BA4E-2AC8774FC839}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PreonSharp.Loaders", "PreonSharp.Loaders\PreonSharp.Loaders.csproj", "{0E7ADE47-F1AA-4978-8DAF-822723B0E2D8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loaders.SepFiles", "Loaders.SepFiles\Loaders.SepFiles.csproj", "{0E7ADE47-F1AA-4978-8DAF-822723B0E2D8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BioCXml", "BioCXml\BioCXml.csproj", "{1A64F8E0-72CE-40EA-9B62-A72FAE966D44}"
 EndProject

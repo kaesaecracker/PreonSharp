@@ -2,10 +2,6 @@
 
     <Import Project="../shared.props"/>
 
-    <PropertyGroup>
-        <RootNamespace>PreonSharp.Loaders</RootNamespace>
-    </PropertyGroup>
-
     <ItemGroup>
         <ProjectReference Include="..\PreonSharp\PreonSharp.csproj"/>
     </ItemGroup>

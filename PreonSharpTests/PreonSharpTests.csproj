@@ -28,7 +28,7 @@
     <ItemGroup>
         <ProjectReference Include="..\PreonSharp.Fastenshtein\PreonSharp.Fastenshtein.csproj"/>
         <ProjectReference Include="..\PreonSharp.Levenshtein\PreonSharp.Levenshtein.csproj"/>
-        <ProjectReference Include="..\PreonSharp.Loaders\PreonSharp.Loaders.csproj"/>
+        <ProjectReference Include="..\Loaders.SepFiles\Loaders.SepFiles.csproj" />
         <ProjectReference Include="..\PreonSharp\PreonSharp.csproj"/>
     </ItemGroup>
 

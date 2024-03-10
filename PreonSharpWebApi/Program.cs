@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PreonSharp.Levenshtein;
-using PreonSharp.Loaders;
+using Loaders.SepFiles;
 
 namespace PreonSharpWebApi;
 

@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
+using PreonSharp;
 
-namespace PreonSharp.Loaders;
+namespace Loaders.SepFiles;
 
 public static class LoaderServiceCollectionExtensions
 {

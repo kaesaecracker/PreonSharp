@@ -1,7 +1,8 @@
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
+using PreonSharp;
 
-namespace PreonSharp.Loaders;
+namespace Loaders.SepFiles;
 
 internal sealed class SepFilesKnowledgeProviderFactory(
     IOptions<SepFilesConfiguration> configuration,
