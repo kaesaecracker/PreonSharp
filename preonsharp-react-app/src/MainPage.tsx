@@ -1,9 +1,9 @@
-import {useState} from 'react';
-import {Button, Typography} from "@mui/material";
+import { useState } from 'react';
+import { Button, Typography } from "@mui/material";
 
 import QueryResultView from './QueryResultView';
 import Page from './components/Page';
-import {QueryServerResponse} from './types';
+import { QueryServerResponse } from './types';
 import SearchBox from "./SearchBox";
 
 import './QueryPage.css';
@@ -70,7 +70,7 @@ async function onSearch(
 
 function WelcomeSection() {
   return <Section direction='column'>
-    <Typography variant="h6" component="div" sx={{flexGrow: 1}}>welcome to preon#</Typography>
+    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>welcome to preon#</Typography>
     <p>this is a tool for entity linking.</p>
     <p>use the search bar to get started!</p>
   </Section>;
@@ -90,38 +90,39 @@ function MainPage(props: { userName: string, password: string }) {
   };
 
   return <Page>
-    <SearchBox
-      onSearch={async text => await onSearch(text, props.userName, props.password, setResponseOrder, setRunningQueries, setResponses, setErrors)}/>
+      <SearchBox
+        onSearch={async text => await onSearch(text, props.userName, props.password, setResponseOrder, setRunningQueries, setResponses, setErrors)} />
 
-    <Section direction='row'>
-      <Button onClick={() => {
-        for (let i = 0; i < 20; i++) {
-          onSearch(`test${i}`, props.userName, props.password, setResponseOrder, setRunningQueries, setResponses, setErrors);
+      <Section direction='row'>
+        <Button onClick={() => {
+          for (let i = 0; i < 20; i++) {
+            onSearch(`test${i}`, props.userName, props.password, setResponseOrder, setRunningQueries, setResponses, setErrors);
+          }
+        }}>torture test</Button>
+
+        <Button onClick={clear}>clear</Button>
+      </Section>
+
+      {responseOrder.length == 0 && <WelcomeSection />}
+
+      <div style={{
+        display: "flex",
+        flexDirection: "column"
+      }}>
+        {
+          responseOrder.map((text) => {
+            return <QueryResultView
+              key={text}
+              query={text}
+              response={responses.get(text)}
+              error={errors.get(text)}
+              running={runningQueries.has(text)}
+            />;
+          })
         }
-      }}>torture test</Button>
+      </div>
 
-      <Button onClick={clear}>clear</Button>
-    </Section>
-
-    {responseOrder.length == 0 && <WelcomeSection/>}
-
-    <div style={{
-      display: "flex",
-      flexDirection: "column"
-    }}>
-      {
-        responseOrder.map((text) => {
-          return <QueryResultView
-            key={text}
-            query={text}
-            response={responses.get(text)}
-            error={errors.get(text)}
-            running={runningQueries.has(text)}
-          />;
-        })
-      }
-    </div>
-  </Page>;
+  </Page >;
 }
 
 export default MainPage;
