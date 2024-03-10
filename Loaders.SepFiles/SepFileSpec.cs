@@ -1,4 +1,4 @@
-namespace PreonSharp.Loaders;
+namespace Loaders.SepFiles;
 
 public record class SepFileSpec
 {

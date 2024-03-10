@@ -1,9 +1,11 @@
+using Loaders.Ncbi;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PreonSharp.Levenshtein;
-using PreonSharp.Loaders;
+using Loaders.SepFiles;
+using Microsoft.Extensions.Hosting;
 
 namespace PreonSharpWebApi;
 
@@ -18,10 +20,13 @@ internal static class Program
         app.MapGet("/ping", () => "pong");
 
         var normalizer = app.Services.GetRequiredService<INormalizer>();
-
         var preonApi = app.MapGroup("/preon");
-        preonApi.MapGet("/", (string s) => normalizer.QueryAsync(s));
+        preonApi.MapGet("/query", (string s) => normalizer.QueryAsync(s));
         preonApi.MapGet("/wait", normalizer.WaitForInitializationAsync);
+
+        var taxonomyProvider = app.Services.GetRequiredService<TaxonomyProvider>();
+        var taxonomyApi = app.MapGroup("/taxonomy");
+        taxonomyApi.MapGet("/{id}", (ulong id) => taxonomyProvider.GetEntity(id));
 
         app.Run();
     }
@@ -30,6 +35,13 @@ internal static class Program
     {
         var builder = WebApplication.CreateSlimBuilder(args);
 
+        builder.Host.ConfigureHostOptions(options =>
+        {
+            options.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.StopHost;
+            options.ServicesStartConcurrently = true;
+            options.ServicesStopConcurrently = true;
+        });
+        
         builder.Configuration
             .AddCommandLine(args)
             .AddEnvironmentVariables()
@@ -62,7 +74,10 @@ internal static class Program
                 normalizerBuilder.AddLevenshteinMatchStrategy();
                 normalizerBuilder.AddSepFiles();
             })
-            .Configure<SepFilesConfiguration>(builder.Configuration.GetSection("SepFiles"));
+            .Configure<SepFilesConfiguration>(builder.Configuration.GetSection("SepFiles"))
+            .AddSingleton<TaxonomyProvider>()
+            .Configure<NcbiConfiguration>(builder.Configuration.GetSection("Ncbi"))
+            .AddHostedService(sp => sp.GetRequiredService<TaxonomyProvider>());
 
         return builder.Build();
     }

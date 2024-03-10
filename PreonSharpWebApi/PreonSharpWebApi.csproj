@@ -10,8 +10,9 @@
 
     <ItemGroup>
         <ProjectReference Include="..\BioCXml\BioCXml.csproj"/>
+        <ProjectReference Include="..\Loaders.Ncbi\Loaders.Ncbi.csproj" />
         <ProjectReference Include="..\PreonSharp.Levenshtein\PreonSharp.Levenshtein.csproj"/>
-        <ProjectReference Include="..\PreonSharp.Loaders\PreonSharp.Loaders.csproj"/>
+        <ProjectReference Include="..\Loaders.SepFiles\Loaders.SepFiles.csproj" />
         <ProjectReference Include="..\PreonSharp\PreonSharp.csproj"/>
     </ItemGroup>
 

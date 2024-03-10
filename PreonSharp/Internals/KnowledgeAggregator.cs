@@ -18,7 +18,7 @@ internal sealed class KnowledgeAggregator
         INameTransformer nameTransformer)
     {
         _knowledgeProviders = providerFactories
-            .SelectMany(f => f.GetKnowledgeProviders())
+            .SelectMany(f => f.BuildConfiguredKnowledgeProviders())
             .Concat(knowledgeProviders)
             .ToArray();
         _logger = logger;

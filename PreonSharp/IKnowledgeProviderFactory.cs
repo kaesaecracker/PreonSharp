@@ -2,5 +2,5 @@ namespace PreonSharp;
 
 public interface IKnowledgeProviderFactory
 {
-    IEnumerable<IKnowledgeProvider> GetKnowledgeProviders();
+    IEnumerable<IKnowledgeProvider> BuildConfiguredKnowledgeProviders();
 }

@@ -4,8 +4,9 @@ using System.Threading.Channels;
 using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
+using PreonSharp;
 
-namespace PreonSharp.Loaders;
+namespace Loaders.SepFiles;
 
 public sealed class SepFileKnowledgeProvider : IKnowledgeProvider
 {
