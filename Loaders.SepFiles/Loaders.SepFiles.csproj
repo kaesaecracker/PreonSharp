@@ -3,7 +3,7 @@
     <Import Project="../shared.props"/>
 
     <ItemGroup>
-        <ProjectReference Include="..\PreonSharp\PreonSharp.csproj"/>
+        <ProjectReference Include="..\Normalizer\Normalizer.csproj" />
     </ItemGroup>
 
     <ItemGroup>

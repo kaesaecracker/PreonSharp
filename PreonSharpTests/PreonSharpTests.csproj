@@ -26,10 +26,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\PreonSharp.Fastenshtein\PreonSharp.Fastenshtein.csproj"/>
-        <ProjectReference Include="..\PreonSharp.Levenshtein\PreonSharp.Levenshtein.csproj"/>
+        <ProjectReference Include="..\Normalizer.Fastenshtein\Normalizer.Fastenshtein.csproj" />
+        <ProjectReference Include="..\Normalizer.Levenshtein\Normalizer.Levenshtein.csproj" />
         <ProjectReference Include="..\Loaders.SepFiles\Loaders.SepFiles.csproj" />
-        <ProjectReference Include="..\PreonSharp\PreonSharp.csproj"/>
+        <ProjectReference Include="..\Normalizer\Normalizer.csproj" />
     </ItemGroup>
 
 </Project>

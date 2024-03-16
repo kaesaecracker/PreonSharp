@@ -2,12 +2,11 @@
 
     <Import Project="../shared.props"/>
 
-    <PropertyGroup>
-        <RootNamespace>Loaders.Ncbi</RootNamespace>
-    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Fastenshtein" Version="1.0.0.8"/>
+    </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Loaders.SepFiles\Loaders.SepFiles.csproj" />
         <ProjectReference Include="..\Normalizer\Normalizer.csproj" />
     </ItemGroup>
 
