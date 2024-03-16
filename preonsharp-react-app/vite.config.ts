@@ -14,10 +14,13 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,ico,png,svg}']
       },
       pwaAssets: {
-        image: 'favicon.svg'
+        image: 'favicon.svg',
+        config: false
       },
       manifest: {
         name: "Preon# Web ",
+        theme_color: '#0294EE',
+        background_color: '#000000'
       }
     })
   ],
