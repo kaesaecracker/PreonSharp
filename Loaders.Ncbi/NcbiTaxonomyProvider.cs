@@ -1,5 +1,4 @@
 ﻿using System.Collections.Frozen;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Threading;
@@ -8,50 +7,42 @@ using CsvHelper.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Taxonomy;
 
 namespace Loaders.Ncbi;
 
 // https://www.nlm.nih.gov/research/umls/sourcereleasedocs/current/NCBI/sourcerepresentation.html
 
-public sealed class TaxonomyProvider : IHostedLifecycleService
+public sealed class NcbiTaxonomyProvider : IHostedService
 {
     private readonly string _dataRoot;
     private FrozenDictionary<ulong, TaxonomyEntity>? _entities;
     private readonly ILogger _logger;
-    private Task? _startTask;
+    private readonly TaskCompletionSource _startCompletion = new();
 
-    public TaxonomyProvider(IOptions<NcbiConfiguration> options, ILogger<TaxonomyProvider> logger)
+    public NcbiTaxonomyProvider(IOptions<NcbiConfiguration> options, ILogger<NcbiTaxonomyProvider> logger)
     {
         _logger = logger;
         var config = options.Value;
         _dataRoot = config.TaxonomyDataRoot ?? throw new ConfigurationException("Ncbi DataRoot not specified");
     }
 
-    public Task StartAsync(CancellationToken cancellationToken)
+    public async Task StartAsync(CancellationToken cancellationToken)
     {
-        _startTask = Task.Run(() =>
-        {
-            _logger.LogInformation("starting taxonomy provider");
-            var hierarchy = LoadNodes($"{_dataRoot}/nodes.dmp");
-            _entities = LoadEntities($"{_dataRoot}/names.dmp", hierarchy);
-            _logger.LogInformation("loaded {} entities", _entities.Count);
-        }, cancellationToken);
-        return _startTask;
-    }
-
-    public Task StartedAsync(CancellationToken cancellationToken) => _startTask ?? Task.CompletedTask;
-
-    public TaxonomyEntity? GetEntity(ulong id)
-    {
-        if (_entities?.TryGetValue(id, out var result) ?? false)
-            return result;
-        return null;
+        _logger.LogInformation("starting taxonomy provider");
+        var hierarchy = await LoadNodes($"{_dataRoot}/nodes.dmp");
+        _logger.LogDebug("loaded hierarchy");
+        _entities = await LoadEntities($"{_dataRoot}/names.dmp", hierarchy);
+        _logger.LogInformation("loaded {} entities", _entities.Count);
+        _startCompletion.SetResult();
     }
 
     public IEnumerable<TaxonomyEntity> All => _entities?.Values
                                               ?? throw new InvalidOperationException("not initialized");
 
-    private static Dictionary<ulong, ulong> LoadNodes(string dmpFile)
+    public Task Started => _startCompletion.Task;
+
+    private static async Task<Dictionary<ulong, ulong>> LoadNodes(string dmpFile)
     {
         using var csvReader = new CsvReader(
             new StreamReader(dmpFile),
@@ -63,7 +54,7 @@ public sealed class TaxonomyProvider : IHostedLifecycleService
             });
 
         var result = new Dictionary<ulong, ulong>();
-        while (csvReader.Read())
+        while (await csvReader.ReadAsync())
         {
             var id = csvReader.GetField<ulong>(0);
             var parent = csvReader.GetField<ulong>(1);
@@ -76,7 +67,7 @@ public sealed class TaxonomyProvider : IHostedLifecycleService
         return result;
     }
 
-    private static FrozenDictionary<ulong, TaxonomyEntity> LoadEntities(string dmpFile,
+    private static async Task<FrozenDictionary<ulong, TaxonomyEntity>> LoadEntities(string dmpFile,
         Dictionary<ulong, ulong> hierarchy)
     {
         using var csvReader = new CsvReader(
@@ -89,9 +80,9 @@ public sealed class TaxonomyProvider : IHostedLifecycleService
             });
 
         List<TaxonomyEntity> entities = [];
-        List<TaxonomyTag> names = [];
+        List<EntityTag> names = [];
         ulong currentId = 1;
-        while (csvReader.Read())
+        while (await csvReader.ReadAsync())
         {
             var id = csvReader.GetField<ulong>(0);
             if (id != currentId)
@@ -113,17 +104,11 @@ public sealed class TaxonomyProvider : IHostedLifecycleService
                 name = csvReader[1];
             name = name.Trim();
 
-            names.Add(new TaxonomyTag(csvReader[3].Trim(), name));
+            names.Add(new EntityTag(csvReader[3].Trim(), name));
         }
 
         return entities.ToFrozenDictionary(e => e.TaxonomyId, e => e);
     }
 
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
-
-    public Task StartingAsync(CancellationToken cancellationToken) => Task.CompletedTask;
-
-    public Task StoppingAsync(CancellationToken cancellationToken) => Task.CompletedTask;
-
-    public Task StoppedAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 }

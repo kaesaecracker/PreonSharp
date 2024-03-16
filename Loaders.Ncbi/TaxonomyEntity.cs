@@ -1,11 +1,9 @@
-using System.Collections.Frozen;
+using Taxonomy;
 
 namespace Loaders.Ncbi;
 
 public sealed record TaxonomyEntity(
     ulong TaxonomyId,
-    FrozenSet<TaxonomyTag> Tags,
+    ISet<EntityTag> Tags,
     ulong? Parent
 );
-
-public sealed record TaxonomyTag(string Kind, string Value);

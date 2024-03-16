@@ -8,6 +8,8 @@
     <PropertyGroup>
         <IsAotCompatible>true</IsAotCompatible>
         <InvariantGlobalization>true</InvariantGlobalization>
+        <EnableRequestDelegateGenerator>true</EnableRequestDelegateGenerator>
+        <InterceptorsPreviewNamespaces>$(InterceptorsPreviewNamespaces);Microsoft.AspNetCore.Http.Generated</InterceptorsPreviewNamespaces>
     </PropertyGroup>
 
     <PropertyGroup>

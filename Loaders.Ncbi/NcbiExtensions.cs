@@ -6,8 +6,8 @@ public static class NcbiExtensions
 {
     public static IServiceCollection AddNcbiTaxonomy(this IServiceCollection serviceCollection)
     {
-        serviceCollection.AddSingleton<TaxonomyProvider>();
-        serviceCollection.AddHostedService(sp => sp.GetRequiredService<TaxonomyProvider>());
+        serviceCollection.AddSingleton<NcbiTaxonomyProvider>();
+        serviceCollection.AddHostedService(sp => sp.GetRequiredService<NcbiTaxonomyProvider>());
         return serviceCollection;
     } 
     

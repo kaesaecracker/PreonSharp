@@ -24,7 +24,12 @@ Accept: application/json
 
 ###
 
-GET {{Preon.WebApi_HostAddress}}/taxonomy/1
+GET {{Preon.WebApi_HostAddress}}/taxonomy/?count=3
+Accept: application/json
+
+###
+
+GET {{Preon.WebApi_HostAddress}}/taxonomy/dd4ea83a-4d98-4d85-85fd-e68b23692565
 Accept: application/json
 
 ###
