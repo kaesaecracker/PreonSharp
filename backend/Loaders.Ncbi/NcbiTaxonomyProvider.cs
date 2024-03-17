@@ -13,7 +13,7 @@ namespace Loaders.Ncbi;
 
 // https://www.nlm.nih.gov/research/umls/sourcereleasedocs/current/NCBI/sourcerepresentation.html
 
-public sealed class NcbiTaxonomyProvider : IHostedService
+public sealed class NcbiTaxonomyProvider : BackgroundService
 {
     private readonly string _dataRoot;
     private FrozenDictionary<ulong, TaxonomyEntity>? _entities;
@@ -27,7 +27,7 @@ public sealed class NcbiTaxonomyProvider : IHostedService
         _dataRoot = config.TaxonomyDataRoot ?? throw new ConfigurationException("Ncbi DataRoot not specified");
     }
 
-    public async Task StartAsync(CancellationToken cancellationToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _logger.LogInformation("starting taxonomy provider");
         var hierarchy = await LoadNodes($"{_dataRoot}/nodes.dmp");
@@ -109,6 +109,4 @@ public sealed class NcbiTaxonomyProvider : IHostedService
 
         return entities.ToFrozenDictionary(e => e.TaxonomyId, e => e);
     }
-
-    public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 }
