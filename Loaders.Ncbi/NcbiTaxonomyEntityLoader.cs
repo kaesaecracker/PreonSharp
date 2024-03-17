@@ -1,9 +1,10 @@
 using Microsoft.Extensions.Logging;
 using Taxonomy;
+using Taxonomy.Models;
 
 namespace Loaders.Ncbi;
 
-public class NcbiTaxonomyEntityLoader(NcbiTaxonomyProvider taxonomyProvider, ILogger<NcbiTaxonomyEntityLoader> logger)
+internal sealed class NcbiTaxonomyEntityLoader(NcbiTaxonomyProvider taxonomyProvider, ILogger<NcbiTaxonomyEntityLoader> logger)
     : IEntityLoader
 {
     public async Task Load(IEntityProviderBuilder builder)

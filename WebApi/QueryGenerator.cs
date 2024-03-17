@@ -1,10 +1,8 @@
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Xml;
 using BioCXml;
 using Microsoft.Extensions.Logging;
+using Normalizer;
 
 namespace WebApi;
 

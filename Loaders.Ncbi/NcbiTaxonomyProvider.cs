@@ -7,7 +7,7 @@ using CsvHelper.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Taxonomy;
+using Taxonomy.Models;
 
 namespace Loaders.Ncbi;
 

@@ -1,11 +1,9 @@
-using System.Linq;
 using System.Threading;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace Taxonomy;
 
-public sealed class EntityProvider(IEnumerable<IEntityLoader> loaders, ILogger<EntityProvider> logger) : IHostedService
+internal sealed class EntityProvider(IEnumerable<IEntityLoader> loaders, ILogger<EntityProvider> logger) : IEntityProvider
 {
     private readonly Dictionary<Guid, Entity> _entities = new();
     private readonly TaskCompletionSource _startCompletion = new();

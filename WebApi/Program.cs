@@ -1,10 +1,10 @@
 using Loaders.Ncbi;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Loaders.SepFiles;
 using Microsoft.Extensions.Hosting;
+using Normalizer;
 using Normalizer.Levenshtein;
 using Taxonomy;
 
@@ -20,12 +20,8 @@ internal static class Program
 
         app.MapGet("/ping", () => "pong");
 
-        var normalizer = app.Services.GetRequiredService<INormalizer>();
-        var preonApi = app.MapGroup("/preon");
-        preonApi.MapGet("/query", (string s) => normalizer.QueryAsync(s));
-        preonApi.MapGet("/wait", normalizer.WaitForInitializationAsync);
-
-        app.Services.GetRequiredService<TaxonomyEndpoints>().Map(app);
+        app.Services.GetRequiredService<TaxonomyEndpoints>().Map(app.MapGroup("/taxonomy"));
+        app.Services.GetRequiredService<NormalizerEndpoints>().Map(app.MapGroup("/normalizer"));
 
         app.Run();
     }
@@ -71,17 +67,19 @@ internal static class Program
         builder.Services
             .AddNcbiTaxonomy()
             .AddSingleton<TaxonomyEndpoints>()
-            .AddSingleton<EntityProvider>()
-            .AddSingleton<IHostedService, EntityProvider>(sp => sp.GetRequiredService<EntityProvider>())
-            .AddSingleton<IEntityLoader, NcbiTaxonomyEntityLoader>()
+            .AddSingleton<NormalizerEndpoints>()
             .Configure<NcbiConfiguration>(builder.Configuration.GetSection("Ncbi"))
             .Configure<SepFilesConfiguration>(builder.Configuration.GetSection("SepFiles"))
-        .AddNormalizer(normalizerBuilder =>
-        {
-            normalizerBuilder.AddLevenshteinMatchStrategy();
-            normalizerBuilder.AddSepFiles();
-            normalizerBuilder.AddNcbiTaxonomyKnowledge();
-        });
+            .AddTaxonomy(taxonomyBuilder =>
+            {
+                taxonomyBuilder.AddNcbiEntityLoader();
+            })
+            .AddNormalizer(normalizerBuilder =>
+            {
+                normalizerBuilder.AddLevenshteinMatchStrategy();
+                normalizerBuilder.AddSepFiles();
+                normalizerBuilder.AddNcbiTaxonomyKnowledge();
+            });
 
         return builder.Build();
     }

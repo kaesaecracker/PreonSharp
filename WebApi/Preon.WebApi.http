@@ -7,19 +7,19 @@ Accept: application/json
 
 ###
 
-GET {{Preon.WebApi_HostAddress}}/preon/query
+GET {{Preon.WebApi_HostAddress}}/normalizer/query
     ?s=gh1
 Accept: application/json
 
 ###
 
-GET {{Preon.WebApi_HostAddress}}/preon/query
+GET {{Preon.WebApi_HostAddress}}/normalizer/query
     ?s=root
 Accept: application/json
 
 ###
 
-GET {{Preon.WebApi_HostAddress}}/preon/wait
+GET {{Preon.WebApi_HostAddress}}/normalizer/wait
 Accept: application/json
 
 ###

@@ -4,7 +4,6 @@ namespace Taxonomy;
 
 [JsonSourceGenerationOptions(UseStringEnumConverter = true)]
 [JsonSerializable(typeof(Entity))]
-[JsonSerializable(typeof(EntityProvider))]
 [JsonSerializable(typeof(EntityTag))]
 [JsonSerializable(typeof(EntitySource))]
 [JsonSerializable(typeof(Source))]

@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Taxonomy;
 
 namespace Loaders.Ncbi;
 
@@ -14,5 +15,10 @@ public static class NcbiExtensions
     public static void AddNcbiTaxonomyKnowledge(this INormalizerBuilder builder)
     {
         builder.Services.AddSingleton<IKnowledgeProvider, NcbiTaxonomyKnowledgeProvider>();
+    }
+
+    public static void AddNcbiEntityLoader(this ITaxonomyBuilder builder)
+    {
+        builder.Services.AddSingleton<IEntityLoader, NcbiTaxonomyEntityLoader>();
     }
 }
