@@ -39,7 +39,7 @@ public sealed class MyLevenshteinMatchStrategy : IMatchStrategy
         var relativeDistance = minDist / (decimal)transformedName.Length;
         return new QueryResult(
             Type: MatchType.Partial,
-            Results: minDistValues
+            FoundIds: minDistValues
         );
     }
 }

@@ -9,6 +9,8 @@ import SearchBox from "./SearchBox";
 import './QueryPage.css';
 import Section from "./components/Section.tsx";
 
+const queryUrl = import.meta.env.VITE_BACKEND_URL + `/normalizer/query`;
+
 async function fetchData(
   text: string,
   userName: string,
@@ -17,7 +19,7 @@ async function fetchData(
   if (!userName || !password)
     throw new Error('no user credentials provided, check settings');
 
-  const response = await fetch(`https://preon-api.services.zerforschen.plus/normalizer/query?s=${text}`, {
+  const response = await fetch(`${queryUrl}?s=${text}`, {
     headers: new Headers({
       "Authorization": `Basic ${btoa(`${userName}:${password}`)}`
     }),

@@ -2,7 +2,7 @@ namespace Normalizer;
 
 public record class QueryResult(
     MatchType Type,
-    IReadOnlyList<QueryResultEntry> Results,
+    IReadOnlyList<QueryResultEntry> FoundIds,
     TimeSpan? ExecutionTime = null)
 {
     public override string ToString()
@@ -13,5 +13,5 @@ public record class QueryResult(
 
 public record struct QueryResultEntry(
     string Name,
-    IReadOnlySet<string> Links
+    IReadOnlySet<string> Ids
 );

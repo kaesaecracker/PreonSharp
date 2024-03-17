@@ -14,7 +14,7 @@ internal sealed class ExactMatchStrategy : IMatchStrategy
         if (!normalizedNames.TryGetValue(transformedName, out var foundIds))
             return null;
 
-        return new QueryResult(Type: MatchType.Exact, Results:
+        return new QueryResult(Type: MatchType.Exact, FoundIds:
         [
             new QueryResultEntry(transformedName, foundIds)
         ]);
