@@ -45,11 +45,11 @@ export default function App() {
 
     <div style={{
       display: "flex",
-      flexDirection: 'row'
+      flexDirection: 'row',
+      position: 'relative'
     }}>
 
       <div style={{
-        flexGrow: 1,
         width: !settingsOpen
           ? "100%"
           : isMultiColumn
@@ -71,12 +71,12 @@ export default function App() {
       </div>
 
       <div style={{
-        flexGrow: 0,
-        transition: 'width 2s ease-in',
+        objectFit: 'cover',
+        transition: 'width 0.5s ease-in',
         width: !settingsOpen
           ? '0'
           : isMultiColumn
-            ? '33%'
+            ? '100%'
             : '100%',
       }}>
         <SettingsPage onClose={() => setSettingsOpen(false)} />
