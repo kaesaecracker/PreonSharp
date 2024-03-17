@@ -29,7 +29,12 @@ Accept: application/json
 
 ###
 
-GET {{Preon.WebApi_HostAddress}}/taxonomy/search?text=gh1
+GET {{Preon.WebApi_HostAddress}}/taxonomy/find-exact?text=gh1
+Accept: application/json
+
+###
+
+GET {{Preon.WebApi_HostAddress}}/taxonomy/find-closest-name?text=gh
 Accept: application/json
 
 ###

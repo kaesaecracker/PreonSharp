@@ -4,5 +4,7 @@ namespace Taxonomy;
 
 public interface IEntitySearcher : IStartAwaitable, IHostedService
 {
-    Task<IEnumerable<Entity>> GetExactMatches(string text);
+    Task<TextMatch> GetExactMatches(string text);
+
+    Task<IEnumerable<TextMatch>> GetClosestNames(string text);
 }

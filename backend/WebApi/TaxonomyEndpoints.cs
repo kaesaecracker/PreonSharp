@@ -8,6 +8,7 @@ internal sealed class TaxonomyEndpoints(IEntityProvider entityProvider, IEntityS
     {
         group.MapGet("/{id:guid}", entityProvider.GetById);
         group.MapGet("/", (int count = 10) => entityProvider.GetFirst(count));
-        group.MapGet("/search", entitySearcher.GetExactMatches);
+        group.MapGet("/find-exact", entitySearcher.GetExactMatches);
+        group.MapGet("/find-closest-name", entitySearcher.GetClosestNames);
     }
 }
