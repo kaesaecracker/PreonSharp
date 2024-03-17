@@ -9,6 +9,7 @@ obj/
 /packages/
 
 # data
+data
 *.tsv
 *.csv
 *.gz
