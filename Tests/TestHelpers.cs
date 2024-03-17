@@ -1,4 +1,4 @@
-namespace PreonSharpTests;
+namespace Tests;
 
 public static class TestHelpers
 {

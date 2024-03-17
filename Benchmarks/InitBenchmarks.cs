@@ -1,4 +1,4 @@
-using PreonSharpTests;
+using Tests;
 
 namespace Benchmarks;
 

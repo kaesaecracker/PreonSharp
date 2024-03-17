@@ -12,7 +12,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks", "Benchmarks\Be
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Normalizer.Fastenshtein", "Normalizer.Fastenshtein\Normalizer.Fastenshtein.csproj", "{04B76B7D-D0E2-47F7-A650-B128191C6380}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PreonSharpTests", "PreonSharpTests\PreonSharpTests.csproj", "{C8A3DF8F-7E75-4766-9266-F7AA331A212B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{C8A3DF8F-7E75-4766-9266-F7AA331A212B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "WebApi\WebApi.csproj", "{A8D504AF-7965-4BD9-890F-466B7961296E}"
 EndProject
