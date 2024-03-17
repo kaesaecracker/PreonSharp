@@ -9,8 +9,12 @@ public static class TaxonomyExtensions
     public static IServiceCollection AddTaxonomy(this IServiceCollection serviceCollection,
         Action<ITaxonomyBuilder> configure)
     {
-        serviceCollection.AddSingleton<IEntityProvider, EntityProvider>();
-        serviceCollection.AddSingleton<IHostedService, IEntityProvider>(sp => sp.GetRequiredService<IEntityProvider>());
+        serviceCollection
+            .AddSingleton<IEntityProvider, EntityProvider>()
+            .AddSingleton<IHostedService>(sp => sp.GetRequiredService<IEntityProvider>());
+        serviceCollection
+            .AddSingleton<EntitySearcher>()
+            .AddSingleton<IHostedService>(sp => sp.GetRequiredService<EntitySearcher>());
         var builder = new TaxonomyBuilder(serviceCollection);
         configure(builder);
         return serviceCollection;

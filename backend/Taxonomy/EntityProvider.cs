@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 namespace Taxonomy;
 
 internal sealed class EntityProvider(IEnumerable<IEntityLoader> loaders, ILogger<EntityProvider> logger)
-    : BackgroundService, IEntityProvider
+    : BackgroundService, IEntityProvider, IStartAwaitable
 {
     private readonly Dictionary<Guid, Entity> _entities = new();
     private readonly TaskCompletionSource _startCompletion = new();
