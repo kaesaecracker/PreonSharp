@@ -40,7 +40,6 @@ internal sealed class EntityProvider(IEnumerable<IEntityLoader> loaders, ILogger
     {
         public Guid AddEntity(EntitySource source, ISet<EntityTag> tags)
         {
-            // TODO: actually merge with existing entity
             var guid = Guid.NewGuid();
             var entity = new Entity(guid, new HashSet<EntitySource>([source]), tags, new HashSet<EntityRelation>());
             target._entities.Add(guid, entity);
