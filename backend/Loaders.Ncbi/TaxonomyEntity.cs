@@ -1,4 +1,3 @@
-using Taxonomy;
 using Taxonomy.Models;
 
 namespace Loaders.Ncbi;

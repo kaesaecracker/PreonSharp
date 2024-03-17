@@ -3,7 +3,8 @@ using Microsoft.Extensions.Logging;
 
 namespace Taxonomy;
 
-internal sealed class EntityProvider(IEnumerable<IEntityLoader> loaders, ILogger<EntityProvider> logger) : IEntityProvider
+internal sealed class EntityProvider(IEnumerable<IEntityLoader> loaders, ILogger<EntityProvider> logger)
+    : IEntityProvider
 {
     private readonly Dictionary<Guid, Entity> _entities = new();
     private readonly TaskCompletionSource _startCompletion = new();
@@ -35,6 +36,10 @@ internal sealed class EntityProvider(IEnumerable<IEntityLoader> loaders, ILogger
         await _startCompletion.Task;
         return _entities.Values.Take(count);
     }
+
+    public Task Started => _startCompletion.Task;
+
+    public IEnumerable<Entity> All => _entities.Values;
 
     private sealed class EntityProviderBuilder(EntityProvider target) : IEntityProviderBuilder
     {

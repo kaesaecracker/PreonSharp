@@ -10,11 +10,6 @@ public static class NcbiExtensions
         serviceCollection.AddSingleton<NcbiTaxonomyProvider>();
         serviceCollection.AddHostedService(sp => sp.GetRequiredService<NcbiTaxonomyProvider>());
         return serviceCollection;
-    } 
-    
-    public static void AddNcbiTaxonomyKnowledge(this INormalizerBuilder builder)
-    {
-        builder.Services.AddSingleton<IKnowledgeProvider, NcbiTaxonomyKnowledgeProvider>();
     }
 
     public static void AddNcbiEntityLoader(this ITaxonomyBuilder builder)

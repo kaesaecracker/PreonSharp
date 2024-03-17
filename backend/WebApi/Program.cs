@@ -78,7 +78,7 @@ internal static class Program
             {
                 normalizerBuilder.AddLevenshteinMatchStrategy();
                 normalizerBuilder.AddSepFiles();
-                normalizerBuilder.AddNcbiTaxonomyKnowledge();
+                normalizerBuilder.AddTaxonomyKnowledge();
             });
 
         return builder.Build();

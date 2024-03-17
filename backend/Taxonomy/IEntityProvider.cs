@@ -5,5 +5,10 @@ namespace Taxonomy;
 public interface IEntityProvider : IHostedService
 {
     Task<Entity?> GetById(Guid id);
+    
     Task<IEnumerable<Entity>> GetFirst(int count);
+    
+    Task Started { get; }
+    
+    IEnumerable<Entity> All { get; }
 }
