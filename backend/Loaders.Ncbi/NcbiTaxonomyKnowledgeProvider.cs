@@ -12,7 +12,7 @@ public class NcbiTaxonomyKnowledgeProvider(NcbiTaxonomyProvider ncbiTaxonomyProv
         foreach (var tag in entity.Tags)
         {
             await outChannel.WriteAsync(new KnowledgeDataPoint(
-                $"/taxonomy/{entity.TaxonomyId}", tag.Value, "NCBI Taxonomy"));
+                entity.TaxonomyId.ToString(), tag.Value, "NCBI Taxonomy"));
         }
     }
 }
