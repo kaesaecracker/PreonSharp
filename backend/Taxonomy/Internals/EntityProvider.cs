@@ -1,20 +1,20 @@
 using System.Threading;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Taxonomy;
+namespace Taxonomy.Internals;
 
 internal sealed class EntityProvider(IEnumerable<IEntityLoader> loaders, ILogger<EntityProvider> logger)
-    : IEntityProvider
+    : BackgroundService, IEntityProvider
 {
     private readonly Dictionary<Guid, Entity> _entities = new();
     private readonly TaskCompletionSource _startCompletion = new();
 
-    public async Task StartAsync(CancellationToken cancellationToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         var builder = new EntityProviderBuilder(this);
         foreach (var loader in loaders)
         {
-            cancellationToken.ThrowIfCancellationRequested();
             logger.LogInformation("loading from {}", loader.GetType().Name);
             await loader.Load(builder);
         }
@@ -22,8 +22,6 @@ internal sealed class EntityProvider(IEnumerable<IEntityLoader> loaders, ILogger
         logger.LogInformation("done loading");
         _startCompletion.SetResult();
     }
-
-    public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 
     public async Task<Entity?> GetById(Guid id)
     {
@@ -43,10 +41,11 @@ internal sealed class EntityProvider(IEnumerable<IEntityLoader> loaders, ILogger
 
     private sealed class EntityProviderBuilder(EntityProvider target) : IEntityProviderBuilder
     {
-        public Guid AddEntity(EntitySource source, ISet<EntityTag> tags)
+        public Guid AddEntity(EntitySource source, ISet<EntityTag> names, ISet<EntityTag> tags)
         {
             var guid = Guid.NewGuid();
-            var entity = new Entity(guid, new HashSet<EntitySource>([source]), tags, new HashSet<EntityRelation>());
+            var entity = new Entity(guid, new HashSet<EntitySource>([source]), names, tags,
+                new HashSet<EntityRelation>());
             target._entities.Add(guid, entity);
             return guid;
         }

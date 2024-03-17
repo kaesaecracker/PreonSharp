@@ -1,0 +1,71 @@
+using System.Collections.Frozen;
+using Normalizer;
+using Normalizer.Levenshtein;
+
+namespace Taxonomy.Indexes;
+
+public abstract class EntityIndex(IEntityProvider entityProvider, INameTransformer nameTransformer)
+{
+    private FrozenDictionary<string, FrozenSet<Guid>>? _dict = null;
+
+    public async Task BuildAsync()
+    {
+        await entityProvider.Started;
+
+        Dictionary<string, HashSet<Guid>> dict = new();
+        foreach (var entity in entityProvider.All)
+        foreach (var str in Selector(entity))
+        {
+            var transformed = string.Intern(nameTransformer.Transform(str));
+            if (dict.TryGetValue(transformed, out var entityList))
+                entityList.Add(entity.Id);
+            else
+                dict[transformed] = [entity.Id];
+        }
+
+        _dict = dict.ToFrozenDictionary(
+            kvp => kvp.Key,
+            kvp => kvp.Value.ToFrozenSet());
+    }
+
+    protected abstract IEnumerable<string> Selector(Entity entity);
+
+    public IReadOnlySet<Guid>? GetExactMatches(string text)
+    {
+        if (_dict == null)
+            throw new InvalidOperationException();
+
+        return _dict.GetValueOrDefault(text);
+    }
+
+    public IEnumerable<TextMatch> GetClosestMatches(string text)
+    {
+        if (_dict == null)
+            throw new InvalidOperationException();
+
+        var transformedName = nameTransformer.Transform(text);
+        var minDist = int.MaxValue;
+        HashSet<TextMatch> minDistValues = [];
+
+        var distObj = new LevenshteinSearch(transformedName);
+
+        foreach (var (otherName, entities) in _dict)
+        {
+            var distance = distObj.DistanceFrom(otherName);
+            if (distance < minDist)
+            {
+                minDistValues.Clear();
+                minDist = distance;
+            }
+
+            if (distance == minDist)
+                minDistValues.Add(new TextMatch(otherName, entities));
+        }
+
+        if (minDist == int.MaxValue)
+            return new HashSet<TextMatch>();
+
+        var relativeDistance = minDist / (decimal)transformedName.Length;
+        return minDistValues;
+    }
+}

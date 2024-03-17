@@ -7,6 +7,8 @@ namespace Taxonomy;
 [JsonSerializable(typeof(EntityTag))]
 [JsonSerializable(typeof(EntitySource))]
 [JsonSerializable(typeof(Source))]
+[JsonSerializable(typeof(TextMatch))]
 [JsonSerializable(typeof(IEnumerable<Entity>))]
 [JsonSerializable(typeof(IEnumerable<EntityTag>))]
+[JsonSerializable(typeof(IEnumerable<TextMatch>))]
 public partial class TaxonomyJsonSerializerContext : JsonSerializerContext;
