@@ -3,17 +3,17 @@ using Microsoft.Extensions.Hosting;
 using Normalizer;
 using Taxonomy.Indexes;
 
-namespace Taxonomy;
+namespace Taxonomy.Internals;
 
-public sealed class EntitySearcher(IEntityProvider entityProvider, INameTransformer nameTransformer)
-    : BackgroundService, IStartAwaitable
+internal sealed class EntitySearcher(IEntityProvider entityProvider, INameTransformer nameTransformer)
+    : BackgroundService, IEntitySearcher
 {
     private readonly TaskCompletionSource _startCompletion = new();
 
-    private readonly Index[] _indices =
+    private readonly EntityIndex[] _indices =
     [
-        new NameIndex(entityProvider, nameTransformer),
-        new NameIndex(entityProvider, nameTransformer)
+        new NameEntityIndex(entityProvider, nameTransformer),
+        new SourceIdEntityIndex(entityProvider, nameTransformer)
     ];
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -29,7 +29,7 @@ public sealed class EntitySearcher(IEntityProvider entityProvider, INameTransfor
     {
         text = nameTransformer.Transform(text);
         await Started;
-        
+
         return _indices.Select(i => i.GetExactMatch(text))
             .Where(s => s != null)
             .SelectMany(s => s! /* checked by where */)

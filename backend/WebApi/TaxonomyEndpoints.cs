@@ -2,7 +2,7 @@ using Taxonomy;
 
 namespace WebApi;
 
-internal sealed class TaxonomyEndpoints(IEntityProvider entityProvider, EntitySearcher entitySearcher)
+internal sealed class TaxonomyEndpoints(IEntityProvider entityProvider, IEntitySearcher entitySearcher)
 {
     public void Map(RouteGroupBuilder group)
     {

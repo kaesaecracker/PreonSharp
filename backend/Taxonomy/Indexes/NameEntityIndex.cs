@@ -2,8 +2,8 @@ using Normalizer;
 
 namespace Taxonomy.Indexes;
 
-public sealed class NameIndex(IEntityProvider entityProvider, INameTransformer nameTransformer)
-    : Index(entityProvider, nameTransformer)
+public sealed class NameEntityIndex(IEntityProvider entityProvider, INameTransformer nameTransformer)
+    : EntityIndex(entityProvider, nameTransformer)
 {
     protected override IEnumerable<string> Selector(Entity entity)
     {

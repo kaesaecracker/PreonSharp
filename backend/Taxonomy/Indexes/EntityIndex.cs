@@ -1,9 +1,9 @@
 using System.Collections.Frozen;
 using Normalizer;
 
-namespace Taxonomy;
+namespace Taxonomy.Indexes;
 
-public abstract class Index(IEntityProvider entityProvider, INameTransformer nameTransformer)
+public abstract class EntityIndex(IEntityProvider entityProvider, INameTransformer nameTransformer)
 {
     private FrozenDictionary<string, FrozenSet<Entity>>? _dict = null;
 

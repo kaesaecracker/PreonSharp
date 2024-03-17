@@ -1,10 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Taxonomy;
-
-public interface ITaxonomyBuilder
-{
-    IServiceCollection Services { get; }
-}
+namespace Taxonomy.Internals;
 
 internal sealed record TaxonomyBuilder(IServiceCollection Services) : ITaxonomyBuilder;

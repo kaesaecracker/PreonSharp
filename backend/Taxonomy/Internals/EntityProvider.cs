@@ -2,10 +2,10 @@ using System.Threading;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Taxonomy;
+namespace Taxonomy.Internals;
 
 internal sealed class EntityProvider(IEnumerable<IEntityLoader> loaders, ILogger<EntityProvider> logger)
-    : BackgroundService, IEntityProvider, IStartAwaitable
+    : BackgroundService, IEntityProvider
 {
     private readonly Dictionary<Guid, Entity> _entities = new();
     private readonly TaskCompletionSource _startCompletion = new();
