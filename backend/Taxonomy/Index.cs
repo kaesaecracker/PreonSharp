@@ -1,8 +1,9 @@
 using System.Collections.Frozen;
+using Normalizer;
 
 namespace Taxonomy;
 
-public abstract class Index(IEntityProvider entityProvider)
+public abstract class Index(IEntityProvider entityProvider, INameTransformer nameTransformer)
 {
     private FrozenDictionary<string, FrozenSet<Entity>>? _dict = null;
 
@@ -14,13 +15,16 @@ public abstract class Index(IEntityProvider entityProvider)
         foreach (var entity in entityProvider.All)
         foreach (var str in Selector(entity))
         {
-            if (dict.TryGetValue(str, out var entityList))
+            var transformed = string.Intern(nameTransformer.Transform(str));
+            if (dict.TryGetValue(transformed, out var entityList))
                 entityList.Add(entity);
             else
-                dict[str] = [entity];
+                dict[transformed] = [entity];
         }
 
-        _dict = dict.ToFrozenDictionary(kvp => kvp.Key, kvp => kvp.Value.ToFrozenSet());
+        _dict = dict.ToFrozenDictionary(
+            kvp => kvp.Key,
+            kvp => kvp.Value.ToFrozenSet());
     }
 
     protected abstract IEnumerable<string> Selector(Entity entity);

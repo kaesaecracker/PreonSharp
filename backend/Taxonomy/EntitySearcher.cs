@@ -1,13 +1,20 @@
 using System.Threading;
 using Microsoft.Extensions.Hosting;
+using Normalizer;
 using Taxonomy.Indexes;
 
 namespace Taxonomy;
 
-public sealed class EntitySearcher(IEntityProvider entityProvider) : BackgroundService, IStartAwaitable
+public sealed class EntitySearcher(IEntityProvider entityProvider, INameTransformer nameTransformer)
+    : BackgroundService, IStartAwaitable
 {
     private readonly TaskCompletionSource _startCompletion = new();
-    private readonly Index[] _indices = [new NameIndex(entityProvider), new NameIndex(entityProvider)];
+
+    private readonly Index[] _indices =
+    [
+        new NameIndex(entityProvider, nameTransformer),
+        new NameIndex(entityProvider, nameTransformer)
+    ];
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -18,8 +25,11 @@ public sealed class EntitySearcher(IEntityProvider entityProvider) : BackgroundS
 
     public Task Started => _startCompletion.Task;
 
-    public IEnumerable<Entity> GetExactMatches(string text)
+    public async Task<IEnumerable<Entity>> GetExactMatches(string text)
     {
+        text = nameTransformer.Transform(text);
+        await Started;
+        
         return _indices.Select(i => i.GetExactMatch(text))
             .Where(s => s != null)
             .SelectMany(s => s! /* checked by where */)

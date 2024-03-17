@@ -29,7 +29,7 @@ Accept: application/json
 
 ###
 
-GET {{Preon.WebApi_HostAddress}}/taxonomy/search?text=gh-1
+GET {{Preon.WebApi_HostAddress}}/taxonomy/search?text=gh1
 Accept: application/json
 
 ###
