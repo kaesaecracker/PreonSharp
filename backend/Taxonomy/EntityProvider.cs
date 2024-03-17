@@ -22,7 +22,7 @@ internal sealed class EntityProvider(IEnumerable<IEntityLoader> loaders, ILogger
         logger.LogInformation("done loading");
         _startCompletion.SetResult();
     }
-    
+
     public async Task<Entity?> GetById(Guid id)
     {
         await _startCompletion.Task;
@@ -41,10 +41,11 @@ internal sealed class EntityProvider(IEnumerable<IEntityLoader> loaders, ILogger
 
     private sealed class EntityProviderBuilder(EntityProvider target) : IEntityProviderBuilder
     {
-        public Guid AddEntity(EntitySource source, ISet<EntityTag> tags)
+        public Guid AddEntity(EntitySource source, ISet<EntityTag> names, ISet<EntityTag> tags)
         {
             var guid = Guid.NewGuid();
-            var entity = new Entity(guid, new HashSet<EntitySource>([source]), tags, new HashSet<EntityRelation>());
+            var entity = new Entity(guid, new HashSet<EntitySource>([source]), names, tags,
+                new HashSet<EntityRelation>());
             target._entities.Add(guid, entity);
             return guid;
         }

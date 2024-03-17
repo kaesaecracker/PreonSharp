@@ -2,7 +2,7 @@ namespace Taxonomy;
 
 public interface IEntityProviderBuilder
 {
-    Guid AddEntity(EntitySource source, ISet<EntityTag> tags);
+    Guid AddEntity(EntitySource source, ISet<EntityTag> names, ISet<EntityTag> tags);
 
     /// <summary>
     /// Example: "child", "parent", idOfChild, idOfParent

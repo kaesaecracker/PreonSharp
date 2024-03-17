@@ -10,7 +10,7 @@ public class TaxonomyKnowledgeProvider(IEntityProvider entityProvider) : IKnowle
         await entityProvider.Started;
 
         foreach (var entity in entityProvider.All)
-        foreach (var tag in entity.Tags)
+        foreach (var tag in entity.Names)
         {
             await outChannel.WriteAsync(new KnowledgeDataPoint(
                 entity.Id.ToString(), tag.Value, "Taxonomy"));

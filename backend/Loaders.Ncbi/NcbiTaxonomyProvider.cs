@@ -1,5 +1,4 @@
-﻿using System.Collections.Frozen;
-using System.Globalization;
+﻿using System.Globalization;
 using System.IO;
 using System.Threading;
 using CsvHelper;
@@ -16,9 +15,14 @@ namespace Loaders.Ncbi;
 public sealed class NcbiTaxonomyProvider : BackgroundService
 {
     private readonly string _dataRoot;
-    private FrozenDictionary<ulong, TaxonomyEntity>? _entities;
+    private Dictionary<ulong, TaxonomyEntity>? _entities;
     private readonly ILogger _logger;
     private readonly TaskCompletionSource _startCompletion = new();
+    private readonly HashSet<string> _wantedNameClasses =
+    [
+        "synonym", "scientific name", "blast name", "genbank common name", "equivalent name",
+        "common name", "acronym", "genbank acronym"
+    ];
 
     public NcbiTaxonomyProvider(IOptions<NcbiConfiguration> options, ILogger<NcbiTaxonomyProvider> logger)
     {
@@ -67,7 +71,7 @@ public sealed class NcbiTaxonomyProvider : BackgroundService
         return result;
     }
 
-    private static async Task<FrozenDictionary<ulong, TaxonomyEntity>> LoadEntities(string dmpFile,
+    private async Task<Dictionary<ulong, TaxonomyEntity>> LoadEntities(string dmpFile,
         Dictionary<ulong, ulong> hierarchy)
     {
         using var csvReader = new CsvReader(
@@ -79,8 +83,9 @@ public sealed class NcbiTaxonomyProvider : BackgroundService
                 Mode = CsvMode.NoEscape,
             });
 
-        List<TaxonomyEntity> entities = [];
-        List<EntityTag> names = [];
+        Dictionary<ulong,TaxonomyEntity> entities = [];
+        HashSet<EntityTag> names = [];
+        HashSet<EntityTag> tags = [];
         ulong currentId = 1;
         while (await csvReader.ReadAsync())
         {
@@ -93,20 +98,28 @@ public sealed class NcbiTaxonomyProvider : BackgroundService
                 else
                     parent = null;
 
-                var entity = new TaxonomyEntity(currentId, names.ToFrozenSet(), parent);
-                entities.Add(entity);
-                names.Clear();
+                var entity = new TaxonomyEntity(currentId, names,  tags, parent);
+                entities.Add(id, entity);
+                
+                names = [];
+                tags = [];
                 currentId = id;
             }
 
-            var name = csvReader[2];
-            if (string.IsNullOrWhiteSpace(name))
-                name = csvReader[1];
-            name = name.Trim();
+            var tagText = csvReader[2];
+            if (string.IsNullOrWhiteSpace(tagText))
+                tagText = csvReader[1];
+            tagText = string.Intern(tagText.Trim());
+            
+            var nameClass = string.Intern(csvReader[3].Trim());
+            var entityTag = new EntityTag(nameClass, tagText);
 
-            names.Add(new EntityTag(csvReader[3].Trim(), name));
+            if (_wantedNameClasses.Contains(nameClass))
+                names.Add(entityTag);
+            else
+                tags.Add(entityTag);
         }
 
-        return entities.ToFrozenDictionary(e => e.TaxonomyId, e => e);
+        return entities;
     }
 }

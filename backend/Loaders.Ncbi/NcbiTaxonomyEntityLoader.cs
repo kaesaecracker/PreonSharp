@@ -4,7 +4,9 @@ using Taxonomy.Models;
 
 namespace Loaders.Ncbi;
 
-internal sealed class NcbiTaxonomyEntityLoader(NcbiTaxonomyProvider taxonomyProvider, ILogger<NcbiTaxonomyEntityLoader> logger)
+internal sealed class NcbiTaxonomyEntityLoader(
+    NcbiTaxonomyProvider taxonomyProvider,
+    ILogger<NcbiTaxonomyEntityLoader> logger)
     : IEntityLoader
 {
     public async Task Load(IEntityProviderBuilder builder)
@@ -16,7 +18,7 @@ internal sealed class NcbiTaxonomyEntityLoader(NcbiTaxonomyProvider taxonomyProv
         foreach (var e in taxonomyProvider.All)
         {
             var entitySource = new EntitySource(source, e.TaxonomyId.ToString());
-            var guid = builder.AddEntity(entitySource, e.Tags);
+            var guid = builder.AddEntity(entitySource, e.Names, e.Tags);
             idMap.Add(e.TaxonomyId, guid);
 
             if (e.Parent == null)
