@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <Import Project="../shared.props"/>
+
+    <PropertyGroup>
+        <RootNamespace>Loaders.Ncbi</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Loaders.SepFiles\Loaders.SepFiles.csproj" />
+        <ProjectReference Include="..\Normalizer\Normalizer.csproj" />
+        <ProjectReference Include="..\Taxonomy\Taxonomy.csproj" />
+    </ItemGroup>
+
+</Project>

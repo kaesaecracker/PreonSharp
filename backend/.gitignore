@@ -1,0 +1,19 @@
+# IDEs
+riderModule.iml
+.idea
+/_ReSharper.Caches/
+
+# dotnet
+bin/
+obj/
+/packages/
+
+# data
+data
+*.tsv
+*.csv
+*.gz
+*.zip
+*.xml
+*.XML
+*.dmp
