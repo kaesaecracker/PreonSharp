@@ -27,8 +27,8 @@ public class NcbiGeneInfoEntityLoader(IOptions<NcbiConfiguration> configuration)
                 Mode = CsvMode.NoEscape
             });
 
-        var taxIdSource = builder.AddIdNamespace("NCBI Taxonomy");
-        var geneIdNamespace = builder.AddIdNamespace("NCBI GeneInfo");
+        var taxIdSource = builder.AddIdNamespace(NcbiIdNamespaces.TaxId);
+        var geneIdNamespace = builder.AddIdNamespace(NcbiIdNamespaces.GeneInfo);
         var currentTaxId = string.Empty;
         var currentTaxGuid = Guid.Empty;
 

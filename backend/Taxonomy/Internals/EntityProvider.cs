@@ -32,6 +32,13 @@ internal sealed class EntityProvider(IEnumerable<IEntityLoader> loaders, ILogger
         return _entities.GetValueOrDefault(id);
     }
 
+    public Entity? GetByNamespacedId(string idNamespace, string id)
+    {
+        if (!_idNamespaces.TryGetValue(idNamespace, out var idNamespaceObj))
+            return null;
+        return   _entitiesBySourceId[idNamespaceObj].GetValueOrDefault(id);
+    }
+
     public async Task<IEnumerable<Entity>> GetFirst(int count)
     {
         await _startCompletion.Task;

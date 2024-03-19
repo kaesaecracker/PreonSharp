@@ -29,7 +29,7 @@ Accept: application/json
 
 ###
 
-GET {{Preon.WebApi_HostAddress}}/taxonomy/find-exact?text=gh1
+GET {{Preon.WebApi_HostAddress}}/taxonomy/find-exact?text=root
 Accept: application/json
 
 ###
@@ -39,7 +39,19 @@ Accept: application/json
 
 ###
 
-GET {{Preon.WebApi_HostAddress}}/taxonomy/dd4ea83a-4d98-4d85-85fd-e68b23692565
+GET {{Preon.WebApi_HostAddress}}/taxonomy/find-closest-name?text=image:Aethopyga temminckii
+Accept: application/json
+
+###
+
+GET {{Preon.WebApi_HostAddress}}/taxonomy/find-by-namespaced-id
+    ?idNamespace=ncbi-taxonomy
+    &id=1118498
+Accept: application/json
+
+###
+
+GET {{Preon.WebApi_HostAddress}}/taxonomy/3b801914-3a5e-4225-a43b-f83a670a9fb1
 Accept: application/json
 
 ###
