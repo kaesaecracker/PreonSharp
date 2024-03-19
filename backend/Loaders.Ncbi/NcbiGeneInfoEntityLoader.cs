@@ -46,18 +46,18 @@ public class NcbiGeneInfoEntityLoader(IOptions<NcbiConfiguration> configuration)
                 currentTaxId = taxId;
             }
 
-            var geneId = string.Intern(csvReader[1].Trim());
-            HashSet<EntityTag> names = [new EntityTag("gene symbol", string.Intern(csvReader[2].Trim()))];
-            HashSet<EntityTag> tags = [new EntityTag("type of gene", string.Intern(csvReader[8].Trim()))];
+            var geneId = csvReader[1].Trim();
+            HashSet<EntityTag> names = [new EntityTag("gene symbol", csvReader[2].Trim())];
+            HashSet<EntityTag> tags = [new EntityTag("type of gene", csvReader[8].Trim())];
 
             if (_loadExtendedTags)
             {
-                names.Add(new EntityTag("LOCUS tag", string.Intern(csvReader[3].Trim())));
-                names.Add(new EntityTag("synonyms", string.Intern(csvReader[4].Trim())));
-                names.Add(new EntityTag("Symbol_from_nomenclature_authority", string.Intern(csvReader[9].Trim())));
-                names.Add(new EntityTag("Full_name_from_nomenclature_authority", string.Intern(csvReader[10].Trim())));
+                names.Add(new EntityTag("LOCUS tag", csvReader[3].Trim()));
+                names.Add(new EntityTag("synonyms", csvReader[4].Trim()));
+                names.Add(new EntityTag("Symbol_from_nomenclature_authority", csvReader[9].Trim()));
+                names.Add(new EntityTag("Full_name_from_nomenclature_authority", csvReader[10].Trim()));
 
-                tags.Add(new EntityTag("description", string.Intern(csvReader[7].Trim())));
+                tags.Add(new EntityTag("description", csvReader[7].Trim()));
             }
 
             var geneEntity = builder.AddEntity(geneIdNamespace, geneId, names, tags);

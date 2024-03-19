@@ -17,7 +17,7 @@ public abstract class EntityIndex(IEntityProvider entityProvider, INameTransform
         foreach (var entity in entityProvider.All)
         foreach (var str in Selector(entity))
         {
-            var transformed = string.Intern(nameTransformer.Transform(str));
+            var transformed = nameTransformer.Transform(str);
             if (dict.TryGetValue(transformed, out var entityList))
                 entityList.Add(entity.Id);
             else

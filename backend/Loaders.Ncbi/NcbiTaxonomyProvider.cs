@@ -110,9 +110,9 @@ public sealed class NcbiTaxonomyProvider : BackgroundService
             var tagText = csvReader[2];
             if (string.IsNullOrWhiteSpace(tagText))
                 tagText = csvReader[1];
-            tagText = string.Intern(tagText.Trim());
+            tagText = tagText.Trim();
 
-            var nameClass = string.Intern(csvReader[3].Trim());
+            var nameClass = csvReader[3].Trim();
             var entityTag = new EntityTag(nameClass, tagText);
 
             if (_wantedNameClasses.Contains(nameClass))

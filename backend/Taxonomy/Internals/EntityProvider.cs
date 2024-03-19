@@ -56,9 +56,8 @@ internal sealed class EntityProvider(IEnumerable<IEntityLoader> loaders, ILogger
             if (target._idNamespaces.TryGetValue(name, out var result))
                 return result;
 
-            var internedName = string.Intern(name);
-            result = new IdNamespace(internedName);
-            target._idNamespaces.Add(internedName, result);
+            result = new IdNamespace(name);
+            target._idNamespaces.Add(name, result);
             target._entitiesBySourceId.Add(result, new Dictionary<string, Entity>());
 
             return result;
@@ -78,7 +77,7 @@ internal sealed class EntityProvider(IEnumerable<IEntityLoader> loaders, ILogger
                 return existingEntity.Id;
 
             var guid = Guid.NewGuid();
-            HashSet<EntitySource> sources = [new EntitySource(idNamespace, string.Intern(id))];
+            HashSet<EntitySource> sources = [new EntitySource(idNamespace, id)];
             var entity = new Entity(guid, sources, names, tags, new HashSet<EntityRelation>());
 
             target._entities.Add(guid, entity);
@@ -88,8 +87,8 @@ internal sealed class EntityProvider(IEnumerable<IEntityLoader> loaders, ILogger
 
         public void AddRelation(string fromKind, string toKind, Guid fromId, Guid toId)
         {
-            target._entities[fromId].Relations.Add(new EntityRelation(string.Intern(toKind), toId));
-            target._entities[toId].Relations.Add(new EntityRelation(string.Intern(fromKind), fromId));
+            target._entities[fromId].Relations.Add(new EntityRelation(toKind, toId));
+            target._entities[toId].Relations.Add(new EntityRelation(fromKind, fromId));
         }
     }
 }

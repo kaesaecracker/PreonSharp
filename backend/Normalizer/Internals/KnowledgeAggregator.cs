@@ -48,9 +48,9 @@ internal sealed class KnowledgeAggregator
         _logger.LogInformation("starting reading");
         await foreach (var k in channel.ReadAllAsync())
         {
-            var transformedName = string.Intern(_nameTransformer.Transform(k.Name));
+            var transformedName = _nameTransformer.Transform(k.Name);
             wipNames.GetOrAdd(transformedName, _ => [])
-                .Add(string.Intern(k.Id));
+                .Add(k.Id);
         }
 
         _logger.LogInformation("done reading");
