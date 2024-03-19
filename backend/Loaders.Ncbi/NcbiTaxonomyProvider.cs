@@ -15,9 +15,10 @@ namespace Loaders.Ncbi;
 public sealed class NcbiTaxonomyProvider : BackgroundService
 {
     private readonly string _dataRoot;
-    private Dictionary<ulong, TaxonomyEntity>? _entities;
+    private Dictionary<ulong, NcbiTaxonomyEntity>? _entities;
     private readonly ILogger _logger;
     private readonly TaskCompletionSource _startCompletion = new();
+
     private readonly HashSet<string> _wantedNameClasses =
     [
         "synonym", "scientific name", "blast name", "genbank common name", "equivalent name",
@@ -41,8 +42,8 @@ public sealed class NcbiTaxonomyProvider : BackgroundService
         _startCompletion.SetResult();
     }
 
-    public IEnumerable<TaxonomyEntity> All => _entities?.Values
-                                              ?? throw new InvalidOperationException("not initialized");
+    internal IEnumerable<NcbiTaxonomyEntity> All => _entities?.Values
+                                                    ?? throw new InvalidOperationException("not initialized");
 
     public Task Started => _startCompletion.Task;
 
@@ -54,7 +55,7 @@ public sealed class NcbiTaxonomyProvider : BackgroundService
             {
                 Delimiter = "|",
                 HasHeaderRecord = false,
-                Mode = CsvMode.NoEscape,
+                Mode = CsvMode.NoEscape
             });
 
         var result = new Dictionary<ulong, ulong>();
@@ -71,7 +72,7 @@ public sealed class NcbiTaxonomyProvider : BackgroundService
         return result;
     }
 
-    private async Task<Dictionary<ulong, TaxonomyEntity>> LoadEntities(string dmpFile,
+    private async Task<Dictionary<ulong, NcbiTaxonomyEntity>> LoadEntities(string dmpFile,
         Dictionary<ulong, ulong> hierarchy)
     {
         using var csvReader = new CsvReader(
@@ -80,10 +81,10 @@ public sealed class NcbiTaxonomyProvider : BackgroundService
             {
                 Delimiter = "|",
                 HasHeaderRecord = false,
-                Mode = CsvMode.NoEscape,
+                Mode = CsvMode.NoEscape
             });
 
-        Dictionary<ulong,TaxonomyEntity> entities = [];
+        Dictionary<ulong, NcbiTaxonomyEntity> entities = [];
         HashSet<EntityTag> names = [];
         HashSet<EntityTag> tags = [];
         ulong currentId = 1;
@@ -98,9 +99,9 @@ public sealed class NcbiTaxonomyProvider : BackgroundService
                 else
                     parent = null;
 
-                var entity = new TaxonomyEntity(currentId, names,  tags, parent);
+                var entity = new NcbiTaxonomyEntity(currentId, names, tags, parent);
                 entities.Add(id, entity);
-                
+
                 names = [];
                 tags = [];
                 currentId = id;
@@ -110,7 +111,7 @@ public sealed class NcbiTaxonomyProvider : BackgroundService
             if (string.IsNullOrWhiteSpace(tagText))
                 tagText = csvReader[1];
             tagText = string.Intern(tagText.Trim());
-            
+
             var nameClass = string.Intern(csvReader[3].Trim());
             var entityTag = new EntityTag(nameClass, tagText);
 

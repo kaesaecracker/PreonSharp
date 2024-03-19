@@ -5,7 +5,7 @@ namespace Loaders.Ncbi;
 
 public static class NcbiExtensions
 {
-    public static IServiceCollection AddNcbiTaxonomy(this IServiceCollection serviceCollection)
+    public static IServiceCollection AddNcbi(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddSingleton<NcbiTaxonomyProvider>();
         serviceCollection.AddHostedService(sp => sp.GetRequiredService<NcbiTaxonomyProvider>());
@@ -15,5 +15,6 @@ public static class NcbiExtensions
     public static void AddNcbiEntityLoader(this ITaxonomyBuilder builder)
     {
         builder.Services.AddSingleton<IEntityLoader, NcbiTaxonomyEntityLoader>();
+        builder.Services.AddSingleton<IEntityLoader, NcbiGeneInfoEntityLoader>();
     }
 }

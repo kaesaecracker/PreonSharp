@@ -12,13 +12,12 @@ internal sealed class NcbiTaxonomyEntityLoader(
     public async Task Load(IEntityProviderBuilder builder)
     {
         await taxonomyProvider.Started;
-        var source = new Source("NCBI Taxonomy");
+        var source = builder.AddIdNamespace("NCBI Taxonomy");
         var idMap = new Dictionary<ulong, Guid>();
         var parentMap = new Dictionary<Guid, ulong>();
         foreach (var e in taxonomyProvider.All)
         {
-            var entitySource = new EntitySource(source, e.TaxonomyId.ToString());
-            var guid = builder.AddEntity(entitySource, e.Names, e.Tags);
+            var guid = builder.AddEntity(source, e.TaxonomyId.ToString(), e.Names, e.Tags);
             idMap.Add(e.TaxonomyId, guid);
 
             if (e.Parent == null)
