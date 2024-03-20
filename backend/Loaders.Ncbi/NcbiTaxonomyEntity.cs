@@ -2,7 +2,7 @@ using Taxonomy.Models;
 
 namespace Loaders.Ncbi;
 
-public sealed record TaxonomyEntity(
+internal sealed record NcbiTaxonomyEntity(
     ulong TaxonomyId,
     ISet<EntityTag> Names,
     ISet<EntityTag> Tags,

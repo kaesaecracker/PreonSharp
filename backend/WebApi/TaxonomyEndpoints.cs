@@ -10,5 +10,6 @@ internal sealed class TaxonomyEndpoints(IEntityProvider entityProvider, IEntityS
         group.MapGet("/", (int count = 10) => entityProvider.GetFirst(count));
         group.MapGet("/find-exact", entitySearcher.GetExactMatches);
         group.MapGet("/find-closest-name", entitySearcher.GetClosestNames);
+        group.MapGet("/find-by-namespaced-id", entityProvider.GetByNamespacedId);
     }
 }

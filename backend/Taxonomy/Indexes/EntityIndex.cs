@@ -1,10 +1,11 @@
 using System.Collections.Frozen;
+using Microsoft.Extensions.Logging;
 using Normalizer;
 using Normalizer.Levenshtein;
 
 namespace Taxonomy.Indexes;
 
-public abstract class EntityIndex(IEntityProvider entityProvider, INameTransformer nameTransformer)
+public abstract class EntityIndex(IEntityProvider entityProvider, INameTransformer nameTransformer, ILogger logger)
 {
     private FrozenDictionary<string, FrozenSet<Guid>>? _dict = null;
 
@@ -16,7 +17,7 @@ public abstract class EntityIndex(IEntityProvider entityProvider, INameTransform
         foreach (var entity in entityProvider.All)
         foreach (var str in Selector(entity))
         {
-            var transformed = string.Intern(nameTransformer.Transform(str));
+            var transformed = nameTransformer.Transform(str);
             if (dict.TryGetValue(transformed, out var entityList))
                 entityList.Add(entity.Id);
             else
@@ -26,6 +27,7 @@ public abstract class EntityIndex(IEntityProvider entityProvider, INameTransform
         _dict = dict.ToFrozenDictionary(
             kvp => kvp.Key,
             kvp => kvp.Value.ToFrozenSet());
+        logger.LogDebug("built index with {} text entries", _dict.Count);
     }
 
     protected abstract IEnumerable<string> Selector(Entity entity);

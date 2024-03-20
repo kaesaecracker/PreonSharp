@@ -1,4 +1,5 @@
 using System.Threading;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Normalizer;
 using Taxonomy.Indexes;
@@ -13,15 +14,14 @@ internal sealed class EntitySearcher : BackgroundService, IEntitySearcher
     private readonly IEntityProvider _entityProvider;
     private readonly INameTransformer _nameTransformer;
 
-    public EntitySearcher(IEntityProvider entityProvider, INameTransformer nameTransformer)
+    public EntitySearcher(IEntityProvider entityProvider, INameTransformer nameTransformer, IServiceProvider sp)
     {
         _entityProvider = entityProvider;
         _nameTransformer = nameTransformer;
-        _nameIndex = new NameEntityIndex(entityProvider, nameTransformer);
+        _nameIndex = ActivatorUtilities.CreateInstance<NameEntityIndex>(sp);
         _indices =
         [
-            _nameIndex,
-            new SourceIdEntityIndex(entityProvider, nameTransformer)
+            _nameIndex, ActivatorUtilities.CreateInstance<SourceIdEntityIndex>(sp)
         ];
     }
 

@@ -8,6 +8,9 @@ internal sealed class EntityProvider(IEnumerable<IEntityLoader> loaders, ILogger
     : BackgroundService, IEntityProvider
 {
     private readonly Dictionary<Guid, Entity> _entities = new();
+    private readonly Dictionary<string, IdNamespace> _idNamespaces = new();
+    private readonly Dictionary<IdNamespace, Dictionary<string, Entity>> _entitiesBySourceId = new();
+
     private readonly TaskCompletionSource _startCompletion = new();
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -29,6 +32,13 @@ internal sealed class EntityProvider(IEnumerable<IEntityLoader> loaders, ILogger
         return _entities.GetValueOrDefault(id);
     }
 
+    public Entity? GetByNamespacedId(string idNamespace, string id)
+    {
+        if (!_idNamespaces.TryGetValue(idNamespace, out var idNamespaceObj))
+            return null;
+        return   _entitiesBySourceId[idNamespaceObj].GetValueOrDefault(id);
+    }
+
     public async Task<IEnumerable<Entity>> GetFirst(int count)
     {
         await _startCompletion.Task;
@@ -41,19 +51,44 @@ internal sealed class EntityProvider(IEnumerable<IEntityLoader> loaders, ILogger
 
     private sealed class EntityProviderBuilder(EntityProvider target) : IEntityProviderBuilder
     {
-        public Guid AddEntity(EntitySource source, ISet<EntityTag> names, ISet<EntityTag> tags)
+        public IdNamespace AddIdNamespace(string name)
         {
+            if (target._idNamespaces.TryGetValue(name, out var result))
+                return result;
+
+            result = new IdNamespace(name);
+            target._idNamespaces.Add(name, result);
+            target._entitiesBySourceId.Add(result, new Dictionary<string, Entity>());
+
+            return result;
+        }
+
+        public Guid ReferenceEntity(IdNamespace idNamespace, string id)
+        {
+            if (target._entitiesBySourceId[idNamespace].TryGetValue(id, out var existingEntity))
+                return existingEntity.Id;
+
+            return AddEntity(idNamespace, id, new HashSet<EntityTag>(), new HashSet<EntityTag>());
+        }
+
+        public Guid AddEntity(IdNamespace idNamespace, string id, ISet<EntityTag> names, ISet<EntityTag> tags)
+        {
+            if (target._entitiesBySourceId[idNamespace].TryGetValue(id, out var existingEntity))
+                return existingEntity.Id;
+
             var guid = Guid.NewGuid();
-            var entity = new Entity(guid, new HashSet<EntitySource>([source]), names, tags,
-                new HashSet<EntityRelation>());
+            HashSet<EntitySource> sources = [new EntitySource(idNamespace, id)];
+            var entity = new Entity(guid, sources, names, tags, new HashSet<EntityRelation>());
+
             target._entities.Add(guid, entity);
+            target._entitiesBySourceId[idNamespace].Add(id, entity);
             return guid;
         }
 
         public void AddRelation(string fromKind, string toKind, Guid fromId, Guid toId)
         {
-            target._entities[fromId].Relations.Add(new EntityRelation(string.Intern(toKind), toId));
-            target._entities[toId].Relations.Add(new EntityRelation(string.Intern(fromKind), fromId));
+            target._entities[fromId].Relations.Add(new EntityRelation(toKind, toId));
+            target._entities[toId].Relations.Add(new EntityRelation(fromKind, fromId));
         }
     }
 }

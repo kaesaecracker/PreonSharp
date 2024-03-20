@@ -21,7 +21,7 @@ internal static class Program
         app.MapGet("/ping", () => "pong");
 
         app.Services.GetRequiredService<TaxonomyEndpoints>().Map(app.MapGroup("/taxonomy"));
-        app.Services.GetRequiredService<NormalizerEndpoints>().Map(app.MapGroup("/normalizer"));
+        //app.Services.GetRequiredService<NormalizerEndpoints>().Map(app.MapGroup("/normalizer"));
 
         app.Run();
     }
@@ -41,7 +41,7 @@ internal static class Program
             .AddCommandLine(args)
             .AddEnvironmentVariables()
             .AddJsonFile("appsettings.json")
-            .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true);
+            .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", true);
 
         builder.Logging
             .AddSimpleConsole(options =>
@@ -65,15 +65,12 @@ internal static class Program
             });
 
         builder.Services
-            .AddNcbiTaxonomy()
+            .AddNcbi()
             .AddSingleton<TaxonomyEndpoints>()
             .AddSingleton<NormalizerEndpoints>()
             .Configure<NcbiConfiguration>(builder.Configuration.GetSection("Ncbi"))
             .Configure<SepFilesConfiguration>(builder.Configuration.GetSection("SepFiles"))
-            .AddTaxonomy(taxonomyBuilder =>
-            {
-                taxonomyBuilder.AddNcbiEntityLoader();
-            })
+            .AddTaxonomy(taxonomyBuilder => { taxonomyBuilder.AddNcbiEntityLoader(); })
             .AddNormalizer(normalizerBuilder =>
             {
                 normalizerBuilder.AddLevenshteinMatchStrategy();
