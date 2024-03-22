@@ -6,7 +6,7 @@ import Page from './components/Page';
 import { QueryServerResponse } from './types';
 import SearchBox from "./SearchBox";
 
-import './QueryPage.css';
+import './MainPage.css';
 import Section from "./components/Section.tsx";
 
 const queryUrl = import.meta.env.VITE_BACKEND_URL + `/normalizer/query`;
