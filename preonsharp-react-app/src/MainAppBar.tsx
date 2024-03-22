@@ -1,13 +1,13 @@
 import { AppBar, IconButton, Toolbar, Typography } from "@mui/material";
-import AccountIcon from "@mui/icons-material/AccountCircleOutlined";
 
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import SettingsIcon from "@mui/icons-material/Settings";
+import {ColorScheme} from "./models/Settings.ts";
 
 function DarkModeSwitcher(props: {
-  colorScheme: string,
-  setColorScheme: (scheme: string) => void
+  colorScheme: ColorScheme,
+  setColorScheme: (scheme: ColorScheme) => void
 }) {
   return props.colorScheme === 'light'
     ? <IconButton aria-label='dark mode' onClick={() => props.setColorScheme('dark')} color="inherit">
@@ -19,10 +19,9 @@ function DarkModeSwitcher(props: {
 }
 
 export default function MainAppBar(props: {
-  openLogin: () => void;
-  colorScheme: string;
+  colorScheme: ColorScheme;
   onSettingsClick: () => void;
-  setColorScheme: (scheme: string) => void;
+  setColorScheme: (scheme: ColorScheme) => void;
 }) {
   return <AppBar position="static" elevation={0}>
     <Toolbar>
@@ -31,10 +30,6 @@ export default function MainAppBar(props: {
       </Typography>
 
       <DarkModeSwitcher colorScheme={props.colorScheme} setColorScheme={props.setColorScheme} />
-
-      <IconButton aria-label='login' onClick={props.openLogin} color="inherit">
-        <AccountIcon />
-      </IconButton>
 
       <IconButton
         color="inherit"

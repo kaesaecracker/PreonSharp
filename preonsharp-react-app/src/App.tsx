@@ -2,21 +2,28 @@ import {AppBar, CssBaseline, ThemeProvider, Toolbar, useMediaQuery} from "@mui/m
 import {ReactNode, useState} from "react";
 
 import {darkTheme, lightTheme} from "./themes";
-import useStoredState from "./useStoredState";
+import {useStoredObjectState} from "./useStoredState";
 
 import MainPage from "./MainPage.tsx";
-import LoginDialog from "./LoginDialog";
 import MainAppBar from "./MainAppBar";
 import SettingsPage from "./SettingsPage";
+import {ColorScheme, Settings} from "./models/Settings.ts";
+
+function getDefaultSettings(): Settings {
+  return {
+    colorScheme: "dark",
+    credentials: {
+      userName: '',
+      password: ''
+    }
+  };
+}
 
 export default function App() {
-  const [loginOpen, setLoginOpen] = useState(false);
-  const [userName, setUserName] = useStoredState('userName', '');
-  const [password, setUserPassword] = useStoredState('userPassword', '');
-  const [colorScheme, setColorScheme] = useStoredState('colorScheme', 'dark');
+  const [settings, mutateSettings] = useStoredObjectState<Settings>('settings', getDefaultSettings);
   const [subPage, setSubPage] = useState<string | null>(null);
 
-  const theme = colorScheme === 'light' ? lightTheme : darkTheme;
+  const theme = settings.colorScheme === 'light' ? lightTheme : darkTheme;
 
   let subContent: ReactNode | null;
   switch (subPage) {
@@ -32,17 +39,13 @@ export default function App() {
 
   const mainContent = <>
     <MainAppBar
-      openLogin={() => setLoginOpen(true)}
-      setColorScheme={setColorScheme}
-      colorScheme={colorScheme}
+      setColorScheme={(colorScheme: ColorScheme) => mutateSettings(oldState => {
+        return {...oldState, colorScheme};
+      })}
+      colorScheme={settings.colorScheme}
       onSettingsClick={() => setSubPage('settings')}/>
 
-    <LoginDialog
-      open={loginOpen} setOpen={setLoginOpen}
-      password={password} setPassword={setUserPassword}
-      userName={userName} setUserName={setUserName}/>
-
-    <MainPage userName={userName} password={password}/>
+    <MainPage userName={settings.credentials?.userName} password={settings.credentials?.password}/>
   </>;
 
   return <ThemeProvider theme={theme}>
@@ -62,7 +65,7 @@ export default function App() {
 
         <div style={{
           flexBasis: 0,
-          transition: 'width 0.5s ease-in',
+          transition: 'width 0.3s ease-in',
           transitionProperty: 'width, flex-grow',
           minWidth: 0,
           flexGrow: subPage !== null ? 1 : 0
