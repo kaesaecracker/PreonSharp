@@ -28,7 +28,9 @@ export default function App() {
   let subContent: ReactNode | null;
   switch (subPage) {
     case 'settings':
-      subContent = <SettingsPage onClose={() => setSubPage(null)}/>;
+      subContent = <SettingsPage
+        settings={settings} mutateSettings={mutateSettings}
+        onClose={() => setSubPage(null)}/>;
       break;
     default:
       // default empty app bar for animation
