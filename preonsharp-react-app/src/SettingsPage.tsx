@@ -8,14 +8,44 @@ import {
 
 import CloseIcon from '@mui/icons-material/Close';
 import Page from "./components/Page.tsx";
-import * as React from "react";
 import {Settings} from "./models/Settings.ts";
+
+import React, {ReactNode} from 'react';
+
+function SettingsSection({children, title}: { children: ReactNode, title: string }): ReactNode {
+  return <Paper variant="outlined" sx={{
+    gap: '24px',
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '10px',
+  }}>
+    <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
+      {title}
+    </Typography>
+    {children}
+  </Paper>;
+}
 
 export default function SettingsPage(props: {
   onClose: () => void;
   settings: Settings;
   mutateSettings: (mutator: (oldState: Settings) => Settings) => void;
 }) {
+  const onUserNameFieldChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+    props.mutateSettings((s: Settings): Settings => ({
+      ...s, credentials: {
+        ...s.credentials,
+        userName: event.target.value
+      }
+    }));
+  const onPasswordFieldChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+    props.mutateSettings((s: Settings): Settings => ({
+      ...s, credentials: {
+        ...s.credentials,
+        password: event.target.value
+      }
+    }));
+
   return <>
     <AppBar sx={{flexGrow: 1}} position="static" elevation={0}>
       <Toolbar>
@@ -29,26 +59,14 @@ export default function SettingsPage(props: {
     </AppBar>
 
     <Page>
-      <Paper variant="outlined" sx={{
-        gap: '24px',
-        display: 'flex',
-        flexDirection: 'column',
-        padding: '10px'
-      }}>
-        <h4>Login</h4>
+      <SettingsSection title='Credentials'>
         <TextField
           required fullWidth
           variant='outlined'
           label="user"
           type='text'
           value={props.settings.credentials.userName}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-            props.mutateSettings((s: Settings): Settings => ({
-              ...s, credentials: {
-                ...s.credentials,
-                userName: event.target.value
-              }
-            }))}
+          onChange={onUserNameFieldChange}
         />
         <TextField
           required fullWidth
@@ -56,15 +74,9 @@ export default function SettingsPage(props: {
           label="password"
           type='password'
           value={props.settings.credentials.password}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-            props.mutateSettings((s: Settings): Settings => ({
-              ...s, credentials: {
-                ...s.credentials,
-                password: event.target.value
-              }
-            }))}
+          onChange={onPasswordFieldChange}
         />
-      </Paper>
+      </SettingsSection>
     </Page>
   </>;
 }
