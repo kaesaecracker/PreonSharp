@@ -63,6 +63,14 @@
       "semi": [
         2,
         "always"
+      ],
+      "@typescript-eslint/quotes": [
+        "error",
+        "single",
+        {
+          "avoidEscape": true,
+          "allowTemplateLiterals": true
+        }
       ]
     }
   },

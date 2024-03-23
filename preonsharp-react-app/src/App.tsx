@@ -1,14 +1,14 @@
-import {CssBaseline, ThemeProvider, useMediaQuery} from "@mui/material";
-import {ReactNode, useState} from "react";
-import {darkTheme, lightTheme} from "./themes";
-import {useStoredObjectState} from "./useStoredState";
-import MainPage from "./MainPage.tsx";
-import MainAppBar from "./MainAppBar";
-import SettingsPage from "./SettingsPage";
-import {ColorScheme, getDefaultSettings, Settings} from "./models/Settings.ts";
-import EntityPage from "./EntityPage.tsx";
-import {EmptyGuid, Guid} from "./models/Guid.ts";
-import CustomAppBar from "./components/CustomAppBar.tsx";
+import {CssBaseline, ThemeProvider, useMediaQuery} from '@mui/material';
+import {ReactNode, useState} from 'react';
+import {darkTheme, lightTheme} from './themes';
+import {useStoredObjectState} from './useStoredState';
+import MainPage from './MainPage.tsx';
+import MainAppBar from './MainAppBar';
+import SettingsPage from './SettingsPage';
+import {ColorScheme, getDefaultSettings, Settings} from './models/Settings.ts';
+import EntityPage from './EntityPage.tsx';
+import {EmptyGuid, Guid} from './models/Guid.ts';
+import CustomAppBar from './components/CustomAppBar.tsx';
 
 type PageName = 'settings' | 'entity' | null;
 
@@ -20,7 +20,7 @@ export default function App() {
   const theme = settings.colorScheme === 'light' ? lightTheme : darkTheme;
 
   const closePage = () => setSubPage(null);
-  const openEntity=(id: Guid) => {
+  const openEntity = (id: Guid) => {
     setSubPage('entity');
     setEntityId(id);
   };
@@ -36,6 +36,7 @@ export default function App() {
       subContent = <EntityPage
         entityId={entityId}
         onClose={closePage}
+        openEntity={openEntity}
         credentials={settings.credentials}/>;
       break;
     default:
@@ -59,7 +60,7 @@ export default function App() {
 
     {useMediaQuery('(min-width: 1000px)')
       ? <div style={{
-        display: "flex",
+        display: 'flex',
         flexDirection: 'row',
       }}>
         <div style={{

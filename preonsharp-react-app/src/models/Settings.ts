@@ -1,4 +1,3 @@
-
 export type ColorScheme = 'dark' | 'light';
 
 export type Credentials = {
@@ -13,7 +12,7 @@ export type Settings = {
 
 export function getDefaultSettings(): Settings {
   return {
-    colorScheme: "dark",
+    colorScheme: 'dark',
     credentials: {
       userName: '',
       password: ''
