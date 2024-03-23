@@ -8,7 +8,7 @@ export default function CustomAppBar({children, title}: {
   return <AppBar sx={{flexGrow: 1}} position="static" elevation={0}>
     <Toolbar>
       {
-        title && <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
+        title && <Typography variant="h5" component="div" sx={{flexGrow: 1}}>
           {title}
         </Typography>
       }

@@ -1,11 +1,9 @@
 import {useState} from 'react';
 import {Button, Typography} from "@mui/material";
-
 import QueryResultView from './QueryResultView';
 import Page from './components/Page';
 import {QueryServerResponse} from './types';
 import SearchBox from "./SearchBox";
-
 import './MainPage.css';
 import Section from "./components/Section.tsx";
 import {Credentials} from "./models/Settings.ts";
@@ -54,7 +52,9 @@ async function onSearch(
 
 function WelcomeSection() {
   return <Section direction='column'>
-    <Typography variant="h6" component="div" sx={{flexGrow: 1}}>welcome to preon#</Typography>
+    <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
+      Welcome to EntitySearch!
+    </Typography>
     <p>this is a tool for entity linking.</p>
     <p>use the search bar to get started!</p>
   </Section>;

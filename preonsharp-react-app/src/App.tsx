@@ -10,9 +10,11 @@ import EntityPage from "./EntityPage.tsx";
 import {EmptyGuid, Guid} from "./models/Guid.ts";
 import CustomAppBar from "./components/CustomAppBar.tsx";
 
+type PageName = 'settings' | 'entity' | null;
+
 export default function App() {
   const [settings, mutateSettings] = useStoredObjectState<Settings>('settings', getDefaultSettings);
-  const [subPage, setSubPage] = useState<string | null>(null);
+  const [subPage, setSubPage] = useState<PageName>(null);
   const [entityId, setEntityId] = useState<Guid>(EmptyGuid);
 
   const theme = settings.colorScheme === 'light' ? lightTheme : darkTheme;
@@ -69,15 +71,18 @@ export default function App() {
 
         <div style={{
           flexBasis: 0,
-          transition: 'width 0.3s ease-in',
+          transitionDuration: '0.25s',
           transitionProperty: 'width, flex-grow',
+          transitionTimingFunction: 'ease-in-out',
           minWidth: 0,
           flexGrow: subPage !== null ? 1 : 0
         }}>
           {subContent}
         </div>
       </div>
-      : subContent ?? mainContent}
+      : subPage !== null
+        ? subContent
+        : mainContent}
 
   </ThemeProvider>;
 }

@@ -18,7 +18,7 @@ export default defineConfig({
         config: false
       },
       manifest: {
-        name: "Preon# Web ",
+        name: "EntitySearch ",
         theme_color: '#0294EE',
         background_color: '#000000'
       }
