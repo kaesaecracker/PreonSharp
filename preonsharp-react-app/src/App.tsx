@@ -8,6 +8,8 @@ import MainPage from "./MainPage.tsx";
 import MainAppBar from "./MainAppBar";
 import SettingsPage from "./SettingsPage";
 import {ColorScheme, Settings} from "./models/Settings.ts";
+import EntityPage from "./EntityPage.tsx";
+import {EmptyGuid, Guid} from "./models/Guid.ts";
 
 function getDefaultSettings(): Settings {
   return {
@@ -22,15 +24,28 @@ function getDefaultSettings(): Settings {
 export default function App() {
   const [settings, mutateSettings] = useStoredObjectState<Settings>('settings', getDefaultSettings);
   const [subPage, setSubPage] = useState<string | null>(null);
+  const [entityId, setEntityId] = useState<Guid>(EmptyGuid);
 
   const theme = settings.colorScheme === 'light' ? lightTheme : darkTheme;
+
+  const closePage = () => setSubPage(null);
+  const openEntity=(id: Guid) => {
+    setSubPage('entity');
+    setEntityId(id);
+  };
 
   let subContent: ReactNode | null;
   switch (subPage) {
     case 'settings':
       subContent = <SettingsPage
         settings={settings} mutateSettings={mutateSettings}
-        onClose={() => setSubPage(null)}/>;
+        onClose={closePage}/>;
+      break;
+    case 'entity':
+      subContent = <EntityPage
+        entityId={entityId}
+        onClose={closePage}
+        credentials={settings.credentials}/>;
       break;
     default:
       // default empty app bar for animation
@@ -47,7 +62,7 @@ export default function App() {
       colorScheme={settings.colorScheme}
       onSettingsClick={() => setSubPage('settings')}/>
 
-    <MainPage userName={settings.credentials?.userName} password={settings.credentials?.password}/>
+    <MainPage credentials={settings.credentials} openEntity={openEntity}/>
   </>;
 
   return <ThemeProvider theme={theme}>

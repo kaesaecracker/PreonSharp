@@ -1,40 +1,20 @@
-import { useState } from 'react';
-import { Button, Typography } from "@mui/material";
+import {useState} from 'react';
+import {Button, Typography} from "@mui/material";
 
 import QueryResultView from './QueryResultView';
 import Page from './components/Page';
-import { QueryServerResponse } from './types';
+import {QueryServerResponse} from './types';
 import SearchBox from "./SearchBox";
 
 import './MainPage.css';
 import Section from "./components/Section.tsx";
-
-const queryUrl = import.meta.env.VITE_BACKEND_URL + `/normalizer/query`;
-
-async function fetchData(
-  text: string,
-  userName: string,
-  password: string
-): Promise<QueryServerResponse> {
-  if (!userName || !password)
-    throw new Error('no user credentials provided, check settings');
-
-  const response = await fetch(`${queryUrl}?s=${text}`, {
-    headers: new Headers({
-      "Authorization": `Basic ${btoa(`${userName}:${password}`)}`
-    }),
-  });
-
-  if (!response.ok)
-    throw new Error('server did not respond with success code');
-
-  return await response.json() as QueryServerResponse;
-}
+import {Credentials} from "./models/Settings.ts";
+import {fetchData} from "./fetchData.ts";
+import {Guid} from "./models/Guid.ts";
 
 async function onSearch(
   text: string,
-  userName: string,
-  password: string,
+  credentials: Credentials,
   setResponseOrder: (value: (prevState: string[]) => string[]) => void,
   setRunningQueries: (value: (prevState: Set<string>) => Set<string>) => void,
   setResponses: (value: (revState: Map<string, QueryServerResponse>) => Map<string, QueryServerResponse>) => void,
@@ -47,7 +27,9 @@ async function onSearch(
   try {
     setRunningQueries(set => new Set(set).add(text));
 
-    const response = await fetchData(text, userName, password);
+    const url = new URL(import.meta.env.VITE_BACKEND_URL + `/normalizer/query`);
+    url.searchParams.set('s', text);
+    const response = await fetchData<QueryServerResponse>({url, credentials});
 
     setResponses(responses => new Map(responses).set(text, response));
     setErrors(errors => {
@@ -72,13 +54,16 @@ async function onSearch(
 
 function WelcomeSection() {
   return <Section direction='column'>
-    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>welcome to preon#</Typography>
+    <Typography variant="h6" component="div" sx={{flexGrow: 1}}>welcome to preon#</Typography>
     <p>this is a tool for entity linking.</p>
     <p>use the search bar to get started!</p>
   </Section>;
 }
 
-function MainPage(props: { userName: string, password: string }) {
+function MainPage({credentials, openEntity}: {
+  credentials: Credentials,
+  openEntity: (id: Guid) => void
+}) {
   const [responses, setResponses] = useState(() => new Map<string, QueryServerResponse>());
   const [responseOrder, setResponseOrder] = useState<string[]>(() => []);
   const [errors, setErrors] = useState(() => new Map<string, string>());
@@ -92,39 +77,40 @@ function MainPage(props: { userName: string, password: string }) {
   };
 
   return <Page>
-      <SearchBox
-        onSearch={async text => await onSearch(text, props.userName, props.password, setResponseOrder, setRunningQueries, setResponses, setErrors)} />
+    <SearchBox
+      onSearch={async text => await onSearch(text, credentials, setResponseOrder, setRunningQueries, setResponses, setErrors)}/>
 
-      <Section direction='row'>
-        <Button onClick={() => {
-          for (let i = 0; i < 20; i++) {
-            onSearch(`test${i}`, props.userName, props.password, setResponseOrder, setRunningQueries, setResponses, setErrors);
-          }
-        }}>torture test</Button>
-
-        <Button onClick={clear}>clear</Button>
-      </Section>
-
-      {responseOrder.length == 0 && <WelcomeSection />}
-
-      <div style={{
-        display: "flex",
-        flexDirection: "column"
-      }}>
-        {
-          responseOrder.map((text) => {
-            return <QueryResultView
-              key={text}
-              query={text}
-              response={responses.get(text)}
-              error={errors.get(text)}
-              running={runningQueries.has(text)}
-            />;
-          })
+    <Section direction='row'>
+      <Button onClick={() => {
+        for (let i = 0; i < 20; i++) {
+          onSearch(`test${i}`, credentials, setResponseOrder, setRunningQueries, setResponses, setErrors);
         }
-      </div>
+      }}>torture test</Button>
 
-  </Page >;
+      <Button onClick={clear}>clear</Button>
+
+      <Button onClick={() => openEntity('0359abf0-1b17-4128-9083-07787abb4cf8')}> entity</Button>
+    </Section>
+
+    {responseOrder.length == 0 && <WelcomeSection/>}
+
+    <div style={{
+      display: "flex",
+      flexDirection: "column"
+    }}>
+      {
+        responseOrder.map((text) => {
+          return <QueryResultView
+            key={text}
+            query={text}
+            response={responses.get(text)}
+            error={errors.get(text)}
+            running={runningQueries.has(text)}
+          />;
+        })
+      }
+    </div>
+  </Page>;
 }
 
 export default MainPage;
