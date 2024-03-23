@@ -1,13 +1,12 @@
-import {AppBar, IconButton, LinearProgress, Toolbar, Typography} from "@mui/material";
-
+import {IconButton, LinearProgress} from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
-import Page from "./components/Page.tsx";
-
 import {useEffect, useState} from 'react';
+import Page from "./components/Page.tsx";
 import {Entity} from "./models/Entity.ts";
 import {Guid} from "./models/Guid.ts";
 import {Credentials} from "./models/Settings.ts";
 import {fetchData} from "./fetchData.ts";
+import CustomAppBar from "./components/CustomAppBar.tsx";
 
 function EntityView({entity}: { entity: Entity }) {
   return <div>
@@ -20,7 +19,7 @@ const queryUrl = import.meta.env.VITE_BACKEND_URL + `/taxonomy/`;
 export default function EntityPage({onClose, entityId, credentials}: {
   onClose: () => void;
   entityId: Guid;
-  credentials: Credentials
+  credentials: Credentials;
 }) {
   const [data, setData] = useState<Entity | null>(null);
 
@@ -37,16 +36,11 @@ export default function EntityPage({onClose, entityId, credentials}: {
   }, [data, credentials, entityId]);
 
   return <>
-    <AppBar sx={{flexGrow: 1}} position="static" elevation={0}>
-      <Toolbar>
-        <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
-          Entity {entityId}
-        </Typography>
-        <IconButton onClick={onClose} color="inherit">
-          <CloseIcon/>
-        </IconButton>
-      </Toolbar>
-    </AppBar>
+    <CustomAppBar title={`Entity ${entityId}`}>
+      <IconButton onClick={onClose} color="inherit">
+        <CloseIcon/>
+      </IconButton>
+    </CustomAppBar>
 
     <Page>
       {

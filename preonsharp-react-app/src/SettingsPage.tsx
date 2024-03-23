@@ -1,18 +1,14 @@
-import {
-  AppBar,
-  IconButton,
-  Paper, TextField,
-  Toolbar,
-  Typography
-} from "@mui/material";
-
+import {IconButton, Paper, TextField, Typography} from "@mui/material";
+import React, {ReactNode} from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import Page from "./components/Page.tsx";
 import {Settings} from "./models/Settings.ts";
+import CustomAppBar from "./components/CustomAppBar.tsx";
 
-import React, {ReactNode} from 'react';
-
-function SettingsSection({children, title}: { children: ReactNode, title: string }): ReactNode {
+function SettingsSection({children, title}: {
+  children: ReactNode;
+  title: string;
+}): ReactNode {
   return <Paper variant="outlined" sx={{
     gap: '24px',
     display: 'flex',
@@ -47,16 +43,11 @@ export default function SettingsPage(props: {
     }));
 
   return <>
-    <AppBar sx={{flexGrow: 1}} position="static" elevation={0}>
-      <Toolbar>
-        <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
-          Settings
-        </Typography>
-        <IconButton onClick={props.onClose} color="inherit">
-          <CloseIcon/>
-        </IconButton>
-      </Toolbar>
-    </AppBar>
+    <CustomAppBar title='Settings'>
+      <IconButton onClick={props.onClose} color="inherit">
+        <CloseIcon/>
+      </IconButton>
+    </CustomAppBar>
 
     <Page>
       <SettingsSection title='Credentials'>

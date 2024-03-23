@@ -1,9 +1,9 @@
-import { AppBar, IconButton, Toolbar, Typography } from "@mui/material";
-
+import {IconButton} from "@mui/material";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import SettingsIcon from "@mui/icons-material/Settings";
 import {ColorScheme} from "./models/Settings.ts";
+import CustomAppBar from "./components/CustomAppBar.tsx";
 
 function DarkModeSwitcher(props: {
   colorScheme: ColorScheme,
@@ -18,28 +18,20 @@ function DarkModeSwitcher(props: {
     </IconButton>;
 }
 
-export default function MainAppBar(props: {
+export default function MainAppBar({colorScheme, onSettingsClick, setColorScheme}: {
   colorScheme: ColorScheme;
   onSettingsClick: () => void;
   setColorScheme: (scheme: ColorScheme) => void;
 }) {
-  return <AppBar position="static" elevation={0}>
-    <Toolbar>
-      <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-        preon#
-      </Typography>
-
-      <DarkModeSwitcher colorScheme={props.colorScheme} setColorScheme={props.setColorScheme} />
-
+  return <CustomAppBar title='EntitySearch'>
+    <DarkModeSwitcher colorScheme={colorScheme} setColorScheme={setColorScheme}/>
       <IconButton
         color="inherit"
         aria-label="open drawer"
         edge="end"
-        onClick={props.onSettingsClick}
+        onClick={onSettingsClick}
       >
         <SettingsIcon />
       </IconButton>
-
-    </Toolbar>
-  </AppBar>;
+  </CustomAppBar>;
 }

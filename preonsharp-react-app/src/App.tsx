@@ -1,25 +1,14 @@
-import {AppBar, CssBaseline, ThemeProvider, Toolbar, useMediaQuery} from "@mui/material";
+import {CssBaseline, ThemeProvider, useMediaQuery} from "@mui/material";
 import {ReactNode, useState} from "react";
-
 import {darkTheme, lightTheme} from "./themes";
 import {useStoredObjectState} from "./useStoredState";
-
 import MainPage from "./MainPage.tsx";
 import MainAppBar from "./MainAppBar";
 import SettingsPage from "./SettingsPage";
-import {ColorScheme, Settings} from "./models/Settings.ts";
+import {ColorScheme, getDefaultSettings, Settings} from "./models/Settings.ts";
 import EntityPage from "./EntityPage.tsx";
 import {EmptyGuid, Guid} from "./models/Guid.ts";
-
-function getDefaultSettings(): Settings {
-  return {
-    colorScheme: "dark",
-    credentials: {
-      userName: '',
-      password: ''
-    }
-  };
-}
+import CustomAppBar from "./components/CustomAppBar.tsx";
 
 export default function App() {
   const [settings, mutateSettings] = useStoredObjectState<Settings>('settings', getDefaultSettings);
@@ -49,9 +38,7 @@ export default function App() {
       break;
     default:
       // default empty app bar for animation
-      subContent = <AppBar sx={{flexGrow: 1}} position="static" elevation={0}>
-        <Toolbar/>
-      </AppBar>;
+      subContent = <CustomAppBar/>;
   }
 
   const mainContent = <>
