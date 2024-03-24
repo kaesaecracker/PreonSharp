@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Threading;
 using Microsoft.Extensions.Hosting;
 
@@ -19,17 +20,13 @@ internal sealed partial class EntityProvider(
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var watcher = watcherFactory.Indeterminate(_startCompletion.Task, logger, () => _entities.Count);
         var builder = new EntityProviderBuilder(this, builderLogger);
-        foreach (var loader in loaders)
-        {
-            logger.LogInformation("loading from {}", loader.GetType().Name);
-            await loader.Load(builder);
-        }
+        var loaderTasks = Task.WhenAll(loaders.Select(l => l.Load(builder)));
+        
+        await watcherFactory.Indeterminate(loaderTasks, logger, () => _entities.Count);
 
         logger.LogInformation("done loading");
         _startCompletion.SetResult();
-        await watcher;
     }
 
     public async Task<Entity?> GetById(Guid id)
@@ -49,5 +46,12 @@ internal sealed partial class EntityProvider(
 
     public Task Started => _startCompletion.Task;
 
-    public IEnumerable<Entity> All => _entities.Values;
+    public IEnumerable<Entity> All
+    {
+        get
+        {
+            Trace.Assert(_startCompletion.Task.IsCompleted);
+            return _entities.Values;
+        }
+    }
 }

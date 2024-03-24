@@ -12,7 +12,7 @@ public sealed class ProgressWatcherFactory(IOptions<ProgressWatcherConfiguration
 {
     private readonly int _delay = configuration.Value.Delay;
 
-    public Task Indeterminate(Task taskToWatch, ILogger logger, Func<int> func) => Task.Factory.StartNew(async () =>
+    public async Task Indeterminate(Task taskToWatch, ILogger logger, Func<int> func)
     {
         var overallTimeWatch = Stopwatch.StartNew();
         var lastValue = 0;
@@ -29,6 +29,7 @@ public sealed class ProgressWatcherFactory(IOptions<ProgressWatcherConfiguration
             logger.LogDebug("task running at value {} in {}", newValue, overallTimeWatch.Elapsed);
         }
 
+        await taskToWatch;
         logger.LogInformation("task done with end value {} in {}", func(), overallTimeWatch.Elapsed);
-    });
+    }
 }
