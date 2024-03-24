@@ -16,13 +16,15 @@ function MatchView({match, openEntity}: {
 }) {
   return <>
     <p>text: {match.text}</p>
-    {
-      match.entityIds.map(id => (
-        <Link key={id} onClick={() => openEntity(id)}>
-          {id}
-        </Link>
-      ))
-    }
+    <div style={{flexDirection: 'row', flexWrap: 'wrap', gap: '16px', display: 'flex'}}>
+      {
+        match.entityIds.map(id => (
+          <Link key={id} onClick={() => openEntity(id)}>
+            {id}
+          </Link>
+        ))
+      }
+    </div>
   </>;
 }
 
