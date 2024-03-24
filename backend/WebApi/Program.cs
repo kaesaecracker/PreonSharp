@@ -60,7 +60,6 @@ internal static class Program
             });
 
         builder.Services
-            .AddNcbi()
             .AddSingleton<TaxonomyEndpoints>()
             .Configure<NcbiConfiguration>(builder.Configuration.GetSection("Ncbi"))
             .AddTaxonomy(taxonomyBuilder =>
