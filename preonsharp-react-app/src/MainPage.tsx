@@ -2,20 +2,20 @@ import {useState} from 'react';
 import {Button, Typography} from '@mui/material';
 import QueryResultView from './QueryResultView';
 import Page from './components/Page';
-import {QueryServerResponse} from './types';
 import SearchBox from './SearchBox';
 import './MainPage.css';
-import Section from './components/Section.tsx';
-import {Credentials} from './models/Settings.ts';
-import {fetchData} from './fetchData.ts';
-import {Guid} from './models/Guid.ts';
+import Section from './components/Section';
+import {Credentials} from './models/Settings';
+import {fetchData} from './fetchData';
+import {Guid} from './models/Guid';
+import {SearchResult} from './models/SearchResult';
 
 async function doSearch(
   text: string,
   credentials: Credentials,
   setResponseOrder: (value: (prevState: string[]) => string[]) => void,
   setRunningQueries: (value: (prevState: Set<string>) => Set<string>) => void,
-  setResponses: (value: (revState: Map<string, QueryServerResponse>) => Map<string, QueryServerResponse>) => void,
+  setResponses: (value: (revState: Map<string, SearchResult>) => Map<string, SearchResult>) => void,
   setErrors: (value: (prevState: Map<string, string>) => Map<string, string>) => void
 ) {
   text = text.trim();
@@ -25,9 +25,9 @@ async function doSearch(
   try {
     setRunningQueries(set => new Set(set).add(text));
 
-    const url = new URL(import.meta.env.VITE_BACKEND_URL + `/normalizer/query`);
-    url.searchParams.set('s', text);
-    const response = await fetchData<QueryServerResponse>({url, credentials});
+    const url = new URL(`${import.meta.env.VITE_BACKEND_URL}/taxonomy/find`);
+    url.searchParams.set('text', text);
+    const response = await fetchData<SearchResult>({url, credentials});
 
     setResponses(responses => new Map(responses).set(text, response));
     setErrors(errors => {
@@ -64,7 +64,7 @@ function MainPage({credentials, openEntity}: {
   credentials: Credentials,
   openEntity: (id: Guid) => void
 }) {
-  const [responses, setResponses] = useState(() => new Map<string, QueryServerResponse>());
+  const [responses, setResponses] = useState(() => new Map<string, SearchResult>());
   const [responseOrder, setResponseOrder] = useState<string[]>(() => []);
   const [errors, setErrors] = useState(() => new Map<string, string>());
   const [runningQueries, setRunningQueries] = useState<Set<string>>(() => new Set<string>());
@@ -109,6 +109,7 @@ function MainPage({credentials, openEntity}: {
             response={responses.get(text)}
             error={errors.get(text)}
             running={runningQueries.has(text)}
+            openEntity={openEntity}
           />;
         })
       }

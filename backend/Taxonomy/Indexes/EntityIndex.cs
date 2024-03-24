@@ -1,7 +1,5 @@
 using System.Collections.Frozen;
-using Microsoft.Extensions.Logging;
-using Normalizer;
-using Normalizer.Levenshtein;
+using Taxonomy.Internals;
 
 namespace Taxonomy.Indexes;
 
@@ -40,7 +38,7 @@ public abstract class EntityIndex(IEntityProvider entityProvider, INameTransform
         return _dict.GetValueOrDefault(text);
     }
 
-    public IEnumerable<TextMatch> GetClosestMatches(string text)
+    public ISet<TextMatch> GetClosestMatches(string text)
     {
         if (_dict == null)
             throw new InvalidOperationException();
@@ -67,7 +65,7 @@ public abstract class EntityIndex(IEntityProvider entityProvider, INameTransform
         if (minDist == int.MaxValue)
             return new HashSet<TextMatch>();
 
-        var relativeDistance = minDist / (decimal)transformedName.Length;
+        // var relativeDistance = minDist / (decimal)transformedName.Length;
         return minDistValues;
     }
 }

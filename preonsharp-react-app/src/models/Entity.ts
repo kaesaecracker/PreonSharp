@@ -1,7 +1,7 @@
-import {Guid} from "./Guid.ts";
+import {Guid} from './Guid.ts';
 
 export type EntitySource = {
-  readonly idNamespace: { name: string };
+  readonly idNamespace: string;
   readonly sourceId: string;
 };
 

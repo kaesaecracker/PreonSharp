@@ -6,5 +6,5 @@ public interface IEntitySearcher : IStartAwaitable, IHostedService
 {
     Task<TextMatch> GetExactMatches(string text);
 
-    Task<IEnumerable<TextMatch>> GetClosestNames(string text);
+    Task<ISet<TextMatch>> GetClosestNames(string text);
 }

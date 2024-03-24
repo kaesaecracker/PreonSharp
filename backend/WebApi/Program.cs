@@ -2,10 +2,7 @@ using Loaders.Ncbi;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Loaders.SepFiles;
 using Microsoft.Extensions.Hosting;
-using Normalizer;
-using Normalizer.Levenshtein;
 using Taxonomy;
 
 namespace WebApi;
@@ -21,7 +18,6 @@ internal static class Program
         app.MapGet("/ping", () => "pong");
 
         app.Services.GetRequiredService<TaxonomyEndpoints>().Map(app.MapGroup("/taxonomy"));
-        app.Services.GetRequiredService<NormalizerEndpoints>().Map(app.MapGroup("/normalizer"));
 
         app.Run();
     }
@@ -60,22 +56,15 @@ internal static class Program
             .AddHttpLogging(_ => { })
             .ConfigureHttpJsonOptions(options =>
             {
-                options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
-                options.SerializerOptions.TypeInfoResolverChain.Insert(1, TaxonomyJsonSerializerContext.Default);
+                options.SerializerOptions.TypeInfoResolverChain.Insert(0, TaxonomyJsonSerializerContext.Default);
             });
 
         builder.Services
-            .AddNcbi()
             .AddSingleton<TaxonomyEndpoints>()
-            .AddSingleton<NormalizerEndpoints>()
             .Configure<NcbiConfiguration>(builder.Configuration.GetSection("Ncbi"))
-            .Configure<SepFilesConfiguration>(builder.Configuration.GetSection("SepFiles"))
-            .AddTaxonomy(taxonomyBuilder => { taxonomyBuilder.AddNcbiEntityLoader(); })
-            .AddNormalizer(normalizerBuilder =>
+            .AddTaxonomy(taxonomyBuilder =>
             {
-                normalizerBuilder.AddLevenshteinMatchStrategy();
-                normalizerBuilder.AddSepFiles();
-                normalizerBuilder.AddTaxonomyKnowledge();
+                taxonomyBuilder.AddNcbiEntityLoader();
             });
 
         return builder.Build();

@@ -2,7 +2,6 @@ using System.Globalization;
 using System.IO;
 using CsvHelper;
 using CsvHelper.Configuration;
-using Microsoft.Extensions.Options;
 using Taxonomy;
 using Taxonomy.Models;
 
@@ -30,8 +29,6 @@ public class NcbiImageLoader : IEntityLoader
                 Mode = CsvMode.NoEscape
             });
 
-        var taxIdSource = builder.AddIdNamespace(NcbiIdNamespaces.TaxId);
-        var imageIdSource = builder.AddIdNamespace(NcbiIdNamespaces.Images);
         while (await csvReader.ReadAsync())
         {
             var imageId = csvReader[0].Trim();
@@ -45,14 +42,14 @@ public class NcbiImageLoader : IEntityLoader
                 new EntityTag("source", csvReader[5].Trim())
             ]);
 
-            var image = builder.AddEntity(imageIdSource, imageId, names, tags);
+            var image = await builder.AddEntity(NcbiIdNamespaces.Images, imageId, names, tags);
 
             var taxIds = csvReader[7].Trim()
                 .Split(' ', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
             foreach (var taxId in taxIds)
             {
-                var entity = builder.ReferenceEntity(taxIdSource, taxId);
-                builder.AddRelation("has image", "image of", image, entity);
+                var entity = await builder.ReferenceEntity(NcbiIdNamespaces.TaxId, taxId);
+                await builder.AddRelation("has image", "image of", image, entity);
             }
         }
     }

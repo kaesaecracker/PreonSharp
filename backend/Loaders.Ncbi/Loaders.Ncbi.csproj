@@ -7,9 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Loaders.SepFiles\Loaders.SepFiles.csproj" />
-        <ProjectReference Include="..\Normalizer\Normalizer.csproj" />
         <ProjectReference Include="..\Taxonomy\Taxonomy.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="CsvHelper" Version="31.0.2" />
     </ItemGroup>
 
 </Project>

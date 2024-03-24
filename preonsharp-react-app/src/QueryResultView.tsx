@@ -1,57 +1,70 @@
-import {DataGrid} from '@mui/x-data-grid';
-import {QueryServerResponse} from './types';
-import {Accordion, AccordionDetails, AccordionSummary, Alert, AlertTitle, LinearProgress} from '@mui/material';
-import {useState} from "react";
+import {Accordion, AccordionDetails, AccordionSummary, Alert, AlertTitle, LinearProgress, Link} from '@mui/material';
+import {useState} from 'react';
+import {SearchResult, TextMatch} from './models/SearchResult';
+import {Guid} from './models/Guid';
 
-export default function QueryResultView(props: {
+function ErrorView({error}: { error: string }) {
+  return <Alert severity={'error'}>
+    <AlertTitle>Error occurred</AlertTitle>
+    {error}
+  </Alert>;
+}
+
+function MatchView({match, openEntity}: {
+  match: TextMatch;
+  openEntity: (id: Guid) => void;
+}) {
+  return <>
+    <p>text: {match.text}</p>
+    <div style={{flexDirection: 'row', flexWrap: 'wrap', gap: '16px', display: 'flex'}}>
+      {
+        match.entityIds.map(id => (
+          <Link key={id} onClick={() => openEntity(id)}>
+            {id}
+          </Link>
+        ))
+      }
+    </div>
+  </>;
+}
+
+function SearchResultView({response, openEntity}: {
+  response: SearchResult;
+  openEntity: (id: Guid) => void;
+}) {
+  return <div className='SearchResultView'>
+    <p>Searched as: {response.transformedQuery}</p>
+    <p>Result kind: {response.kind}</p>
+    <p>Query time: {response.queryTime}</p>
+
+    {
+      response.matches.map((value) => (
+        <MatchView key={value.text} match={value} openEntity={openEntity}/>
+      ))
+    }
+  </div>;
+}
+
+export default function QueryResultView({error, query, response, running, openEntity}: {
   query: string;
-  response?: QueryServerResponse;
+  response?: SearchResult;
   error?: string;
   running: boolean;
+  openEntity: (id: Guid) => void;
 }) {
   const [expanded, setExpanded] = useState(true);
 
-  return <Accordion variant="outlined"
+  return <Accordion
+    variant="outlined"
     expanded={expanded}
     onChange={(_event, newExpanded) => setExpanded(newExpanded)}>
     <AccordionSummary>
-      Query: "{props.query}"
+      Query: "{query}"
     </AccordionSummary>
     <AccordionDetails>
-      {props.running && <LinearProgress/>}
-
-      {
-        props.error && <Alert severity={"error"}>
-          <AlertTitle>Error occurred</AlertTitle>
-          {props.error}
-        </Alert>
-      }
-
-      {
-        props.response && <>
-          <p>full search time: {props.response.executionTime}</p>
-          <DataGrid
-            getRowHeight={() => 'auto'}
-            rows={props.response.foundIds}
-            columns={[
-              {field: 'name', headerName: 'Name', flex: 1, maxWidth: 200},
-              {
-                field: 'ids', headerName: 'IDs', flex: 1, minWidth: 200,
-                renderCell: (params) => (<div>
-                  {params.value.map((id: string) => (<>{id}<br/></>))}
-                </div>)
-              }
-            ]}
-            getRowId={row => row.name}
-            initialState={{
-              pagination: {
-                paginationModel: {page: 0, pageSize: 10},
-              },
-            }}
-            checkboxSelection
-          />
-        </>
-      }
+      {running && <LinearProgress/>}
+      {error && <ErrorView error={error}/>}
+      {response && <SearchResultView response={response} openEntity={openEntity}/>}
     </AccordionDetails>
   </Accordion>;
 }

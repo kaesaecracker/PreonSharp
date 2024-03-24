@@ -1,6 +1,4 @@
-using System;
-
-namespace Normalizer.Levenshtein;
+namespace Taxonomy.Internals;
 
 public class LevenshteinSearch
 {

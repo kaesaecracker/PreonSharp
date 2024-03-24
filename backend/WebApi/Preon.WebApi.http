@@ -7,19 +7,22 @@ Accept: application/json
 
 ###
 
-GET {{Preon.WebApi_HostAddress}}/normalizer/query
-    ?s=gh1
+GET {{Preon.WebApi_HostAddress}}/taxonomy/find?text=gh1
 Accept: application/json
 
 ###
 
-GET {{Preon.WebApi_HostAddress}}/normalizer/query
-    ?s=root
+GET {{Preon.WebApi_HostAddress}}/taxonomy/find?text=test
 Accept: application/json
 
 ###
 
-GET {{Preon.WebApi_HostAddress}}/normalizer/wait
+GET {{Preon.WebApi_HostAddress}}/taxonomy/find?text=a87b3c5e-bb8b-46c8-931d-dd56d332934a
+Accept: application/json
+
+###
+
+GET {{Preon.WebApi_HostAddress}}/taxonomy/find?text=1
 Accept: application/json
 
 ###
@@ -51,12 +54,7 @@ Accept: application/json
 
 ###
 
-GET {{Preon.WebApi_HostAddress}}/taxonomy/3b801914-3a5e-4225-a43b-f83a670a9fb1
-Accept: application/json
-
-###
-
-GET {{Preon.WebApi_HostAddress}}/taxonomy/254
+GET {{Preon.WebApi_HostAddress}}/taxonomy/c126a52f-cc5d-43f4-9dff-70ebb62c3910
 Accept: application/json
 
 
