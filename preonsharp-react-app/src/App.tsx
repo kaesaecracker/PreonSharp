@@ -1,69 +1,86 @@
-import {CssBaseline, ThemeProvider, useMediaQuery} from "@mui/material";
-import {useState} from "react";
+import {CssBaseline, ThemeProvider, useMediaQuery} from '@mui/material';
+import {ReactNode, useState} from 'react';
+import {darkTheme, lightTheme} from './themes';
+import {useStoredObjectState} from './useStoredState';
+import MainPage from './MainPage.tsx';
+import MainAppBar from './MainAppBar';
+import SettingsPage from './SettingsPage';
+import {ColorScheme, getDefaultSettings, Settings} from './models/Settings.ts';
+import EntityPage from './EntityPage.tsx';
+import {EmptyGuid, Guid} from './models/Guid.ts';
+import CustomAppBar from './components/CustomAppBar.tsx';
+import './App.css';
 
-import {darkTheme, lightTheme} from "./themes";
-import useStoredState from "./useStoredState";
-
-import MainPage from "./MainPage.tsx";
-import LoginDialog from "./LoginDialog";
-import MainAppBar from "./MainAppBar";
-import SettingsPage from "./SettingsPage";
+type PageName = 'settings' | 'entity' | null;
 
 export default function App() {
-  const [loginOpen, setLoginOpen] = useState(false);
-  const [userName, setUserName] = useStoredState('userName', '');
-  const [password, setUserPassword] = useStoredState('userPassword', '');
-  const [colorScheme, setColorScheme] = useStoredState('colorScheme', 'dark');
-  const [settingsOpen, setSettingsOpen] = useState(false);
-  const isMultiColumn = useMediaQuery('(min-width: 600px)');
+  const [settings, mutateSettings] = useStoredObjectState<Settings>('settings', getDefaultSettings);
+  const [subPage, setSubPage] = useState<PageName>(null);
+  const [entityId, setEntityId] = useState<Guid>(EmptyGuid);
 
-  const theme = colorScheme === 'light' ? lightTheme : darkTheme;
-  const settingsWidth = !settingsOpen ? 0 : isMultiColumn ? '33%' : '100%';
+  const theme = settings.colorScheme === 'light' ? lightTheme : darkTheme;
+
+  const closePage = () => setSubPage(null);
+  const openEntity = (id: Guid) => {
+    setSubPage('entity');
+    setEntityId(id);
+  };
+
+  let rightColumn: ReactNode | null;
+  switch (subPage) {
+    case 'settings':
+      rightColumn = <SettingsPage
+        settings={settings} mutateSettings={mutateSettings}
+        onClose={closePage}/>;
+      break;
+    case 'entity':
+      rightColumn = <EntityPage
+        entityId={entityId}
+        onClose={closePage}
+        openEntity={openEntity}
+        credentials={settings.credentials}/>;
+      break;
+    default:
+      // default empty app bar for animation
+      rightColumn = <CustomAppBar/>;
+  }
+
+  const leftColumn = <>
+    <MainAppBar
+      setColorScheme={(colorScheme: ColorScheme) => mutateSettings(oldState => {
+        return {...oldState, colorScheme};
+      })}
+      colorScheme={settings.colorScheme}
+      onSettingsClick={() => setSubPage('settings')}/>
+
+    <MainPage credentials={settings.credentials} openEntity={openEntity}/>
+  </>;
+
+  let content: ReactNode;
+  if (useMediaQuery('(min-width: 1000px)')) {
+    // multi column layout
+    content = <div className='App-MultiColumn'>
+      <div className='App-MultiColumn-Left'>
+        {leftColumn}
+      </div>
+
+      <div
+        className='App-MultiColumn-Right'
+        style={{flexGrow: subPage !== null ? 1 : 0}}
+      >
+        {rightColumn}
+      </div>
+    </div>;
+  } else {
+    // single column layout
+    if (subPage === null)
+      content = leftColumn;
+    else
+      content = rightColumn;
+  }
 
   return <ThemeProvider theme={theme}>
     <CssBaseline/>
-
-    <div style={{
-      display: "flex",
-      flexDirection: 'row',
-      flexWrap: "wrap",
-      overflowX: "hidden",
-    }}>
-
-      {(isMultiColumn || !settingsOpen) &&
-        <div style={{
-          flexBasis: 0,
-          flexGrow: 1,
-          flexShrink: 0,
-          transition: 'width 0.5s ease-in',
-          width: '100%',
-        }}>
-          <MainAppBar
-            openLogin={() => setLoginOpen(true)}
-            setColorScheme={setColorScheme}
-            colorScheme={colorScheme}
-            onSettingsClick={() => setSettingsOpen(!settingsOpen)}/>
-
-          <LoginDialog
-            open={loginOpen} setOpen={setLoginOpen}
-            password={password} setPassword={setUserPassword}
-            userName={userName} setUserName={setUserName}/>
-
-          <MainPage userName={userName} password={password}/>
-        </div>
-      }
-
-      <div style={{
-        flexBasis: 0,
-        flexShrink: 1,
-        transition: 'width 0.5s ease-in',
-        width: settingsWidth,
-        flexGrow: settingsOpen ? 1 : 0
-      }}>
-        <SettingsPage onClose={() => setSettingsOpen(false)}/>
-      </div>
-
-    </div>
-
+    {content}
   </ThemeProvider>;
 }
