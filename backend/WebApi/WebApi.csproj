@@ -10,9 +10,6 @@
     <ItemGroup>
         <ProjectReference Include="..\BioCXml\BioCXml.csproj"/>
         <ProjectReference Include="..\Loaders.Ncbi\Loaders.Ncbi.csproj" />
-        <ProjectReference Include="..\Normalizer.Levenshtein\Normalizer.Levenshtein.csproj" />
-        <ProjectReference Include="..\Loaders.SepFiles\Loaders.SepFiles.csproj" />
-        <ProjectReference Include="..\Normalizer\Normalizer.csproj" />
         <ProjectReference Include="..\Taxonomy\Taxonomy.csproj" />
     </ItemGroup>
 

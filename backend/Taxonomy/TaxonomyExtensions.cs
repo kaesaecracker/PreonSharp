@@ -1,9 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using Normalizer;
-using Normalizer.Internals;
 using Taxonomy.Internals;
+using DefaultNameTransformer = Taxonomy.Internals.DefaultNameTransformer;
 
 namespace Taxonomy;
 
@@ -18,15 +17,10 @@ public static class TaxonomyExtensions
         serviceCollection
             .AddSingleton<IEntitySearcher, EntitySearcher>()
             .AddSingleton<IHostedService>(sp => sp.GetRequiredService<IEntitySearcher>());
-        serviceCollection.AddSingleton<IUnifiedSearcher, UnifiedSearcher>();
-        serviceCollection.TryAddSingleton<INameTransformer, DefaultNameTransformer>();
         var builder = new TaxonomyBuilder(serviceCollection);
         configure(builder);
+        serviceCollection.TryAddSingleton<INameTransformer, DefaultNameTransformer>();
+        serviceCollection.TryAddSingleton<IUnifiedSearcher, UnifiedSearcher>();
         return serviceCollection;
-    }
-
-    public static void AddTaxonomyKnowledge(this INormalizerBuilder builder)
-    {
-        builder.Services.AddSingleton<IKnowledgeProvider, TaxonomyKnowledgeProvider>();
     }
 }

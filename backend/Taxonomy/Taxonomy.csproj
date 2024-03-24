@@ -8,9 +8,4 @@
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0"/>
     </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\Normalizer.Levenshtein\Normalizer.Levenshtein.csproj" />
-      <ProjectReference Include="..\Normalizer\Normalizer.csproj" />
-    </ItemGroup>
-
 </Project>

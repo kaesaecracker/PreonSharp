@@ -1,6 +1,3 @@
-using Microsoft.Extensions.Logging;
-using Normalizer;
-
 namespace Taxonomy.Indexes;
 
 public sealed class SourceIdEntityIndex(

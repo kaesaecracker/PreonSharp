@@ -1,4 +1,4 @@
-namespace Normalizer;
+namespace Taxonomy;
 
 public interface INameTransformer
 {

@@ -1,7 +1,5 @@
 using System.Collections.Frozen;
-using Microsoft.Extensions.Logging;
-using Normalizer;
-using Normalizer.Levenshtein;
+using Taxonomy.Internals;
 
 namespace Taxonomy.Indexes;
 

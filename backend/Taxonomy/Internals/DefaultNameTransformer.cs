@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace Normalizer.Internals;
+namespace Taxonomy.Internals;
 
 public partial class DefaultNameTransformer : INameTransformer
 {

@@ -1,14 +1,13 @@
+using System;
 using System.IO;
 using System.Xml;
 using BioCXml;
 using Microsoft.Extensions.Logging;
-using Normalizer;
 
 namespace WebApi;
 
 internal sealed class QueryGenerator(
-    ILogger<QueryGenerator> logger,
-    INormalizer normalizer)
+    ILogger<QueryGenerator> logger)
 {
     public async Task Run(DirectoryInfo directory)
     {
@@ -33,10 +32,11 @@ internal sealed class QueryGenerator(
         await allDoneTask;
     }
 
-    private async Task GenerateTestCaseTask((string Text, string Id) tuple)
+    private  Task GenerateTestCaseTask((string Text, string Id) tuple)
     {
-        var result = await normalizer.QueryAsync(tuple.Text);
-        logger.LogDebug("{}: expected {} got {}", tuple.Text, tuple.Id, result);
+        //var result = await normalizer.QueryAsync(tuple.Text);
+        //logger.LogDebug("{}: expected {} got {}", tuple.Text, tuple.Id, result);
+        throw new NotImplementedException();
     }
 
     private static Collection LoadCorpus(FileInfo file)
