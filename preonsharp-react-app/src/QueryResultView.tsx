@@ -1,5 +1,5 @@
 import {DataGrid} from '@mui/x-data-grid';
-import {QueryServerResponse} from './types';
+import {QueryServerResponse} from './models/QueryServerResponse';
 import {Accordion, AccordionDetails, AccordionSummary, Alert, AlertTitle, LinearProgress} from '@mui/material';
 import {useState} from "react";
 
