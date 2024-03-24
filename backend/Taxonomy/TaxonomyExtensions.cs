@@ -21,6 +21,7 @@ public static class TaxonomyExtensions
         configure(builder);
         serviceCollection.TryAddSingleton<INameTransformer, DefaultNameTransformer>();
         serviceCollection.TryAddSingleton<IUnifiedSearcher, UnifiedSearcher>();
+        serviceCollection.TryAddSingleton<ProgressWatcherFactory>();
         return serviceCollection;
     }
 }

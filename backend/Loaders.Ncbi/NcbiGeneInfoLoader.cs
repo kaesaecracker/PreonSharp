@@ -2,13 +2,12 @@ using System.Globalization;
 using System.IO;
 using CsvHelper;
 using CsvHelper.Configuration;
-using Microsoft.Extensions.Options;
 using Taxonomy;
 using Taxonomy.Models;
 
 namespace Loaders.Ncbi;
 
-public class NcbiGeneInfoEntityLoader(IOptions<NcbiConfiguration> configuration) : IEntityLoader
+public class NcbiGeneInfoLoader(IOptions<NcbiConfiguration> configuration) : IEntityLoader
 {
     private readonly string _filePath = configuration.Value.GeneInfo.File
                                         ?? throw new ArgumentException("GeneInfoFile not set", nameof(configuration));
@@ -27,8 +26,6 @@ public class NcbiGeneInfoEntityLoader(IOptions<NcbiConfiguration> configuration)
                 Mode = CsvMode.NoEscape
             });
 
-        var taxIdSource = builder.AddIdNamespace(NcbiIdNamespaces.TaxId);
-        var geneIdNamespace = builder.AddIdNamespace(NcbiIdNamespaces.GeneInfo);
         var currentTaxId = string.Empty;
         var currentTaxGuid = Guid.Empty;
 
@@ -42,7 +39,7 @@ public class NcbiGeneInfoEntityLoader(IOptions<NcbiConfiguration> configuration)
             var taxId = csvReader[0].Trim();
             if (taxId != currentTaxId)
             {
-                currentTaxGuid = builder.ReferenceEntity(taxIdSource, taxId);
+                currentTaxGuid = await builder.ReferenceEntity(NcbiIdNamespaces.TaxId, taxId);
                 currentTaxId = taxId;
             }
 
@@ -60,8 +57,8 @@ public class NcbiGeneInfoEntityLoader(IOptions<NcbiConfiguration> configuration)
                 tags.Add(new EntityTag("description", csvReader[7].Trim()));
             }
 
-            var geneEntity = builder.AddEntity(geneIdNamespace, geneId, names, tags);
-            builder.AddRelation("has gene", "gene of", geneEntity, currentTaxGuid);
+            var geneEntity = await builder.AddEntity(NcbiIdNamespaces.GeneInfo, geneId, names, tags);
+            await builder.AddRelation("has gene", "gene of", geneEntity, currentTaxGuid);
         }
     }
 }

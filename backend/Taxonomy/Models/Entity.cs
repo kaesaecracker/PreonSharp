@@ -1,9 +1,11 @@
+using System.Collections.Concurrent;
+
 namespace Taxonomy.Models;
 
 public sealed record Entity(
     Guid Id,
-    ISet<EntitySource> Sources,
-    ISet<EntityTag> Names,
-    ISet<EntityTag> Tags,
-    ISet<EntityRelation> Relations
+    ConcurrentBag<EntitySource> Sources,
+    ConcurrentBag<EntityTag> Names,
+    ConcurrentBag<EntityTag> Tags,
+    ConcurrentBag<EntityRelation> Relations
 );

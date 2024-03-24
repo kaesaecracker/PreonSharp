@@ -1,47 +1,71 @@
+using System.Collections.Concurrent;
+using System.Diagnostics;
+
 namespace Taxonomy.Internals;
 
 internal sealed partial class EntityProvider
 {
-    private sealed class EntityProviderBuilder(EntityProvider target) : IEntityProviderBuilder
+    private sealed class EntityProviderBuilder(EntityProvider target, ILogger<IEntityProviderBuilder> logger)
+        : IEntityProviderBuilder
     {
-        public IdNamespace AddIdNamespace(string name)
+        public Task<Guid> ReferenceEntity(string idNamespace, string id)
+            => AddEntity(idNamespace, id, new HashSet<EntityTag>(), new HashSet<EntityTag>());
+
+        private Entity? FindSourceId(string idNamespace, string id)
         {
-            if (target._idNamespaces.TryGetValue(name, out var result))
-                return result;
-
-            result = new IdNamespace(name);
-            target._idNamespaces.Add(name, result);
-            target._entitiesBySourceId.Add(result, new Dictionary<string, Entity>());
-
-            return result;
+            target._entitiesBySourceId
+                .GetOrAdd(idNamespace, ns => new ConcurrentDictionary<string, Entity>())
+                .TryGetValue(id, out var entity);
+            return entity;
         }
 
-        public Guid ReferenceEntity(IdNamespace idNamespace, string id)
+        public async Task<Guid> AddEntity(string idNamespace, string id, IEnumerable<EntityTag> names,
+            IEnumerable<EntityTag> tags)
         {
-            if (target._entitiesBySourceId[idNamespace].TryGetValue(id, out var existingEntity))
-                return existingEntity.Id;
+            var entity = FindSourceId(idNamespace, id)
+                         ?? await AddEntityLocked(idNamespace, id);
 
-            return AddEntity(idNamespace, id, new HashSet<EntityTag>(), new HashSet<EntityTag>());
+            foreach (var tag in names)
+                entity.Names.Add(tag);
+            foreach (var tag in tags)
+                entity.Tags.Add(tag);
+            
+            Trace.Assert(entity != null);
+            if (logger.IsEnabled(LogLevel.Trace))
+                logger.LogTrace("added entity {} from source {} with id {}", entity.Id, idNamespace, id);
+            return entity.Id;
         }
 
-        public Guid AddEntity(IdNamespace idNamespace, string id, ISet<EntityTag> names, ISet<EntityTag> tags)
+        private async Task<Entity> AddEntityLocked(string idNamespace, string id)
         {
-            if (target._entitiesBySourceId[idNamespace].TryGetValue(id, out var existingEntity))
-                return existingEntity.Id;
+            await target._entityCreationMutex.WaitAsync();
+            try
+            {
+                var entity = FindSourceId(idNamespace, id);
+                if (entity != null)
+                    return entity;
 
-            var guid = Guid.NewGuid();
-            HashSet<EntitySource> sources = [new EntitySource(idNamespace, id)];
-            var entity = new Entity(guid, sources, names, tags, new HashSet<EntityRelation>());
+                var guid = Guid.NewGuid();
+                ConcurrentBag<EntitySource> sources = [new EntitySource(idNamespace, id)];
+                entity = new Entity(guid, sources, [], [], []);
 
-            target._entities.Add(guid, entity);
-            target._entitiesBySourceId[idNamespace].Add(id, entity);
-            return guid;
+                var success = target._entities.TryAdd(guid, entity)
+                              && target._entitiesBySourceId[idNamespace].TryAdd(id, entity);
+                Trace.Assert(success);
+
+                return entity;
+            }
+            finally
+            {
+                target._entityCreationMutex.Release();
+            }
         }
 
-        public void AddRelation(string fromKind, string toKind, Guid fromId, Guid toId)
+        public Task AddRelation(string fromKind, string toKind, Guid fromId, Guid toId)
         {
             target._entities[fromId].Relations.Add(new EntityRelation(toKind, toId));
             target._entities[toId].Relations.Add(new EntityRelation(fromKind, fromId));
+            return Task.CompletedTask;
         }
     }
 }
