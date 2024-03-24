@@ -46,7 +46,7 @@ internal sealed class EntitySearcher : BackgroundService, IEntitySearcher
         return new TextMatch(text, set);
     }
 
-    public async Task<IEnumerable<TextMatch>> GetClosestNames(string text)
+    public async Task<ISet<TextMatch>> GetClosestNames(string text)
     {
         text = _nameTransformer.Transform(text);
         await Started;

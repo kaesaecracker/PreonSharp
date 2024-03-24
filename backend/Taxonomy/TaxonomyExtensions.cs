@@ -18,6 +18,7 @@ public static class TaxonomyExtensions
         serviceCollection
             .AddSingleton<IEntitySearcher, EntitySearcher>()
             .AddSingleton<IHostedService>(sp => sp.GetRequiredService<IEntitySearcher>());
+        serviceCollection.AddSingleton<IUnifiedSearcher, UnifiedSearcher>();
         serviceCollection.TryAddSingleton<INameTransformer, DefaultNameTransformer>();
         var builder = new TaxonomyBuilder(serviceCollection);
         configure(builder);
