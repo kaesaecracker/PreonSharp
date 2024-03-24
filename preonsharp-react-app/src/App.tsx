@@ -9,6 +9,7 @@ import {ColorScheme, getDefaultSettings, Settings} from './models/Settings.ts';
 import EntityPage from './EntityPage.tsx';
 import {EmptyGuid, Guid} from './models/Guid.ts';
 import CustomAppBar from './components/CustomAppBar.tsx';
+import './App.css';
 
 type PageName = 'settings' | 'entity' | null;
 
@@ -25,15 +26,15 @@ export default function App() {
     setEntityId(id);
   };
 
-  let subContent: ReactNode | null;
+  let rightColumn: ReactNode | null;
   switch (subPage) {
     case 'settings':
-      subContent = <SettingsPage
+      rightColumn = <SettingsPage
         settings={settings} mutateSettings={mutateSettings}
         onClose={closePage}/>;
       break;
     case 'entity':
-      subContent = <EntityPage
+      rightColumn = <EntityPage
         entityId={entityId}
         onClose={closePage}
         openEntity={openEntity}
@@ -41,10 +42,10 @@ export default function App() {
       break;
     default:
       // default empty app bar for animation
-      subContent = <CustomAppBar/>;
+      rightColumn = <CustomAppBar/>;
   }
 
-  const mainContent = <>
+  const leftColumn = <>
     <MainAppBar
       setColorScheme={(colorScheme: ColorScheme) => mutateSettings(oldState => {
         return {...oldState, colorScheme};
@@ -55,35 +56,31 @@ export default function App() {
     <MainPage credentials={settings.credentials} openEntity={openEntity}/>
   </>;
 
+  let content: ReactNode;
+  if (useMediaQuery('(min-width: 1000px)')) {
+    // multi column layout
+    content = <div className='App-MultiColumn'>
+      <div className='App-MultiColumn-Left'>
+        {leftColumn}
+      </div>
+
+      <div
+        className='App-MultiColumn-Right'
+        style={{flexGrow: subPage !== null ? 1 : 0}}
+      >
+        {rightColumn}
+      </div>
+    </div>;
+  } else {
+    // single column layout
+    if (subPage === null)
+      content = leftColumn;
+    else
+      content = rightColumn;
+  }
+
   return <ThemeProvider theme={theme}>
     <CssBaseline/>
-
-    {useMediaQuery('(min-width: 1000px)')
-      ? <div style={{
-        display: 'flex',
-        flexDirection: 'row',
-      }}>
-        <div style={{
-          flexBasis: 0,
-          flexGrow: 2,
-        }}>
-          {mainContent}
-        </div>
-
-        <div style={{
-          flexBasis: 0,
-          transitionDuration: '0.25s',
-          transitionProperty: 'width, flex-grow',
-          transitionTimingFunction: 'ease-in-out',
-          minWidth: 0,
-          flexGrow: subPage !== null ? 1 : 0
-        }}>
-          {subContent}
-        </div>
-      </div>
-      : subPage !== null
-        ? subContent
-        : mainContent}
-
+    {content}
   </ThemeProvider>;
 }

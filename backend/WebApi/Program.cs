@@ -21,7 +21,7 @@ internal static class Program
         app.MapGet("/ping", () => "pong");
 
         app.Services.GetRequiredService<TaxonomyEndpoints>().Map(app.MapGroup("/taxonomy"));
-        //app.Services.GetRequiredService<NormalizerEndpoints>().Map(app.MapGroup("/normalizer"));
+        app.Services.GetRequiredService<NormalizerEndpoints>().Map(app.MapGroup("/normalizer"));
 
         app.Run();
     }

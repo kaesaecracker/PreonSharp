@@ -1,0 +1,24 @@
+.App-MultiColumn {
+  display: flex;
+  flex-direction: row;
+}
+
+.App-MultiColumn-Left {
+  flex-basis: 0;
+  flex-grow: 2;
+
+  overflow-y: scroll;
+  max-height: 100vh;
+}
+
+.App-MultiColumn-Right {
+  flex-basis: 0;
+  transition-duration: 0.25s;
+  transition-property: width, flex-grow;
+  transition-timing-function: ease-in-out;
+  min-width: 0;
+
+  overflow-y: scroll;
+  max-height: 100vh;
+}
+

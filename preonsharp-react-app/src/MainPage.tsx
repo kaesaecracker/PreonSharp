@@ -1,16 +1,16 @@
 import {useState} from 'react';
-import {Button, Typography} from "@mui/material";
+import {Button, Typography} from '@mui/material';
 import QueryResultView from './QueryResultView';
 import Page from './components/Page';
 import {QueryServerResponse} from './types';
-import SearchBox from "./SearchBox";
+import SearchBox from './SearchBox';
 import './MainPage.css';
-import Section from "./components/Section.tsx";
-import {Credentials} from "./models/Settings.ts";
-import {fetchData} from "./fetchData.ts";
-import {Guid} from "./models/Guid.ts";
+import Section from './components/Section.tsx';
+import {Credentials} from './models/Settings.ts';
+import {fetchData} from './fetchData.ts';
+import {Guid} from './models/Guid.ts';
 
-async function onSearch(
+async function doSearch(
   text: string,
   credentials: Credentials,
   setResponseOrder: (value: (prevState: string[]) => string[]) => void,
@@ -76,27 +76,30 @@ function MainPage({credentials, openEntity}: {
     setRunningQueries(new Set());
   };
 
+  const onSearch = async (text: string) =>
+    await doSearch(text, credentials, setResponseOrder, setRunningQueries, setResponses, setErrors);
+
   return <Page>
     <SearchBox
-      onSearch={async text => await onSearch(text, credentials, setResponseOrder, setRunningQueries, setResponses, setErrors)}/>
+      onSearch={onSearch}/>
 
     <Section direction='row'>
       <Button onClick={() => {
         for (let i = 0; i < 20; i++) {
-          onSearch(`test${i}`, credentials, setResponseOrder, setRunningQueries, setResponses, setErrors);
+          onSearch(`test${i}`);
         }
       }}>torture test</Button>
 
       <Button onClick={clear}>clear</Button>
 
-      <Button onClick={() => openEntity('0359abf0-1b17-4128-9083-07787abb4cf8')}> entity</Button>
+      <Button onClick={() => openEntity('c3fd6ba9-cb4f-430b-99d3-424afa3acd3b')}> entity</Button>
     </Section>
 
     {responseOrder.length == 0 && <WelcomeSection/>}
 
     <div style={{
-      display: "flex",
-      flexDirection: "column"
+      display: 'flex',
+      flexDirection: 'column'
     }}>
       {
         responseOrder.map((text) => {

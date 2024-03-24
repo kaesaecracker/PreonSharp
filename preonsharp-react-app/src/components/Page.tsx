@@ -6,7 +6,7 @@ export default function Page({children, className}: {
   children: ReactNode,
   className?: string
 }) {
-  return <main className={'Page' + (className !== undefined ? `,${className}` : '')}>
+  return <main className={'Page ' + (className !== undefined ? className : '')}>
     {children}
   </main>;
 }
